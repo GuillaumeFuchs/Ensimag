@@ -1,0 +1,18 @@
+\select@language {french}
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {section}{\numberline {2}D\IeC {\'e}finition}{3}
+\contentsline {section}{\numberline {3}Analyse des flux financiers du produit}{7}
+\contentsline {subsection}{\numberline {3.1}Description du produit}{7}
+\contentsline {subsection}{\numberline {3.2}Flux envisageables du produit}{7}
+\contentsline {subsection}{\numberline {3.3}Rentabilit\IeC {\'e}s esp\IeC {\'e}r\IeC {\'e}es du produit}{10}
+\contentsline {subsection}{\numberline {3.4}Expression analytique des flux}{10}
+\contentsline {section}{\numberline {4}Clients vis\IeC {\'e}s}{11}
+\contentsline {section}{\numberline {5}Analyse des risques du produit}{13}
+\contentsline {subsection}{\numberline {5.1}Risques pour la Banque}{13}
+\contentsline {subsection}{\numberline {5.2}Risques pour le d\IeC {\'e}tenteur}{15}
+\contentsline {subsection}{\numberline {5.3}Synth\IeC {\`e}se des risques}{16}
+\contentsline {section}{\numberline {6}Corr\IeC {\'e}lation entre les indices}{16}
+\contentsline {section}{\numberline {7}Analyse logiciel}{18}
+\contentsline {subsection}{\numberline {7.1}Architecture logiciel}{18}
+\contentsline {section}{\numberline {8}Annexes}{18}
+\contentsline {subsection}{\numberline {8.1}Pseudo code pour la valeur du flux vers\IeC {\'e} en t}{18}

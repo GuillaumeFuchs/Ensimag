@@ -1,0 +1,14 @@
+option size 40
+strike 100
+spot 100
+maturity 3
+volatility 0.2
+interest rate 0.04879
+correlation 0.0
+trend 0.05
+
+option type basket
+payoff coefficients 0.025
+
+timestep number 1
+sample number 50000
