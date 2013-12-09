@@ -1,0 +1,59 @@
+body { 
+	background-color: #ccc; /* couleur de la marge à droite et à gauche */
+	margin: 0;
+	padding: 0 3em; /* pour créer une marge visible à droite et à gauche */
+	font-family: sans-serif;
+}
+
+/* fond blanc sous les textes */
+#contents {
+	background-color: white; 
+	border: 1px solid black;
+	border-top: none;
+	border-bottom: none;
+	padding: 1ex 1em;
+}
+
+/* Titre 1 : centré, bleu */
+h1 {
+	text-align: center;
+	color: #66f;
+}
+
+/* Titre 2 : italique bleue */
+h2 {
+	color: #66f;
+	font-style: italic;
+}
+
+p {
+	text-indent: 2em;     /* retrait de la première ligne du paragraphe */
+	text-align: justify;
+}
+
+/* la lettrine */
+p:first-letter { 
+	font-size: 150%;
+}
+
+/* trait horizontal pour séparer le pied de page */
+.conclusion {
+	border-top: 1px solid #999;
+}
+
+/* le pied de page */
+.conclusion p {
+	text-indent: 0;
+	font-size: 80%;
+	text-align: right;
+}
+
+/* pas de lettrine dans le pied de page */
+.conclusion p:first-letter {
+	font-size: 100%;
+}
+
+/* menu non affiché */
+#menu {
+	display: none;
+}

@@ -1,0 +1,129 @@
+/* préparer la numérotation des titres */
+body {
+	counter-reset: titre 0;
+}
+
+/* ----------- MENU ---------- */
+
+/* Le menu : un bloc orange encardé de marron */
+#menu {
+	border: 1px solid #930;
+	background-color: #fa0;
+	padding: .5ex .5em;
+}
+
+/* Ne pas afficher les puces dans cette liste */
+#menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Afficher les items de la liste en ligne */
+#menu li {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+/* Devant chaque item, créer un carré marron */
+#menu li:before {
+	content: ' ';
+	width: .5em;
+	height: .5em;
+	display: inline-block;
+	background-color: #930;
+	margin-right: .2em;
+	position: relative;
+	bottom: .1em;
+}
+
+/* Liens du menu */
+#menu a {
+	text-decoration: none;
+	color: #930;
+	font-weight: bold;
+}
+
+/* ----------- CONTENU PRINCIPAL ---------- */
+
+/* Encadrer le contenu principal */
+#contents {
+	border: 1px solid #930;
+	margin-top: 2ex;
+	padding: 1ex 1em 0 1em;
+}
+
+/* Les paragraphes seront justifiés */
+p {
+	text-align: justify;
+}
+
+/* Sauf l'introduction qui sera alignée à droite */
+.introduction {
+	font-style: italic;
+	font-size: 90%;
+}
+
+.introduction p {
+	text-align: right;
+}
+
+/* Titre 1 : flotte à gauche et est succédé de la mention 'From Wikipedia, the free encyclopedia' */
+h1 {
+	float: left;
+	font-size: 245%;
+	border: 1px solid #930;
+	background-color: #fa0;
+	margin: 0 .6em 2ex 0;
+	padding: .7ex .7em;
+	font-style: normal;
+	font-variant: small-caps;
+}
+
+h1:after {
+	content: 'From Wikipedia, the free encyclopedia';
+	font-size: 30%;
+	display: block;
+	font-variant: normal;
+}
+
+/* Aérer les espaces avant les sections */
+.section {
+	clear: both;
+	margin: 2ex 0;
+}
+
+/* Créer des lignes horizonatles entre des sections */
+.section + .section {
+	border-top: 1px solid #fa0;
+	padding-top: 2ex;
+}
+
+/* Titre 2 : avec un compteur */
+h2:before {
+	content: counter(titre)'. ';
+	counter-increment: titre;
+}
+
+h2 {
+	text-decoration: underline;
+	margin: 0 0 0 1em;
+}
+
+/* Accrocher le pied de page à droite, en bas du contenu principal */
+#conclusion p {
+	float: right;
+	background-color: #930;
+	color: #fff;
+	font-size: 80%;
+	margin: 0;
+	padding: .2ex .2em;
+}
+
+#conclusion p:before {
+	content: '(';
+}
+
+#conclusion p:after {
+	content: ')';
+}

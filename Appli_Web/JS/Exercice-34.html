@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Applications</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="StyleSheet" href="Exercice-34.css" type="text/css">
+	<script type="text/javascript" src="Exercice-34.js"></script>
+</head>
+<body>
+	<div id="commands">
+	<form>
+		<ul>
+			<li><input type="text" name="newItem" id="newItem"><input type="button" name="push" onclick="lifo_push()" value="push"></li>
+			<li><input type="button" name="pull" onclick="lifo_pop()" value="pop"></li>
+			<li><input type="button" name="peek" onclick="lifo_peek()" value="peek"></li>
+		</ul>
+		<div id="peek_area"></div>
+	</form>
+	</div>
+
+	<div id="contents">
+		<h1>LIFO</h1>
+		<ul id="lifo">
+		</ul>
+	</div>
+</body>
+</html>
