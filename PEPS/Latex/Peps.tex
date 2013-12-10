@@ -467,6 +467,8 @@ On obtient alors pour $t \in \left\lbrace 1,2,3,4,5,6 \right\rbrace$ :
   
 \end{multline*}
 
+Analysons cette formule, dans un premier temps $\mathds{1}_{\{t \in B\}}$ représente le fait que des flux ne peuvent être versés que si nous sommes en $t=1$ ou 2 ou 6. De plus, $\mathds{1}_{\mathds{1}_{t=6}}*\mathds{1}_{\left\lbrace \sum_{I \in A} \mathds{1}_{\left\lbrace Perf_{I}(1)>20\% \right\rbrace}<3 \right\rbrace}*\mathds{1}_{\left\lbrace \sum_{I \in A} \mathds{1}_{\left\lbrace Perf_{I}(2)>20\% \right\rbrace}<3 \right\rbrace}$ représente le fait que en $t=6$ un flux ne peut être versé que si moins de trois indices ont eu une performance inférieure à 20\% en $t=1$ et en $t=2$. Le terme $\mathds{1}_{\left\lbrace \sum_{I \in A} \mathds{1}_{\left\lbrace Perf_{I}(\min{(t,2)})>20\% \right\rbrace}>2 \right\rbrace}$ permet quant à lui de détecter le fait qu'un flux est versé en $t=1$ ou $t=2$. Enfin le terme du début permet simplement de calculer le flux versé. 
+
 \section{Clients visés}
 
 Afin de mieux comprendre les risques et le produit, nous devons réfléchir aux types d'investisseurs concernés par un tel produit.\\
@@ -637,59 +639,57 @@ Voici une première schématisation de l'architecture de notre produit.
 
 \subsection{Pseudo code pour la valeur du flux versé en t}
 
+\begin{verbatim}
 
-\begin{lstlisting}
-
-public double flux(double ValNom, int temps){
-	double flux = 0;
-	double performance =0 ;
-	int CountSupDix = 0;
-	int CountSupVingtEnUn=0;
-	int CountSupVingtEnDeux=0;
-	int CountSupVingtEnMin=0;
-	int borne = min(t,2);
-	int verse = 0;
-	if (temps==1 || temps==2 || temps==6){
-		if (temps==6){
-	 		foreach(indice in ListIndice){
-				if (perf(Indice,1)>20%){
-					CountSupVingtEnUn++;
-				}
-				if (perf(Indice,2)>20%){
-					CountSupVingtEnDeux++;
-				}
-			}
-			if (CountSupVingtEnUn < 3 && CountSupVingtEnDeux < 3 ){
-				verse = 1;
-			}
-		}else{
-			 foreach(indice in ListIndice){
-				 if(perf(Indice,borne)>20%){
-					 CountSupVingtEnMin++;
-				 }
-			 }
-			 if (CountSupVingtEnMin>2){
-				 verse =1;
-			 }
-		}
-	}
-	if (verse){
-		for (int k=1; k<=t; k++){
-			foreach(indice in ListIndice){
-				if(perf(Indice,k)>10%){
-					 CountSupDix++;
-				 }
-			}
-			if (CountSupDix > 2){
-				performance += 4.5%;
-			 }
-		}
-		return ValNom*(1+performance);
-	}
-	return 0;
+flux(var ValNom, var temps){
+   var flux = 0;
+   var performance =0 ;
+   var CountSupDix = 0;
+   var CountSupVingtEnUn=0;
+   var CountSupVingtEnDeux=0;
+   var CountSupVingtEnMin=0;
+   var borne = minimum(t,2);
+   var verse = 0;
+   Si le temps vaut 1 ou 2 ou 6
+      Si le temps vaut 6
+         Pour tout les indices parmi la Liste des Indices
+            Si la performance de l'indice en 1 est supérieur à 20%
+               on incrémente CountSupVingtEnUn de 1
+            Fin SI
+            Si la performance de l'indice en 2 est supérieur à 20%
+               on incrémente CountSupVingtEnDeux de 1
+            Fin SI
+         Fin pour tout
+         Si (CountSupVingtEnUn est inférieur à 3 et CountSupVingtEnDeux est inférieur à 3 )
+            Verse passe à 1
+         Fin SI
+      Sinon si
+         Pour tout les indices parmi la Liste des Indices
+            Si la performance de l'indice en borne est supérieur à 20%
+               on incrémente CountSupVingtEnMin de 1 
+            Fin si
+         Fin pour tout
+         Si CountSupVingtEnMin est supérieur à 2
+            verse passe à 1
+         Fin si
+      Fin si
+   Fin si
+   Si verse vaut 1
+      Pour tout k entre 1 et t
+         Pour tout les indices dans la Liste des Indices
+            Si la performance de l'Indice en k est supérieur à 10%
+               on incrémente CountSupDix de 1
+            Fin si
+         Fin pour tout
+         Si CountSupDix est supérieur à 2
+            on augmente la performance de 4.5%
+         Fin si
+      Fin pour tout
+      On renvoie ValNom*(1+performance);
+   Fin si
+   On renvoie 0;
 }
-\end{lstlisting}
-
+\end{verbatim}
 
 \end{document}
 
