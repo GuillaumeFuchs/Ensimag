@@ -40,8 +40,8 @@ namespace Wrapper {
 	//	this->prix = px;
 	//}
 
-	void WrapperClass::getPriceOption(String ^type_sharp, int size, array<double, 1> ^spot_sharp, 
-double strike, double maturity, array<double, 1> ^sigma_sharp, double r, array<double, 1> ^rho_sharp, array<double, 1> ^coeff_sharp, int timeStep, int samples){
+	void WrapperClass::getPriceOption(String ^type_sharp, int size, array<double> ^spot_sharp, 
+double strike, double maturity, array<double> ^sigma_sharp, double r, array<double> ^rho_sharp, array<double> ^coeff_sharp, int timeStep, int samples){
 		double ic = 0;
 		double px = 0;
 		int i = 0;
@@ -49,20 +49,20 @@ double strike, double maturity, array<double, 1> ^sigma_sharp, double r, array<d
 		char* type = static_cast<char *>(System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(type_sharp).ToPointer());
 		System::Runtime::InteropServices::Marshal::FreeHGlobal(safe_cast<IntPtr>(type));
 		
-		double* spot = new double[spot_sharp->Length];
-		for (i = 0; i < spot_sharp->Length; i++)
+		double* spot = new double[size];
+		for (i = 0; i < size; i++)
 			spot[i] = (double)spot_sharp->GetValue(i);
 
-		double* sigma = new double[sigma_sharp->Length];
-		for (i = 0; i < sigma_sharp->Length; i++)
+		double* sigma = new double[size];
+		for (i = 0; i < size; i++)
 			sigma[i] = (double)sigma_sharp->GetValue(i);
 		
-		double* rho = new double[rho_sharp->Length];
-		for (i = 0; i < rho_sharp->Length; i++)
+		double* rho = new double[1];
+		for (i = 0; i < 1; i++)
 			rho[i] = (double)rho_sharp->GetValue(i);
 		
-		double* coeff = new double[coeff_sharp->Length];
-		for (i = 0; i < coeff_sharp->Length; i++)
+		double* coeff = new double[size];
+		for (i = 0; i < size; i++)
 			coeff[i] = (double)coeff_sharp->GetValue(i);
 
 		price(px, ic, type, size, spot, strike, maturity, sigma, r, rho, coeff, timeStep, samples);
