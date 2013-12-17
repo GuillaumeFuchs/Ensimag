@@ -86,7 +86,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(SolutionDir)Debug\Computations.dll $(SolutionDir)WindowsFormsApplication1\bin\Debug\Computations.dll
-copy /Y $(SolutionDir)Debug\Computations.lib $(SolutionDir)WindowsFormsApplication1\bin\Debug\Computations.lib</PostBuildEvent>
+copy /Y $(SolutionDir)Debug\Computations.lib $(SolutionDir)WindowsFormsApplication1\bin\Debug\Computations.lib
+copy /Y "C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib\libpnl.dll" "$(SolutionDir)WindowsFormsApplication1\bin\Debug\libpnl.dll"
+copy /Y "C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib\libpnl.lib" "$(SolutionDir)WindowsFormsApplication1\bin\Debug\libpnl.lib"
+copy /Y "C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib\libblas.dll" "$(SolutionDir)WindowsFormsApplication1\bin\Debug\libblas.dll"
+copy /Y "C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib\liblapack.dll" "$(SolutionDir)WindowsFormsApplication1\bin\Debug\liblapack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

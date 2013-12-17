@@ -1,0 +1,632 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0082)http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="generator" content="MediaWiki 1.16.0">
+<link rel="shortcut icon" href="http://ensiwiki.ensimag.fr/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://ensiwiki.ensimag.fr/opensearch_desc.php" title="Ensiwiki (fr)">
+<link title="Creative Commons" type="application/rdf+xml" href="http://ensiwiki.ensimag.fr/index.php?title=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&action=creativecommons" rel="meta">
+<link rel="copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">
+<link rel="alternate" type="application/atom+xml" title="Flux Atom de Ensiwiki" href="http://ensiwiki.ensimag.fr/index.php?title=Sp%C3%A9cial:Modifications_r%C3%A9centes&feed=atom">		<title>Eléments de programmation en C++/CLI - Ensiwiki</title>
+		<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/skins/common/shared.css?270" media="screen">
+<link rel="stylesheet" href="./Eléments de programmation en C++ CLI - Ensiwiki_files/commonPrint.css" media="print">
+<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/skins/ensiwikibde/main.css?270" media="screen,projection">
+<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/index.php?title=MediaWiki:Common.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000">
+<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/index.php?title=MediaWiki:Print.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000" media="print">
+<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/index.php?title=MediaWiki:Ensiwikibde.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000">
+<link rel="stylesheet" href="http://ensiwiki.ensimag.fr/index.php?title=-&action=raw&maxage=18000&gen=css">
+		<link rel="stylesheet" type="text/css" media="print" href="./Eléments de programmation en C++ CLI - Ensiwiki_files/commonPrint.css">
+		<!--[if lt IE 5.5000]><style type="text/css">@import "/skins/ensiwikibde/IE50Fixes.css?270";</style><![endif]-->
+		<!--[if IE 5.5000]><style type="text/css">@import "/skins/ensiwikibde/IE55Fixes.css?270";</style><![endif]-->
+		<!--[if IE 6]><style type="text/css">@import "/skins/ensiwikibde/IE60Fixes.css?270";</style><![endif]-->
+		<!--[if IE 7]><style type="text/css">@import "/skins/ensiwikibde/IE70Fixes.css?270";</style><![endif]-->
+		<!--[if lt IE 7]><script type="text/javascript" src="/skins/common/IEFixes.js?270"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+		
+		<script>
+var skin="ensiwikibde",
+stylepath="/skins",
+wgUrlProtocols="http\\:\\/\\/|https\\:\\/\\/|ftp\\:\\/\\/|irc\\:\\/\\/|gopher\\:\\/\\/|telnet\\:\\/\\/|nntp\\:\\/\\/|worldwind\\:\\/\\/|mailto\\:|news\\:|svn\\:\\/\\/",
+wgArticlePath="/index.php/$1",
+wgScriptPath="",
+wgScriptExtension=".php",
+wgScript="/index.php",
+wgVariantArticlePath=false,
+wgActionPaths={},
+wgServer="http://ensiwiki.ensimag.fr",
+wgCanonicalNamespace="",
+wgCanonicalSpecialPageName=false,
+wgNamespaceNumber=0,
+wgPageName="Eléments_de_programmation_en_C++/CLI",
+wgTitle="Eléments de programmation en C++/CLI",
+wgAction="view",
+wgArticleId=2173,
+wgIsArticle=true,
+wgUserName=null,
+wgUserGroups=null,
+wgUserLanguage="fr",
+wgContentLanguage="fr",
+wgBreakFrames=false,
+wgCurRevisionId=40171,
+wgVersion="1.16.0",
+wgEnableAPI=true,
+wgEnableWriteAPI=true,
+wgSeparatorTransformTable=[",	.", " 	,"],
+wgDigitTransformTable=["", ""],
+wgMainPageTitle="Accueil",
+wgFormattedNamespaces={"-2": "Média", "-1": "Spécial", "0": "", "1": "Discussion", "2": "Utilisateur", "3": "Discussion utilisateur", "4": "Ensiwiki", "5": "Discussion Ensiwiki", "6": "Fichier", "7": "Discussion fichier", "8": "MediaWiki", "9": "Discussion MediaWiki", "10": "Modèle", "11": "Discussion modèle", "12": "Aide", "13": "Discussion aide", "14": "Catégorie", "15": "Discussion catégorie"},
+wgNamespaceIds={"média": -2, "spécial": -1, "": 0, "discussion": 1, "utilisateur": 2, "discussion_utilisateur": 3, "ensiwiki": 4, "discussion_ensiwiki": 5, "fichier": 6, "discussion_fichier": 7, "mediawiki": 8, "discussion_mediawiki": 9, "modèle": 10, "discussion_modèle": 11, "aide": 12, "discussion_aide": 13, "catégorie": 14, "discussion_catégorie": 15, "discuter": 1, "discussion_image": 7, "image": 6, "image_talk": 7},
+wgSiteName="Ensiwiki",
+wgCategories=[],
+wgRestrictionEdit=[],
+wgRestrictionMove=[],
+wgRestrictionRead=[];
+</script><style type="text/css"></style>                
+		<script type="text/javascript" src="./Eléments de programmation en C++ CLI - Ensiwiki_files/wikibits.js"><!-- wikibits js --></script>
+		<!-- Head Scripts -->
+<script src="./Eléments de programmation en C++ CLI - Ensiwiki_files/ajax.js"></script>
+<style type="text/css">/*<![CDATA[*/
+.source-cpp {line-height: normal;}
+.source-cpp li, .source-cpp pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for cpp
+ * CSS class: source-cpp, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.cpp.source-cpp .de1, .cpp.source-cpp .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.cpp.source-cpp  {font-family:monospace;}
+.cpp.source-cpp .imp {font-weight: bold; color: red;}
+.cpp.source-cpp li, .cpp.source-cpp .li1 {font-weight: normal; vertical-align:top;}
+.cpp.source-cpp .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.cpp.source-cpp .li2 {font-weight: bold; vertical-align:top;}
+.cpp.source-cpp .kw1 {color: #0000ff;}
+.cpp.source-cpp .kw2 {color: #0000ff;}
+.cpp.source-cpp .kw3 {color: #0000dd;}
+.cpp.source-cpp .kw4 {color: #0000ff;}
+.cpp.source-cpp .co1 {color: #666666;}
+.cpp.source-cpp .co2 {color: #339900;}
+.cpp.source-cpp .coMULTI {color: #ff0000; font-style: italic;}
+.cpp.source-cpp .es0 {color: #000099; font-weight: bold;}
+.cpp.source-cpp .es1 {color: #000099; font-weight: bold;}
+.cpp.source-cpp .es2 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es3 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es4 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es5 {color: #006699; font-weight: bold;}
+.cpp.source-cpp .br0 {color: #008000;}
+.cpp.source-cpp .sy0 {color: #008000;}
+.cpp.source-cpp .sy1 {color: #000080;}
+.cpp.source-cpp .sy2 {color: #000040;}
+.cpp.source-cpp .sy3 {color: #000040;}
+.cpp.source-cpp .sy4 {color: #008080;}
+.cpp.source-cpp .st0 {color: #FF0000;}
+.cpp.source-cpp .nu0 {color: #0000dd;}
+.cpp.source-cpp .nu6 {color: #208080;}
+.cpp.source-cpp .nu8 {color: #208080;}
+.cpp.source-cpp .nu12 {color: #208080;}
+.cpp.source-cpp .nu16 {color:#800080;}
+.cpp.source-cpp .nu17 {color:#800080;}
+.cpp.source-cpp .nu18 {color:#800080;}
+.cpp.source-cpp .nu19 {color:#800080;}
+.cpp.source-cpp .me1 {color: #007788;}
+.cpp.source-cpp .me2 {color: #007788;}
+.cpp.source-cpp .ln-xtra, .cpp.source-cpp li.ln-xtra, .cpp.source-cpp div.ln-xtra {background-color: #ffc;}
+.cpp.source-cpp span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><style type="text/css">/*<![CDATA[*/
+.source-csharp {line-height: normal;}
+.source-csharp li, .source-csharp pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for csharp
+ * CSS class: source-csharp, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.csharp.source-csharp .de1, .csharp.source-csharp .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.csharp.source-csharp  {font-family:monospace;}
+.csharp.source-csharp .imp {font-weight: bold; color: red;}
+.csharp.source-csharp li, .csharp.source-csharp .li1 {font-weight: normal; vertical-align:top;}
+.csharp.source-csharp .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.csharp.source-csharp .li2 {font-weight: bold; vertical-align:top;}
+.csharp.source-csharp .kw1 {color: #0600FF; font-weight: bold;}
+.csharp.source-csharp .kw2 {color: #FF8000; font-weight: bold;}
+.csharp.source-csharp .kw3 {color: #008000;}
+.csharp.source-csharp .kw4 {color: #6666cc; font-weight: bold;}
+.csharp.source-csharp .kw5 {color: #000000;}
+.csharp.source-csharp .co1 {color: #008080; font-style: italic;}
+.csharp.source-csharp .co2 {color: #008080;}
+.csharp.source-csharp .co3 {color: #008080;}
+.csharp.source-csharp .coMULTI {color: #008080; font-style: italic;}
+.csharp.source-csharp .es0 {color: #008080; font-weight: bold;}
+.csharp.source-csharp .es_h {color: #008080; font-weight: bold;}
+.csharp.source-csharp .br0 {color: #008000;}
+.csharp.source-csharp .sy0 {color: #008000;}
+.csharp.source-csharp .st0 {color: #666666;}
+.csharp.source-csharp .st_h {color: #666666;}
+.csharp.source-csharp .nu0 {color: #FF0000;}
+.csharp.source-csharp .me1 {color: #0000FF;}
+.csharp.source-csharp .me2 {color: #0000FF;}
+.csharp.source-csharp .ln-xtra, .csharp.source-csharp li.ln-xtra, .csharp.source-csharp div.ln-xtra {background-color: #ffc;}
+.csharp.source-csharp span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style>		<script type="text/javascript" src="./Eléments de programmation en C++ CLI - Ensiwiki_files/index.php"><!-- site js --></script>
+	</head>
+<body class="mediawiki  ltr ns-0 ns-subject page-Eléments_de_programmation_en_C_CLI">
+<div id="HEADER">
+	<a href="http://ensiwiki.ensimag.fr/index.php/Accueil" id="home-link">&nbsp;</a>
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content" class="pBody">
+		<div class="pBodyContent">
+		<a name="top" id="top"></a>
+				<h1 class="firstHeading">Eléments de programmation en C++/CLI</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">De Ensiwiki.</h3>
+			<div id="contentSub"></div>
+									<div id="jump-to-nav">Aller à : <a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#column-one">Navigation</a>, <a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#searchInput">rechercher</a></div>			<!-- start content -->
+			<table id="toc" class="toc"><tbody><tr><td><div id="toctitle"><h2>Sommaire</h2> <span class="toctoggle">[<a id="togglelink" class="internal" href="javascript:toggleToc()">masquer</a>]</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Pr.C3.A9sentation"><span class="tocnumber">1</span> <span class="toctext">Présentation</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Diff.C3.A9rences_de_syntaxe_entre_du_code_natif_et_du_code_manag.C3.A9"><span class="tocnumber">2</span> <span class="toctext">Différences de syntaxe entre du code natif et du code managé</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Un_exemple_complet_de_projet"><span class="tocnumber">3</span> <span class="toctext">Un exemple complet de projet</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Projet_C.2B.2B_Natif"><span class="tocnumber">3.1</span> <span class="toctext">Projet C++ Natif</span></a>
+<ul>
+<li class="toclevel-3 tocsection-5"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Cr.C3.A9ation_du_projet"><span class="tocnumber">3.1.1</span> <span class="toctext">Création du projet</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Code_.C3.A0_ins.C3.A9rer"><span class="tocnumber">3.1.2</span> <span class="toctext">Code à insérer</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-7"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Projet_C.2B.2B.2FCLI"><span class="tocnumber">3.2</span> <span class="toctext">Projet C++/CLI</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Projet_C.23"><span class="tocnumber">3.3</span> <span class="toctext">Projet C#</span></a>
+<ul>
+<li class="toclevel-3 tocsection-9"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Windows_Form"><span class="tocnumber">3.3.1</span> <span class="toctext">Windows Form</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#ASP.NET"><span class="tocnumber">3.3.2</span> <span class="toctext">ASP.NET</span></a>
+<ul>
+<li class="toclevel-4 tocsection-11"><a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Copie_des_dll"><span class="tocnumber">3.3.2.1</span> <span class="toctext">Copie des dll</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></tbody></table><script>if (window.showTocToggle) { var tocShowText = "afficher"; var tocHideText = "masquer"; showTocToggle(); } </script>
+<h1> <span class="mw-headline" id="Pr.C3.A9sentation"> Présentation </span></h1>
+<p>Le but de cette page est de regrouper les trucs et astuces pour la programmation en C++/CLI. Cette page contient un résumé des différences de syntaxe entre le C++/CLI et le C++ natif, ainsi qu'un tutoriel montrant comment faire interagir différentes librairies natives et managées. Pour d'autres questions liées au C++/CLI, à Visual Studio et aux librairies qui peuvent être utilisées (libpnl par exemple), on pourra se référer à la page <a href="http://ensiwiki.ensimag.fr/index.php/Cpp-CLI-FAQ" title="Cpp-CLI-FAQ">Cpp-CLI-FAQ</a>.
+</p>
+<h1> <span class="mw-headline" id="Diff.C3.A9rences_de_syntaxe_entre_du_code_natif_et_du_code_manag.C3.A9"> Différences de syntaxe entre du code natif et du code managé </span></h1>
+<table border="1" cellpadding="11">
+<tbody><tr>
+<td></td><td>Natif</td><td>Managé</td>
+</tr>
+<tr>
+<td>Déclaration de classe</td>
+<td>
+<p><font face="calibri">
+class ClasseNative{ (...) }
+</font>
+</p>
+</td>
+<td>
+<p><font face="calibri">
+<b>ref</b> class ClasseManagee{ (...) }
+</font>
+</p>
+</td>
+</tr>
+<tr>
+<td>Pointeurs (*), handles (^)</td>
+<td>
+<p><font face="calibri">
+ClasseNative *clNat = new ClasseNative();
+</font>
+</p>
+</td>
+<td>
+<p><font face="calibri">
+ClasseManagee ^clMan = <b>gcnew</b> ClasseManagee();
+</font>
+</p>
+</td>
+</tr>
+<tr>
+<td>Déréférencement, références, tracking references</td>
+<td>
+<p><font face="calibri">
+</font></p><font face="calibri">
+<ul>
+<li>ClasseNative clNat2 = *clNat;</li>
+<li>ClasseNative &amp;clNat3 = clNat2;</li>
+<li>ClasseNative *clNat4 = &amp;clNat2;</li>
+</ul>
+</font><p><font face="calibri"></font>
+</p>
+</td>
+<td>
+<p><font face="calibri">
+</font></p><font face="calibri">
+<ul>
+<li>ClasseManagee clMan2 = *clMan;</li>
+<li>ClasseManagee&nbsp;%clMan3 = clMan2;</li>
+<li>ClasseManagee ^clMan4 =&nbsp;%clMan2;</li>
+</ul>
+</font><p><font face="calibri"></font>
+</p>
+</td>
+</tr>
+<tr>
+<td>Tableaux</td>
+<td>
+<p><font face="calibri">
+</font></p><font face="calibri">
+<ul>
+<li>int uneDimension[10];</li>
+<li>int deuxDimensions[10][15];</li>
+</ul>
+</font><p><font face="calibri"></font>
+</p>
+</td>
+<td><font face="calibri">
+<ul>
+<li>array&lt;int,1&gt; ^uneDimension;</li>
+<li>array&lt;int,2&gt; ^deuxDimensions;</li>
+</ul>
+</font></td>
+</tr>
+</tbody></table>
+<p><br>
+</p>
+<h1> <span class="mw-headline" id="Un_exemple_complet_de_projet"> Un exemple complet de projet </span></h1>
+<p>Voici une description pas-à-pas d'une application Windows Form (ou ASP.NET) qui, calcule le prix d'un call vanille à l'aide d'une méthode Monte Carlo. <br>
+La partie concernant la gestion des dll natives est un condensé de <a href="http://blogs.msdn.com/b/jorman/archive/2007/08/31/loading-c-assemblies-in-asp-net.aspx" class="external text">cette page</a>.<br>
+</p><p>La solution comporte:
+</p>
+<ul>
+<li>Un projet C++ natif qui effectue les simulations Monte Carlo et se sert de la librairie libpnl;</li>
+<li>Un projet C++/CLI pour l'interfaçage .NET-Code natif;</li>
+<li>Un projet Windows Form pour l'interface graphique.</li>
+</ul>
+<p><br>
+<b>Attention: ce tutoriel suppose que libpnl a déjà été récupéré et installé sur la machine.</b> (voir la <a href="http://ensiwiki.ensimag.fr/index.php/Cpp-CLI-FAQ#Questions_sur_libpnl" title="Cpp-CLI-FAQ">FAQ</a>)<br>
+</p>
+<h2> <span class="mw-headline" id="Projet_C.2B.2B_Natif"> Projet C++ Natif </span></h2>
+<h3> <span class="mw-headline" id="Cr.C3.A9ation_du_projet"> Création du projet </span></h3>
+<ol>
+<li>Depuis Visual Studio, menu <i>Fichier &gt; Nouveau &gt; Projet</i>, sélectionner un projet Win32 depuis l'onglet Visual C++</li>
+<li>Donner un nom au projet ("Computations" dans cet exemple) et à la solution ("ProjetTest" dans cet exemple)</li>
+<li>Dans l'assistant Application Win32, cliquer sur <i>Suivant</i>, cocher "DLL", "Projet vide" puis cliquer sur <i>Terminer</i>.<br>
+<a href="http://ensiwiki.ensimag.fr/index.php/Fichier:NouveauProjet.bmp" class="image" title="Création d&#39;un nouveau projet"><img alt="Création d&#39;un nouveau projet" src="./Eléments de programmation en C++ CLI - Ensiwiki_files/200px-NouveauProjet.bmp.png" width="200" height="139"></a>
+<a href="http://ensiwiki.ensimag.fr/index.php/Fichier:ProjetNatifVide.bmp" class="image" title="Projet vide"><img alt="Projet vide" src="./Eléments de programmation en C++ CLI - Ensiwiki_files/200px-ProjetNatifVide.bmp.png" width="200" height="143"></a>
+</li>
+</ol>
+<h3> <span class="mw-headline" id="Code_.C3.A0_ins.C3.A9rer"> Code à insérer </span></h3>
+<p>Dans l'explorateur de solution choisissez le dossier <i>Fichiers d'en-tête</i>, ajouter un fichier d'en-tête (.h) ("Computations.h" dans cet exemple), et dans le dossier "Fichiers sources" ajouter un fichier C++ (.cpp) ("Computations.cpp" dans l'exemple).<br>
+</p><p>Ajouter le code suivant au fichier d'en-tête:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#pragma once</span>
+<span class="co2">#define DLLEXP   __declspec( dllexport )</span>
+<span class="kw2">namespace</span> Computations<span class="br0">{</span>
+   DLLEXP <span class="kw4">void</span> calleuro <span class="br0">(</span><span class="kw4">double</span> <span class="sy3">&amp;</span>ic, <span class="kw4">double</span> <span class="sy3">&amp;</span>prix, <span class="kw4">int</span> nb_samples, <span class="kw4">double</span> T,
+              <span class="kw4">double</span> S0, <span class="kw4">double</span> K, <span class="kw4">double</span> sigma, <span class="kw4">double</span> r<span class="br0">)</span><span class="sy4">;</span> 
+<span class="br0">}</span></pre></div></div>
+<p>Et le code suivant au fichier source:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include "Computations.h"</span>
+<span class="co2">#include "iostream"</span>
+<span class="co2">#include "ctime"</span>
+<span class="co2">#include "pnl/pnl_random.h"</span>
+&nbsp;
+<span class="kw2">using</span> <span class="kw2">namespace</span> std<span class="sy4">;</span>
+&nbsp;
+&nbsp;
+<span class="kw4">void</span> Computations<span class="sy4">::</span><span class="me2">calleuro</span> <span class="br0">(</span><span class="kw4">double</span> <span class="sy3">&amp;</span>ic, <span class="kw4">double</span> <span class="sy3">&amp;</span>prix, <span class="kw4">int</span> nb_samples, <span class="kw4">double</span> T,
+               <span class="kw4">double</span> S0, <span class="kw4">double</span> K, <span class="kw4">double</span> sigma, <span class="kw4">double</span> r<span class="br0">)</span>
+<span class="br0">{</span>
+  <span class="kw4">double</span> drift <span class="sy1">=</span> <span class="br0">(</span>r <span class="sy2">-</span> sigma <span class="sy2">*</span> sigma<span class="sy2">/</span><span class="nu0">2</span>.<span class="br0">)</span> <span class="sy2">*</span> T<span class="sy4">;</span>
+  <span class="kw4">double</span> sqrt_T <span class="sy1">=</span> <span class="kw3">sqrt</span> <span class="br0">(</span>T<span class="br0">)</span><span class="sy4">;</span>
+  <span class="kw4">double</span> sum <span class="sy1">=</span> <span class="nu0">0</span><span class="sy4">;</span>
+  <span class="kw4">double</span> var <span class="sy1">=</span> <span class="nu0">0</span><span class="sy4">;</span>
+  PnlRng <span class="sy2">*</span>rng <span class="sy1">=</span> pnl_rng_create <span class="br0">(</span>PNL_RNG_MERSENNE<span class="br0">)</span><span class="sy4">;</span>
+  pnl_rng_sseed <span class="br0">(</span>rng, <span class="kw3">time</span><span class="br0">(</span><span class="kw2">NULL</span><span class="br0">)</span><span class="br0">)</span><span class="sy4">;</span>
+  <span class="kw4">double</span> payoff<span class="sy4">;</span>
+  <span class="kw1">for</span> <span class="br0">(</span> <span class="kw4">int</span> i<span class="sy1">=</span><span class="nu0">0</span> <span class="sy4">;</span> i<span class="sy1">&lt;</span>nb_samples <span class="sy4">;</span> i<span class="sy2">++</span> <span class="br0">)</span>
+    <span class="br0">{</span>
+      payoff <span class="sy1">=</span> S0 <span class="sy2">*</span> <span class="kw3">exp</span> <span class="br0">(</span>drift <span class="sy2">+</span> sigma <span class="sy2">*</span> sqrt_T <span class="sy2">*</span> pnl_rng_normal <span class="br0">(</span>rng<span class="br0">)</span><span class="br0">)</span><span class="sy4">;</span>
+      payoff <span class="sy1">=</span> MAX<span class="br0">(</span>payoff <span class="sy2">-</span> K, <span class="nu0">0</span>.<span class="br0">)</span><span class="sy4">;</span>
+      sum <span class="sy2">+</span><span class="sy1">=</span> payoff<span class="sy4">;</span>
+      var <span class="sy2">+</span><span class="sy1">=</span> payoff <span class="sy2">*</span> payoff<span class="sy4">;</span>
+    <span class="br0">}</span>
+&nbsp;
+  prix <span class="sy1">=</span> <span class="kw3">exp</span> <span class="br0">(</span><span class="sy2">-</span>r<span class="sy2">*</span>T<span class="br0">)</span> <span class="sy2">*</span> sum <span class="sy2">/</span> nb_samples<span class="sy4">;</span>
+  var <span class="sy1">=</span> <span class="kw3">exp</span> <span class="br0">(</span><span class="sy2">-</span><span class="nu0">2</span>.<span class="sy2">*</span>r<span class="sy2">*</span>T<span class="br0">)</span> <span class="sy2">*</span> var <span class="sy2">/</span> nb_samples <span class="sy2">-</span> prix <span class="sy2">*</span> prix<span class="sy4">;</span>
+  ic <span class="sy1">=</span> <span class="nu16">1.96</span> <span class="sy2">*</span> <span class="kw3">sqrt</span> <span class="br0">(</span>var <span class="sy2">/</span> nb_samples<span class="br0">)</span><span class="sy4">;</span> 
+  pnl_rng_free <span class="br0">(</span><span class="sy3">&amp;</span>rng<span class="br0">)</span><span class="sy4">;</span>
+<span class="br0">}</span></pre></div></div>
+<p>Linker proprement libpnl au projet (consulter la <a href="http://ensiwiki.ensimag.fr/index.php/Cpp-CLI-FAQ#Questions_sur_libpnl" class="external text">faq</a>).
+</p><p><br> 
+Générer le projet. Si tout se passe correctement, le repertoire Debug/ de la solution doit contenir la dll du projet natif (Computations.dll) et un fichier de librairie (Computations.lib).
+</p>
+<h2> <span class="mw-headline" id="Projet_C.2B.2B.2FCLI"> Projet C++/CLI </span></h2>
+<p>Ce projet sert d'interface entre le code natif du projet précédent, et le code managé de l'IHM qui sera définie plus tard.
+</p>
+<ol>
+<li>Ajouter un nouveau projet (bibliothèque de classe en Visual C++) (nommé "Wrapper" dans cet exemple) à la solution</li>
+<li>Ajouter le chemin vers le projet natif aux <i>répertoires Include supplémentaires</i></li>
+<li>Ajouter le projet natif comme référence du nouveau projet (Click-droit&gt;<i>References ... &gt; Ajouter une nouvelle référence</i>)</li>
+<li>Dans <i>Propriétés -&gt; Editeur de liens -&gt; Entrée</i>, mettre le nom de la dll native dans le champ <b>Chargement différé des DLL</b> (<i>Computations.dll</i> dans cet exemple)</li>
+</ol>
+<p>Mettre le code suivant au fichier d'en-tête:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#pragma once</span>
+<span class="co2">#include "Computations.h"</span>
+<span class="kw2">using</span> <span class="kw2">namespace</span> System<span class="sy4">;</span>
+&nbsp;
+<span class="kw2">namespace</span> Wrapper <span class="br0">{</span>
+&nbsp;
+	<span class="kw2">public</span> ref <span class="kw2">class</span> WrapperClass
+	<span class="br0">{</span>
+	<span class="kw2">private</span><span class="sy4">:</span>
+		<span class="kw4">double</span> intConfiance<span class="sy4">;</span>
+		<span class="kw4">double</span> prix<span class="sy4">;</span>
+	<span class="kw2">public</span><span class="sy4">:</span>
+		WrapperClass<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span>intConfiance <span class="sy1">=</span> prix <span class="sy1">=</span> <span class="nu0">0</span><span class="sy4">;</span><span class="br0">}</span><span class="sy4">;</span>
+		<span class="kw4">void</span> getPriceCallEuro<span class="br0">(</span><span class="kw4">int</span> nbTirages, <span class="kw4">double</span> T, <span class="kw4">double</span> S0, <span class="kw4">double</span> K, <span class="kw4">double</span> sigma, <span class="kw4">double</span> r<span class="br0">)</span><span class="sy4">;</span>
+		<span class="kw4">double</span> getPrice<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><span class="kw1">return</span> prix<span class="sy4">;</span><span class="br0">}</span><span class="sy4">;</span>
+		<span class="kw4">double</span> getIC<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><span class="kw1">return</span> intConfiance<span class="sy4">;</span><span class="br0">}</span><span class="sy4">;</span>
+	<span class="br0">}</span><span class="sy4">;</span>
+<span class="br0">}</span></pre></div></div>
+<p><b>Remarque:</b> la directive <i>#include "Computations.h"</i> peut être ajoutée au fichier <i>stdafx.h</i> au lieu du fichier d'en-tête.
+</p><p>Ajouter le code suivant au fichier source:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include "stdafx.h"</span>
+&nbsp;
+<span class="co2">#include "Wrapper.h"</span>
+&nbsp;
+<span class="kw2">using</span> <span class="kw2">namespace</span> Computations<span class="sy4">;</span>
+<span class="kw2">namespace</span> Wrapper <span class="br0">{</span>
+	<span class="kw4">void</span> WrapperClass<span class="sy4">::</span><span class="me2">getPriceCallEuro</span><span class="br0">(</span><span class="kw4">int</span> nbTirages, <span class="kw4">double</span> T, <span class="kw4">double</span> S0, <span class="kw4">double</span> K, <span class="kw4">double</span> sigma, <span class="kw4">double</span> r<span class="br0">)</span> <span class="br0">{</span>
+		<span class="kw4">double</span> ic, px<span class="sy4">;</span>
+		calleuro <span class="br0">(</span>ic, px, nbTirages, T, S0, K, sigma, r<span class="br0">)</span><span class="sy4">;</span>
+		this<span class="sy2">-</span><span class="sy1">&gt;</span>intConfiance <span class="sy1">=</span> ic<span class="sy4">;</span>
+		this<span class="sy2">-</span><span class="sy1">&gt;</span>prix <span class="sy1">=</span> px<span class="sy4">;</span>
+	<span class="br0">}</span>
+<span class="br0">}</span></pre></div></div>
+<p><br>
+Générer le projet Wrapper.
+</p>
+<h2> <span class="mw-headline" id="Projet_C.23"> Projet C# </span></h2>
+<p>Il est possible de choisir entre une interface Windows Form et une interface ASP.NET. Les descriptions données ici permettent de lier tous les composants ensemble proprement. 
+</p>
+<h3> <span class="mw-headline" id="Windows_Form"> Windows Form </span></h3>
+<p>Les descriptions données ici montrent comment linker proprement les différents composants du projet sans faire de recopies inutiles. Une façon plus basique d'exécuter le projet consiste à simplement recopier tout ce qui concerne la partie native du projet (les 3 dll du répertoire 'lib' de libpnl, le fichier 'libpnl.lib' ainsi que le .dll et le .lib du projet natif) dans le répertoire contenant l'exécutable Windows Form. Cette copie peut se faire à la main ou bien dans les évènements liés à la compilation; l'instruction de copie est détaillée dans la partie ASP.NET, <a href="http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI#Copie_des_dll" class="external text">ici</a>.
+</p><p><br>
+Ajouter à la solution un nouveau projet (projet C#: Windows Form) et le définir comme projet de démarrage (click-droit -&gt; définir comme projet de démarrage).
+</p>
+<ol>
+<li>Ajouter le projet C++/CLI comme référence du nouveau projet</li>
+<li>Dans les propriétés du projet, onglet <i>Paramètres</i>, ajouter un nouveau paramètre de type chaîne de caractères (nommé AdditionalPaths dans le code ci-dessous), contenant les chemins d'accès à la dll native et au contenu du répertoire <i>lib</i> de libpnl (format&nbsp;: &lt;chemin1&gt;;&lt;chemin2&gt; )<br>
+<a href="http://ensiwiki.ensimag.fr/index.php/Fichier:AdditionalPaths.bmp" class="image" title="Chemins à parcourir"><img alt="Chemins à parcourir" src="./Eléments de programmation en C++ CLI - Ensiwiki_files/200px-AdditionalPaths.bmp.png" width="200" height="66"></a>
+</li>
+<li>A partir de la "boite a outils" (onglet en colonne de gauche), ajouter des <i>TextBox</i> pour récupérer les paramètres de l'option et le nombre de tirages Monte Carlo, ainsi que deux <i>Label</i> pour afficher le prix et l'intervalle de confiance ("prixLabel" et "icLabel" dans l'exemple).</li>
+<li>Ajouter un bouton (nommé goBtn dans l'exemple) </li>
+<li>Ajouter la directive <div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="csharp source-csharp"><pre class="de1"><span class="kw1">using</span> <span class="co3">Wrapper</span><span class="sy0">;</span></pre></div></div> au code source de la forme (<i>Form1.cs</i> dans l'exemple)</li>
+</ol>
+<p>Ajouter le code suivant à l'évènement <i>bouton cliqué</i> (explorateur de propriétés, symbole "eclair" pour afficher les noms de méthodes associées aux évènements, double-click sur l'action "click" pour créer et afficher squelette code de reaction au click):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="csharp source-csharp"><pre class="de1"><span class="kw1">private</span> <span class="kw4">void</span> goBtn_Click<span class="br0">(</span><span class="kw4">object</span> sender, EventArgs e<span class="br0">)</span>
+<span class="br0">{</span>
+    <span class="co1">// Récupérer les valeurs des paramètres dans les différentes TextBox</span>
+    WrapperClass wc <span class="sy0">=</span> <span class="kw3">new</span> WrapperClass<span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span>
+    wc<span class="sy0">.</span><span class="me1">getPriceCallEuro</span><span class="br0">(</span>nbTirages, maturite, S0, strike, sigma, r<span class="br0">)</span><span class="sy0">;</span>
+    prixLabel<span class="sy0">.</span><span class="me1">Text</span> <span class="sy0">=</span> wc<span class="sy0">.</span><span class="me1">getPrice</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">.</span><span class="me1">ToString</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span>
+    icLabel<span class="sy0">.</span><span class="me1">Text</span> <span class="sy0">=</span> wc<span class="sy0">.</span><span class="me1">getIC</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">.</span><span class="me1">ToString</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span>
+<span class="br0">}</span></pre></div></div>
+<p>Dans le fichier <b>Program.cs</b>, ajouter le code suivant à la place du <i>Main</i>:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="csharp source-csharp"><pre class="de1"><span class="kw1">static</span> <span class="kw4">void</span> Main<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+    <span class="kw4">string</span> newPath <span class="sy0">=</span> <span class="kw4">string</span><span class="sy0">.</span><span class="me1">Concat</span><span class="br0">(</span>Environment<span class="sy0">.</span><span class="me1">GetEnvironmentVariable</span><span class="br0">(</span><span class="st0">"PATH"</span><span class="br0">)</span>, <span class="st0">";"</span>, Properties<span class="sy0">.</span><span class="me1">Settings</span><span class="sy0">.</span><span class="kw1">Default</span><span class="sy0">.</span><span class="me1">AdditionalPaths</span><span class="br0">)</span><span class="sy0">;</span>
+    Environment<span class="sy0">.</span><span class="me1">SetEnvironmentVariable</span><span class="br0">(</span><span class="st0">"PATH"</span>, newPath, EnvironmentVariableTarget<span class="sy0">.</span><span class="me1">Process</span><span class="br0">)</span><span class="sy0">;</span>
+    Application<span class="sy0">.</span><span class="me1">EnableVisualStyles</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span>
+    Application<span class="sy0">.</span><span class="me1">SetCompatibleTextRenderingDefault</span><span class="br0">(</span><span class="kw1">false</span><span class="br0">)</span><span class="sy0">;</span>
+    Application<span class="sy0">.</span><span class="me1">Run</span><span class="br0">(</span><span class="kw3">new</span> Form1<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">;</span>
+<span class="br0">}</span></pre></div></div>
+<p><br>
+Compiler, exécuter.
+</p>
+<h3> <span class="mw-headline" id="ASP.NET"> ASP.NET </span></h3>
+<p>Pour un projet ASP.NET, il faut que le serveur IIS sache où récupérer les différentes dll. Il suffit pour ça de les mettre dans un répertoire présent dans le PATH, mais le plus simple est de mettre toutes les dll nécessaires dans le bon répertoire <i>bin</i>.<br>
+</p><p>Ajouter à la solution un nouveau projet (projet C#: Application ASP.NET) et le définir comme projet de démarrage.
+</p>
+<ol>
+<li>Ajouter le projet C++/CLI comme référence du nouveau projet</li>
+<li>Ajouter à 'Default.aspx' les textbox et labels nécessaires à la récupération des paramètres et à l'affichage des résultats</li>
+<li>Ajouter un bouton permettant de lancer les calculs</li>
+<li>Comme pour le Windows Form, ajouter les instructions nécessaires à l'évènement <i>bouton cliqué</i> pour pour lancer les calculs et afficher les résultats</li>
+</ol>
+<p><br>
+</p>
+<h4> <span class="mw-headline" id="Copie_des_dll"> Copie des dll </span></h4>
+<p>Dans les évènements post-build du projet <b>natif</b>, copier la dll native vers le répertoire <i>bin</i> du projet ASP.NET. Ainsi, chaque fois que le projet natif sera modifié et recompilé, le bonne version de la dll sera recopiée dans le répertoire <i>bin</i> du projet ASP.NET.<br> 
+Si la dll native s'appelle <i>TestASP.dll</i> et le projet ASP.NET s'appelle <i>SiteWeb</i>, cela donne:
+</p>
+<pre>copy $(SolutionDir)Debug\TestASP.dll $(SolutionDir)SiteWeb\bin\TestASP.dll
+</pre>
+<p>Faire la même chose avec les fichiers <i>.dll</i> et <i>.lib</i> de <b>libpnl</b>.<br>
+</p><p>Dans le fichier <i>Global.asax</i>, il faut spécifier que certaines dll peuvent être présentes dans le répertoire <i>bin</i> du projet ASP.NET. ajouter le code suivant:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="csharp source-csharp"><pre class="de1"> <span class="kw4">void</span> Application_Start<span class="br0">(</span><span class="kw4">object</span> sender, EventArgs e<span class="br0">)</span>
+ <span class="br0">{</span>
+     <span class="kw4">String</span> _path <span class="sy0">=</span> <span class="kw4">String</span><span class="sy0">.</span><span class="me1">Concat</span><span class="br0">(</span><span class="kw5">System</span><span class="sy0">.</span><span class="me1">Environment</span><span class="sy0">.</span><span class="me1">GetEnvironmentVariable</span><span class="br0">(</span><span class="st0">"PATH"</span><span class="br0">)</span>, <span class="st0">";"</span>, <span class="kw5">System</span><span class="sy0">.</span><span class="me1">AppDomain</span><span class="sy0">.</span><span class="me1">CurrentDomain</span><span class="sy0">.</span><span class="me1">RelativeSearchPath</span><span class="br0">)</span><span class="sy0">;</span>
+     <span class="kw5">System</span><span class="sy0">.</span><span class="me1">Environment</span><span class="sy0">.</span><span class="me1">SetEnvironmentVariable</span><span class="br0">(</span><span class="st0">"PATH"</span>, _path, EnvironmentVariableTarget<span class="sy0">.</span><span class="me1">Process</span><span class="br0">)</span><span class="sy0">;</span>
+ <span class="br0">}</span></pre></div></div>
+<p>Exécuter sur un navigateur internet.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 117/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+<div class="printfooter">
+Récupérée de « <a href="./Eléments de programmation en C++ CLI - Ensiwiki_files/Eléments de programmation en C++ CLI - Ensiwiki.htm">http://ensiwiki.ensimag.fr/index.php/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI</a> »</div>
+			<div id="catlinks" class="catlinks catlinks-allhidden"></div>			<!-- end content -->
+						<div class="visualClear"></div>
+		</div>
+		</div>
+			<div class="visualClear"></div>
+			<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="./Eléments de programmation en C++ CLI - Ensiwiki_files/poweredby_mediawiki_88x31.png" height="31" width="88" alt="Powered by MediaWiki"></a></div>
+				<div id="f-copyrightico"><a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="./Eléments de programmation en C++ CLI - Ensiwiki_files/88x31.png" alt="Attribution-Share Alike 3.0 Unported" width="88" height="31"></a></div>
+			<ul id="f-list">
+				<li id="lastmod"> Dernière modification de cette page le 17 novembre 2013 à 21:32.<br></li>
+				<li id="viewcount">Cette page a été consultée 7&nbsp;738 fois.</li>
+				<li id="copyright">Contenu disponible sous <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="external ">Attribution-Share Alike 3.0 Unported</a>.</li>
+				<li id="privacy"><a href="http://ensiwiki.ensimag.fr/index.php/Ensiwiki:Confidentialit%C3%A9" title="Ensiwiki:Confidentialité">Politique de confidentialité</a></li>
+				<li id="about"><a href="http://ensiwiki.ensimag.fr/index.php/Ensiwiki:%C3%80_propos" title="Ensiwiki:À propos">À propos de Ensiwiki</a></li>
+				<li id="disclaimer"><a href="http://ensiwiki.ensimag.fr/index.php/Ensiwiki:Avertissements_g%C3%A9n%C3%A9raux" title="Ensiwiki:Avertissements généraux">Avertissements</a></li>
+			</ul>
+		<div style="clear:both; height:1px;">&nbsp;</div>
+		</div>
+
+	</div>
+		</div>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Affichages</h5>
+		<div class="pBody">
+			<ul>
+					 <li id="ca-nstab-main" class="selected"><a href="./Eléments de programmation en C++ CLI - Ensiwiki_files/Eléments de programmation en C++ CLI - Ensiwiki.htm" title="Voir la page de contenu [alt-c]" accesskey="c">Page</a></li>
+					 <li id="ca-talk" class="new"><a href="http://ensiwiki.ensimag.fr/index.php?title=Discussion:El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&action=edit&redlink=1" title="Discussion au sujet de cette page de contenu [alt-t]" accesskey="t">Discussion</a></li>
+					 <li id="ca-viewsource"><a href="http://ensiwiki.ensimag.fr/index.php?title=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&action=edit" title="Cette page est protégée.
+Vous pouvez toutefois en visualiser la source. [alt-e]" accesskey="e">Voir le texte source</a></li>
+					 <li id="ca-history"><a href="http://ensiwiki.ensimag.fr/index.php?title=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&action=history" title="Les versions passées de cette page (avec leurs contributeurs) [alt-h]" accesskey="h">Historique</a></li>
+				</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Outils personnels</h5>
+
+		<div class="pBody">
+			<ul>
+			<li>
+		<form action="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Recherche" id="searchform" style="display:inline;">
+             	        <fieldset style="border: 0; padding: 0; display: inline; margin: 0">
+ 			<input id="searchInput" name="search" type="text" title="Rechercher dans Ensiwiki [alt-f]" accesskey="f" value="">
+			<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Lire" title="Aller vers une page portant exactement ce nom si elle existe.">&nbsp;
+                        <input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Rechercher" title="Rechercher les pages comportant ce texte.">
+			</fieldset>
+                </form>
+			</li>
+				<li id="pt-login"><a href="http://ensiwiki.ensimag.fr/index.php?title=Sp%C3%A9cial:Connexion&returnto=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI" title="Vous êtes encouragé(e) à vous identifier ; ce n’est cependant pas obligatoire. [alt-o]" accesskey="o">Connexion</a></li>
+			</ul>
+		</div>
+	</div>
+
+        <div class="sidebar">
+		<div class="portlet" id="p-A_ne_pas_manquer">
+		<div class="pBody">
+			<div class="pBodyTitle">
+				A ne pas manquer			</div>
+			<div class="pBodyContent">
+			<ul>
+				<li id="n-FAQ"><a href="http://ensiwiki.ensimag.fr/index.php/FAQ">FAQ</a></li>
+				<li id="n-FAQ-1A"><a href="http://ensiwiki.ensimag.fr/index.php/FAQ_1A">FAQ 1A</a></li>
+				<li id="n-R.C3.A9unions-P.C3.A9dagogiques"><a href="http://ensiwiki.ensimag.fr/index.php/R%C3%A9unions_P%C3%A9dagogiques">Réunions Pédagogiques</a></li>
+				<li id="n-FAQ-Bug-Busters"><a href="http://ensiwiki.ensimag.fr/index.php/FAQ_Bug_Busters">FAQ Bug Busters</a></li>
+				<li id="n-Centos"><a href="http://ensiwiki.ensimag.fr/index.php/Portail:Centos">Centos</a></li>
+				<li id="n-Aide-.C3.A0-la-r.C3.A9daction-de-documents-.C3.A9crits"><a href="http://ensiwiki.ensimag.fr/index.php/R%C3%A9daction_de_documents_%C3%A9crits">Aide à la rédaction de documents écrits</a></li>
+				<li id="n-Lexique-franco-anglais"><a href="http://ensiwiki.ensimag.fr/index.php/Lexique_scientifique_fran%C3%A7ais-anglais">Lexique franco-anglais</a></li>
+			</ul>
+			</div>
+		</div>
+	</div>
+		<div class="portlet" id="p-Actualit.C3.A9">
+		<div class="pBody">
+			<div class="pBodyTitle">
+				Actualité			</div>
+			<div class="pBodyContent">
+			<ul>
+				<li id="n-Soutien-en-Algo"><a href="http://ensiwiki.ensimag.fr/index.php/3MMALG11_Soutien">Soutien en Algo</a></li>
+				<li id="n-SystemC.2FTLM"><a href="http://ensiwiki.ensimag.fr/index.php/Mod%C3%A9lisation_TLM_en_SystemC">SystemC/TLM</a></li>
+				<li id="n-Projet-GL"><a href="http://ensiwiki.ensimag.fr/index.php/Projet_GL">Projet GL</a></li>
+			</ul>
+			</div>
+		</div>
+	</div>
+		<div class="portlet" id="p-navigation">
+		<div class="pBody">
+			<div class="pBodyTitle">
+				Navigation			</div>
+			<div class="pBodyContent">
+                         <div class="nav-logo"><a href="http://ensiwiki.ensimag.fr/index.php/Accueil"><img src="./Eléments de programmation en C++ CLI - Ensiwiki_files/logo_ensiwiki_140.jpg" alt="Ensimag"></a></div>
+			<ul>
+				<li id="n-mainpage"><a href="http://ensiwiki.ensimag.fr/index.php/Accueil" title="Visiter la page d’accueil du site [alt-z]" accesskey="z">Accueil</a></li>
+				<li id="n-Mode-d.27emploi"><a href="http://ensiwiki.ensimag.fr/index.php/Ensiwiki:Accueil">Mode d'emploi</a></li>
+				<li id="n-Droit-d.27auteur"><a href="http://ensiwiki.ensimag.fr/index.php/Ensiwiki:Copyright">Droit d'auteur</a></li>
+				<li id="n-recentchanges"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Modifications_r%C3%A9centes" title="Liste des modifications récentes sur le wiki [alt-r]" accesskey="r">Modifications récentes</a></li>
+				<li id="n-randompage"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Page_au_hasard" title="Afficher une page au hasard [alt-x]" accesskey="x">Page au hasard</a></li>
+				<li id="n-T.C3.A9l.C3.A9verser-plusieurs-fichiers"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:T%C3%A9l%C3%A9versement_multiple">Téléverser plusieurs fichiers</a></li>
+			</ul>
+			</div>
+		</div>
+	</div>
+		<div class="portlet" id="p-tb">
+		<div class="pBody">
+			<div class="pBodyTitle">
+	 			<div class="modName">
+					Boîte à outils                                </div>
+	                </div>
+	               	<div class="pBodyContent">
+			<ul>
+				<li id="t-whatlinkshere"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Pages_li%C3%A9es/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI" title="Liste des pages liées à celle-ci [alt-j]" accesskey="j">Pages liées</a></li>
+				<li id="t-recentchangeslinked"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Suivi_des_liens/El%C3%A9ments_de_programmation_en_C%2B%2B/CLI" title="Liste des modifications récentes des pages liées à celle-ci [alt-k]" accesskey="k">Suivi des pages liées</a></li>
+<li id="t-specialpages"><a href="http://ensiwiki.ensimag.fr/index.php/Sp%C3%A9cial:Pages_sp%C3%A9ciales" title="Liste de toutes les pages spéciales [alt-q]" accesskey="q">Pages spéciales</a></li>
+				<li id="t-print"><a href="http://ensiwiki.ensimag.fr/index.php?title=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&printable=yes" title="Version imprimable de cette page [alt-p]" accesskey="p">Version imprimable</a></li>				<li id="t-permalink"><a href="http://ensiwiki.ensimag.fr/index.php?title=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI&oldid=40171" title="Lien permanent vers cette version de la page">Lien historique</a></li><li id="t-contributors"><a href="http://ensiwiki.ensimag.fr/index.php?title=Sp%C3%A9cial:Contributors&target=El%C3%A9ments_de_programmation_en_C%2B%2B/CLI">Principaux contributeurs</a></li>			</ul>
+			</div>
+		</div>
+	</div>
+        </div>
+		</div><!-- end of the left (by default at least) column -->
+			<div class="visualClear"></div>
+		</div>
+		
+	
+<script>if (window.runOnloadHook) runOnloadHook();</script>
+</div>
+<!-- Served in 0.325 secs. -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? 
+"https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + 
+"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./Eléments de programmation en C++ CLI - Ensiwiki_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6884929-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+
+</body></html>
