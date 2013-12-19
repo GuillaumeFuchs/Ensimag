@@ -137,6 +137,7 @@ void Bs::set_ld(PnlVect *Ld){
 void Bs::asset(PnlMat *path, double T, int N, PnlRng *rng, PnlMat* G, PnlVect* grid){
   //s: double pour la valeur du sous-jacent à la date t_{i+1}
   double s;
+  double s0;
   //diff: double t_{i+1}-t_{i}
   double diff;
 
