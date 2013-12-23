@@ -1,0 +1,49 @@
+\documentclass[a4paper,11pt,twoside]{article}
+\usepackage{a4wide}
+\usepackage{t1enc,lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+
+%--------------------------------------------
+\hbadness=10000
+\emergencystretch=\hsize
+\tolerance=9999
+\textheight=9.0in
+%--------------------------------------------
+\pagestyle{empty}
+
+% Draw a recombining binomial tree with depth #1
+\def\drawtree#1{
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \xdef\N{#1}
+      \pgfmathsetmacro\Np{\N+1}
+      \pgfmathsetmacro\xstep{1.5}
+      \foreach \l in {1,...,\N} {
+        \pgfmathsetmacro\Npl{\l}
+        \pgfmathsetmacro\ymin{-\xstep/2*(\l)}
+        \foreach \i in {1,...,\Npl} {
+        \draw[-] ({\l+1}, {\ymin+\i*\xstep}) -- ({\l}, {\ymin+(\i+0.5)*\xstep}) 
+          -- ({\l+1}, {\ymin+(\i+1)*\xstep});
+          \fill ( {\l}, {\ymin+(\i+0.5)*\xstep}) circle({0.05*\xstep});
+        }
+      }
+
+      \foreach \l in {1,...,\Np} {
+      \fill ({\N+1}, {-\xstep/2*\N+\l*\xstep}) circle({0.05*\xstep});
+      }
+    \end{tikzpicture}
+    \caption{Profondeur de l'arbre: \N}
+  \end{center}
+\end{figure}
+}
+
+
+\begin{document}
+
+\drawtree{15}
+\drawtree{10}
+
+\end{document}
+
