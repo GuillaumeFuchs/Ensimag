@@ -85,25 +85,31 @@ void Computations::monteCarloControl (double S0, double sigma, double r, double 
 
 	double mean_term = (r - pow(sigma, 2.0) / 2 ) * T/(double)J;
 	double var_term = sigma * sqrt(T/(double)J);
-
+	
 	for (int i= 0; i<M; i++){
 		pnl_vect_rng_normal(G, J, rng);
 		pay = payoff(S0, K, mean_term, var_term, r, T, J, G, path);
 		sum_pay += pay;
 		var_pay += pay * pay;
 
-		control = exp( 1/(double)J * ( (S0 + GET(path, J))/2 + (pnl_vect_sum(path) - S0 - GET(path, J)) ) );
+		control = (1/(double)J) * ((log(S0) + log(GET(path, J)))/2 + pnl_vect_sum(path) - S0 - GET(path, J));
 		sum_control += control;
 		var_control += control * control;
 
 		cov += control * pay;
 	}
-	double c = (cov - (1/(double)M*sum_pay)*(1/(double)M*sum_control))/(var_control - POW(1/(double)M*sum_control, 2.0));
-
+	double esp_control = S0 * exp(r * T/2 - pow(sigma, 2.0)*T/12);
+	
+	double c = (var_pay - pow(sum_pay/(double)M, 2.0)) * (cov - sum_pay/(double)M * sum_control/(double)M) / (var_control - pow(esp_control, 2.0));
+	
+	sum_pay = sum_pay - c * (sum_control - (double)M*esp_control);
+	
 	prix = exp(-r * T) * sum_pay / (double)M;
 
-	variance = exp(-2 * r * T) * variance/(double)M - prix * prix;
-	ic = 1.96 * sqrt(variance/M);
+	//variance = exp(-2 * r * T) * variance/(double)M - prix * prix;
+	//ic = 1.96 * sqrt(variance/M);
 	pnl_vect_free(&G);
 	pnl_rng_free(&rng);
+	pnl_vect_free(&path);
+	ic = 1;
 }

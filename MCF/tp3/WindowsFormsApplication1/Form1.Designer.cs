@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             this.PrixMC_Lab = new System.Windows.Forms.Label();
-            this.go_Btn = new System.Windows.Forms.Button();
             this.ICMC_Lab = new System.Windows.Forms.Label();
+            this.PrixMCC_Lab = new System.Windows.Forms.Label();
+            this.ICMCC_Lab = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // PrixMC_Lab
@@ -42,16 +43,6 @@
             this.PrixMC_Lab.TabIndex = 5;
             this.PrixMC_Lab.Text = "Prix_MC";
             // 
-            // go_Btn
-            // 
-            this.go_Btn.Location = new System.Drawing.Point(96, 169);
-            this.go_Btn.Name = "go_Btn";
-            this.go_Btn.Size = new System.Drawing.Size(75, 23);
-            this.go_Btn.TabIndex = 6;
-            this.go_Btn.Text = "Go";
-            this.go_Btn.UseVisualStyleBackColor = true;
-            this.go_Btn.Click += new System.EventHandler(this.go_Btn_Click);
-            // 
             // ICMC_Lab
             // 
             this.ICMC_Lab.AutoSize = true;
@@ -61,13 +52,32 @@
             this.ICMC_Lab.TabIndex = 7;
             this.ICMC_Lab.Text = "Ic_MC";
             // 
+            // PrixMCC_Lab
+            // 
+            this.PrixMCC_Lab.AutoSize = true;
+            this.PrixMCC_Lab.Location = new System.Drawing.Point(139, 9);
+            this.PrixMCC_Lab.Name = "PrixMCC_Lab";
+            this.PrixMCC_Lab.Size = new System.Drawing.Size(53, 13);
+            this.PrixMCC_Lab.TabIndex = 8;
+            this.PrixMCC_Lab.Text = "Prix_MCC";
+            // 
+            // ICMCC_Lab
+            // 
+            this.ICMCC_Lab.AutoSize = true;
+            this.ICMCC_Lab.Location = new System.Drawing.Point(142, 50);
+            this.ICMCC_Lab.Name = "ICMCC_Lab";
+            this.ICMCC_Lab.Size = new System.Drawing.Size(45, 13);
+            this.ICMCC_Lab.TabIndex = 9;
+            this.ICMCC_Lab.Text = "Ic_MCC";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.ICMCC_Lab);
+            this.Controls.Add(this.PrixMCC_Lab);
             this.Controls.Add(this.ICMC_Lab);
-            this.Controls.Add(this.go_Btn);
             this.Controls.Add(this.PrixMC_Lab);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -79,8 +89,9 @@
         #endregion
 
         private System.Windows.Forms.Label PrixMC_Lab;
-        private System.Windows.Forms.Button go_Btn;
         private System.Windows.Forms.Label ICMC_Lab;
+        private System.Windows.Forms.Label PrixMCC_Lab;
+        private System.Windows.Forms.Label ICMCC_Lab;
     }
 }
 
