@@ -33,15 +33,16 @@ namespace Interface
             //ro[0] = double.Parse(rho.Text);
 
             // Valeurs manuels
-            const int size = 5;
+            const int size = 1;
             double strike = 100;
-            double[] spot = new double[size] {90, 80, 100, 120, 110};
+            double[] spot = new double[size] {100};//, 80, 100, 120, 110};
             double maturity = 1;
 
-            double[] sigma = new double[size] { 0.2, 0.2, 0.2, 0.15, 0.15 };
+            double[] sigma = new double[size] { 0.2};//, 0.2, 0.2, 0.15, 0.15 };
             double r = 0.05;
-            double[] rho = new double[(size - 1) * size / 2] { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
-            double[] coeff = new double[size] { 0.2, 0.2, 0.2, 0.2, 0.2 };
+            double[] rho = new double[(size - 1) * size / 2] {};// 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
+            double[] coeff = new double[size] {1};// 0.2, 0.2, 0.2, 0.2, 0.2 };
+            
             int timeStep = 1;
             int samples = 50000;
 

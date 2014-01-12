@@ -28,81 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.N_Tb = new System.Windows.Forms.TextBox();
-            this.T_Tb = new System.Windows.Forms.TextBox();
-            this.sigma_Tb = new System.Windows.Forms.TextBox();
-            this.r_Tb = new System.Windows.Forms.TextBox();
-            this.S0_Tb = new System.Windows.Forms.TextBox();
-            this.MC_Lab = new System.Windows.Forms.Label();
-            this.go_Btn = new System.Windows.Forms.Button();
+            this.PrixMC_Lab = new System.Windows.Forms.Label();
+            this.ICMC_Lab = new System.Windows.Forms.Label();
+            this.PrixMCC_Lab = new System.Windows.Forms.Label();
+            this.ICMCC_Lab = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // N_Tb
+            // PrixMC_Lab
             // 
-            this.N_Tb.Location = new System.Drawing.Point(13, 13);
-            this.N_Tb.Name = "N_Tb";
-            this.N_Tb.Size = new System.Drawing.Size(100, 20);
-            this.N_Tb.TabIndex = 0;
+            this.PrixMC_Lab.AutoSize = true;
+            this.PrixMC_Lab.Location = new System.Drawing.Point(12, 9);
+            this.PrixMC_Lab.Name = "PrixMC_Lab";
+            this.PrixMC_Lab.Size = new System.Drawing.Size(46, 13);
+            this.PrixMC_Lab.TabIndex = 5;
+            this.PrixMC_Lab.Text = "Prix_MC";
             // 
-            // T_Tb
+            // ICMC_Lab
             // 
-            this.T_Tb.Location = new System.Drawing.Point(13, 53);
-            this.T_Tb.Name = "T_Tb";
-            this.T_Tb.Size = new System.Drawing.Size(100, 20);
-            this.T_Tb.TabIndex = 1;
+            this.ICMC_Lab.AutoSize = true;
+            this.ICMC_Lab.Location = new System.Drawing.Point(12, 50);
+            this.ICMC_Lab.Name = "ICMC_Lab";
+            this.ICMC_Lab.Size = new System.Drawing.Size(38, 13);
+            this.ICMC_Lab.TabIndex = 7;
+            this.ICMC_Lab.Text = "Ic_MC";
             // 
-            // sigma_Tb
+            // PrixMCC_Lab
             // 
-            this.sigma_Tb.Location = new System.Drawing.Point(13, 95);
-            this.sigma_Tb.Name = "sigma_Tb";
-            this.sigma_Tb.Size = new System.Drawing.Size(100, 20);
-            this.sigma_Tb.TabIndex = 2;
+            this.PrixMCC_Lab.AutoSize = true;
+            this.PrixMCC_Lab.Location = new System.Drawing.Point(139, 9);
+            this.PrixMCC_Lab.Name = "PrixMCC_Lab";
+            this.PrixMCC_Lab.Size = new System.Drawing.Size(53, 13);
+            this.PrixMCC_Lab.TabIndex = 8;
+            this.PrixMCC_Lab.Text = "Prix_MCC";
             // 
-            // r_Tb
+            // ICMCC_Lab
             // 
-            this.r_Tb.Location = new System.Drawing.Point(13, 135);
-            this.r_Tb.Name = "r_Tb";
-            this.r_Tb.Size = new System.Drawing.Size(100, 20);
-            this.r_Tb.TabIndex = 3;
-            // 
-            // S0_Tb
-            // 
-            this.S0_Tb.Location = new System.Drawing.Point(13, 182);
-            this.S0_Tb.Name = "S0_Tb";
-            this.S0_Tb.Size = new System.Drawing.Size(100, 20);
-            this.S0_Tb.TabIndex = 4;
-            // 
-            // MC_Lab
-            // 
-            this.MC_Lab.AutoSize = true;
-            this.MC_Lab.Location = new System.Drawing.Point(162, 59);
-            this.MC_Lab.Name = "MC_Lab";
-            this.MC_Lab.Size = new System.Drawing.Size(23, 13);
-            this.MC_Lab.TabIndex = 5;
-            this.MC_Lab.Text = "MC";
-            // 
-            // go_Btn
-            // 
-            this.go_Btn.Location = new System.Drawing.Point(165, 135);
-            this.go_Btn.Name = "go_Btn";
-            this.go_Btn.Size = new System.Drawing.Size(75, 23);
-            this.go_Btn.TabIndex = 6;
-            this.go_Btn.Text = "Go";
-            this.go_Btn.UseVisualStyleBackColor = true;
-            this.go_Btn.Click += new System.EventHandler(this.go_Btn_Click);
+            this.ICMCC_Lab.AutoSize = true;
+            this.ICMCC_Lab.Location = new System.Drawing.Point(142, 50);
+            this.ICMCC_Lab.Name = "ICMCC_Lab";
+            this.ICMCC_Lab.Size = new System.Drawing.Size(45, 13);
+            this.ICMCC_Lab.TabIndex = 9;
+            this.ICMCC_Lab.Text = "Ic_MCC";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.go_Btn);
-            this.Controls.Add(this.MC_Lab);
-            this.Controls.Add(this.S0_Tb);
-            this.Controls.Add(this.r_Tb);
-            this.Controls.Add(this.sigma_Tb);
-            this.Controls.Add(this.T_Tb);
-            this.Controls.Add(this.N_Tb);
+            this.Controls.Add(this.ICMCC_Lab);
+            this.Controls.Add(this.PrixMCC_Lab);
+            this.Controls.Add(this.ICMC_Lab);
+            this.Controls.Add(this.PrixMC_Lab);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -112,13 +88,10 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox N_Tb;
-        private System.Windows.Forms.TextBox T_Tb;
-        private System.Windows.Forms.TextBox sigma_Tb;
-        private System.Windows.Forms.TextBox r_Tb;
-        private System.Windows.Forms.TextBox S0_Tb;
-        private System.Windows.Forms.Label MC_Lab;
-        private System.Windows.Forms.Button go_Btn;
+        private System.Windows.Forms.Label PrixMC_Lab;
+        private System.Windows.Forms.Label ICMC_Lab;
+        private System.Windows.Forms.Label PrixMCC_Lab;
+        private System.Windows.Forms.Label ICMCC_Lab;
     }
 }
 

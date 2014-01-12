@@ -15,10 +15,6 @@ namespace WindowsFormsApplication1
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void go_Btn_Click(object sender, EventArgs e)
-        {
             // Récupérer les valeurs des paramètres dans les différentes TextBox
             WrapperClass wc = new WrapperClass();
             double S0 = 100;
@@ -30,7 +26,13 @@ namespace WindowsFormsApplication1
             int M = 50000;
 
             wc.getPriceOptionMC(S0, sigma, r, T, K, J, M);
-            MC_Lab.Text = wc.getPrice().ToString();
+            PrixMC_Lab.Text = wc.getPrice().ToString();
+            ICMC_Lab.Text = wc.getIC().ToString();
+
+            wc.getPriceOptionMCC(S0, sigma, r, T, K, J, M);
+            PrixMCC_Lab.Text = wc.getPrice().ToString();
+            ICMCC_Lab.Text = wc.getIC().ToString();
         }
+
     }
 }
