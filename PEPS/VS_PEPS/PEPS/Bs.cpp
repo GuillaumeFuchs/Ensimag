@@ -199,7 +199,12 @@ void Bs:: shift_asset (PnlMat *_shift_path, const PnlMat *path,
   pnl_mat_clone(_shift_path, path);
   for (int i=0; i<timeStep+1; i++){
 	if (i>t){
-	  pnl_mat_set(_shift_path, d,i, (1+h)*pnl_mat_get(path, d,i));
+		//On ne ne shift pas les coefficients situés après la maturité ainsi les coefficients -1 seront détecté dans le payoff
+		if (pnl_mat_get(path, d,i) != -1){
+			pnl_mat_set(_shift_path, d,i, (1+h)*pnl_mat_get(path, d,i));
+		}else{
+			pnl_mat_set(_shift_path, d,i,-1);
+		}
 	}
   }
 }

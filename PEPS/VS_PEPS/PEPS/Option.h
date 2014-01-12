@@ -112,6 +112,6 @@ class Option {
 	 *  trajectoire du modele telle que creee par la fonction asset.
 	 *  \return phi(trajectoire)
 	 */
-	virtual double payoff (const PnlMat * path) = 0;
+	virtual double payoff (const PnlMat * path, double &maturite) = 0;
 };
 #endif 

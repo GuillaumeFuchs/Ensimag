@@ -617,8 +617,73 @@ On constate suite à l'observation de ce graphique que l'évolution des performa
 Ceci offre donc de l'information à l'investisseur puisque celui-ci en anticipant une forte hausse du S \& P par exemple saura que le Footsie et le Nikkei toutes proportions gardées, devraient sentir une hausse sensiblement identique or comme les performances sont évalués sur 3 indices et que les meilleurs taux de rendements actuariels sont obtenus pour des échéances de un et deux ans. Ceci implique que l'investisseur pourra espérer obtenir le meilleur rendement actuariel possible avec ce produit.
 
 \newpage
+\section{Modèles mathématiques}
+Intro sur la modélisation\\
+
+\subsection{Les sous-jacents}
+Ici on explique que les sous-jacents sont les indices + taux zéro coupon et on montre que ça peut etre modélisé par les modèles suivants. \\
+
+\subsection{Modèle de Black-Scholes}
+Le modèles de Black et Scholes permet de modéliser le cours des actions. Mais il permet aussi de modéliser l'évolution des indices. Il repose sur les hypothèses suivantes : \\
+\begin{itemize}
+\item[•] Absence d'Opportunité d'Arbitrage
+\item[•] Absence de coûts de transaction
+\item[•] Pas de restriction sur les ventes à découvert
+\item[•] Le marché est continu
+\item[•] Absence de dividendes
+\item[•] Le taux sans risque r est constant quelle que soit la maturité\\
+\end{itemize}
+
+\noindent Dans le modèle de Black-Scholes, le cours du sous-jacent S vérifie l'équation stochastique : \\
+
+$$ dS = \mu Sdt + \sigma SdW $$  \\
+avec $W_{t}$ un processus de Wiener, $ W_{t} \rightarrow \mathcal{N}(0,\sqrt{t}) $ \\
+
+On obtient avec Itô : \\
+$$ d(ln(S))=(\mu - frac{\sigma^{2}}{2})dt + \sigma dW $$ \\
+Soit \\
+$$ S(t) = S_{0} exp \left[(\mu - frac{\sigma^{2}}{2})t + \sigma W \right] $$ \\
+
+Le principal problème avec le modèle de Black-Scholes est qu'il ne présente pas une queue de distribution suffisamment lourde par rapport à la réalité : il ne prend pas en compte la possibilité de saut d'un cours boursier. Le modèle qui suit est le modèle de Merton. Celui-ci permet de prendre en compte cette possibilité.\\
+
+\subsection{Modèle de Merton}
+Le modèle de Merton introduit la possibilité de saut d'un cours boursier à l'aide d'un processus de Poisson :\\ 
+
+$$ S(t) = S_{0} exp \left[(\mu - frac{\sigma^{2}}{2})t + \sigma dW + \sum_{k=1}^{N(t)} U(k) \right] $$ \\
+Où
+\begin{itemize}
+\item[•] N est un processus de Poisson
+\item[•] U est une suite de variables aléatoires iid suivant une loi normale centrée
+\item[•] W, N et U sont des processus indépendants les uns des autres
+\item[•] Les paramètres concernant U et N, ainsi que $\mu$ et $\sigma$ peuvent être estimés par la méthode du maximum de vraisemblance, entre autres
+\end{itemize}
+\\
+
+\subsection{Modèle de Heston}
+Les deux modèles précédant prennent pour hypothèse que la volatilité est constante. La réalité montre que celle-ci a une forme de smile, lorsque le prix d'exercice ou la maturité varie. Le modèle de Heston attribue donc à la volatilité une dynamique particulière : \\
+$$ dV(t) = K(\theta - V(t))dt + \sigma \sqrt{V(t)} dW_{v}(t)  $$ \\
+et \\
+$$ \frac{dS(t)}{S(t)} = rdt + \sqrt{V(t)}dW_{s}(t) $$ \\
+Où r est le taux sans risque, V la volatilité, K un paramètre de retour à la moyenne, $\theta$ la variance long terme, $\sigma$ la volatilité de la volatilité, et  $W_{s}$ et $W_{v}$ sont deux mouvements browniens corrélés.\\
+
+\subsection{Modèle des taux}
+Point sur les modèles (Vasicek, Cox Ingersoll Ross, Black Derman Toy, Heath Jarrow Morton, Hull et White)
+Mais on choisit pour le moment un modèle simple de taux constants. \\
+
+\subsection{Choix des modèles}
+Le modèle de Heston est reconnu comme étant le plus précis. Cependant, le nombre de paramètres étant très important, le calibrage de ces paramètres est très difficile à partir des ressources dont nous disposons. Le modèle de Black-Scholes étant le plus simple à implémenter, nous nous concentrerons tout d'abord sur celui-ci. L'implémentation du modèle de Merton pourrait représenter une bonne voie d'approfondissement, si le temps nous le permettait. \\
+
 
 \section{Analyse logiciel}
+
+\subsection{Cahier des charges}
+
+Dans un premier temps, le gestionnaire doit avoir la possibilité de consulter les informations globales concernant le produit telles que la date de début de validité du produit soit le 28 avril  2010 ainsi que la date actuelle ou bien la date d'échéance qui sera maintenant de façon certaine le ... avril 2016. Hormis ceci, le gestionnaire doit pouvoir voir quelle est le nombre de parts acquises par des investisseurs ainsi que le nombre de parts disponibles au total et les valeurs que chacun de ces deux ensembles représentent en terme de cash.\\
+\indent \\
+\indent Le gestionnaire doit également avoir la possibilité de voir l'évolution des différents indices, il doit ainsi avoir accès à la performance du fonds.
+Le gestionnaire doit également avoir la possibilité de choisir le modèle d'évolution des sous jacents, que ce soit Black-Scholes ou bien le modèle de Merton.\\
+\indent \\
+\indent Enfin le gestionnaire doit avoir la possibilité de voir la composition de son portefeuille et notamment la répartition en pourcentage ou bien en quantité de chacun de ces investissements. Il pourra ainsi avoir la valeur liquidative de chacune de ses parts. Il pourra également avoir accès à la valeur liquidative en faisant un backtest en utilisant la méthode de couverture proposée.\\
 
 \subsection{Architecture logiciel}
 
@@ -629,11 +694,36 @@ Voici une première schématisation de l'architecture de notre produit.
 \end{center}
 
 \begin{center}
-\includegraphics[scale=0.5]{graphe.jpg}
+\includegraphics[scale=0.5]{graphe.png}
 \end{center}
 
-\noindent Ainsi on constate que l'architecture que nous avons adopté se base sur les cours disponibles sur des sites spécialisés tels que \lstinline!yahoo finance!, ainsi à partir d'un extracteur de données, nous récupérerons les données de ce site concernant les indices voulus, ce qui alimentera notre base de données. Les données seront alors traitées par le moteur de calcul notamment pour connaître la performance actuelle du fonds, avoir diverses modélisations de l'évolution des indices. Il vient alors l'interface qui à l'aide des sorties du moteur de calcul peut afficher l'évolution des différents indices ainsi que la performance du fonds.
+\noindent Ainsi on constate que l'architecture que nous avons adopté se base sur les cours disponibles sur des sites spécialisés tels que \lstinline!yahoo finance!, ainsi à partir d'un extracteur de données, nous récupérerons les données de ce site concernant les indices voulus, ce qui alimentera notre base de données. Les données seront alors traitées par le moteur de calcul notamment pour connaître la performance actuelle du fonds, avoir diverses modélisations de l'évolution des indices. Il vient alors l'interface qui à l'aide des sorties du moteur de calcul peut afficher l'évolution des différents indices ainsi que la performance du fonds.\\
+On constate également la présence d'un lien entre l'interface et la base de données en effet, lorsque l'utilisateur séléectionne de nouvelle date pour voir l'évolution des différents indices, il n'est pas nécessaire de faire appel au moteur de calcul.
 
+\subsection{Spécifications}
+
+Nous allons dans un premier temps expliciter ce qui se cache derrière la fonctionnalité couverture énuméré dans le cahier des charges.\\
+La question de la couverture pose différents problèmes, en effet dans un premier temps nous réaliserons une couverture en delta. Ainsi pour une action devant répliquer les flux du fond que nous vendrons, nous cherchons à savoir quelle est la quantité de chaque indices que nous devons acheter pour s'assurer éviter des pertes et plus particulièrement supprimer le risque associé à l'option.\\
+Ainsi dans un premier temps, il nous faut pricer l'option que nous proposons. Cela implique  de devoir fixer le modèle que nous allons utiliser pour modéliser l'évolution des sous jacents. Ainsi nous avons choisi dans un premier temps d'implémenter le modèle de Black& Scholes. Se pose alors la question des différents paramètres du modèle, nous avons dans un premier temps choisi de déterminer la variance à l'aide d'un backtest sur les valeurs des différents indices au cours des trois derniers mois, nous ferons de mêmes pour déterminer la matrice des corrélations. En ce qui concerne les autres paramètres tels que le taux sans risque ou bien la probabilité historique, nous prendrons des valeurs arbitraire en essayant de coller au maximum avec les valeurs dont nous disposons.\\
+Disposant alors d'un modèle, il nous faut définir les paramètres caractérisant notre option, aux vues des propriétés de celle ci énoncé précedemment, on lui attribuera une maturité fixée par défaut à 6, un nombre de date de constatation ainsi que la taille du modèle.
+Enfin on considère un modèle de MonteCarlo pour obtenir le prix de notre option.\\
+C'est ainsi que nous obtenons le diagramme de classe suivant :\\  
+
+\begin{center}
+\includegraphics[scale=0.3]{class_diag.png}
+\end{center}
+ 
+ Un interface alors envisageable pour représenter les éléments décris précédemment pourrait être l'interface suivante :\\
+
+\begin{center}
+\includegraphics[scale=0.3]{maquette.png}
+\end{center}
+
+On fait ainsi apparaître dans l'onglet en haut à gauche, la date à laquelle à été prise la valeur liquidative de référence, la date actuelle ainsi que la date d'échéance prévu pour avoir une vision global de la chronologie du produit.\\
+Nous faisons de plus apparaître le nombre de parts disponible à la base ainsi que le nombre de parts qui ont été acquise ainsi que les valeurs monétaires associées. Ceci permet de voir le taux d'acceptation du produit par le marché.\\
+Le bloc situé en bas à droite permettra plutôt de voir l'évolution de la performance du produit ainsi on peut choisir la date de début ainsi que la date de fin, ce qui va nous permettre de visualiser l'évolution des différents indices concernés sur cette plage. Juste à côté nous afficherons la performance du fond sur cette plage.\\
+Enfin le dernier bloc nous permet de choisir le modèle d'évolution des sous-jacents ce qui aura pour conséquence de modifier l'évolution des sous-jacents et ainsi la couverture proposée juste en dessous.
+La couverture sera décrite par le nombre d'action vendue, correspondant aux nombres de parts vendues et le nombre de fois que l'on doit acheté chacun des indices. On en déduiera ainsi la valeur liquidative en dessous.
 
 \section{Annexes}
 
