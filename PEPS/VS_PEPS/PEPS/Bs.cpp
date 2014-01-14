@@ -258,6 +258,20 @@ void Bs::asset(PnlMat *path, double t, int N, double T, PnlRng *rng, const PnlMa
 }
 
 void Bs:: shift_asset (PnlMat *_shift_path, const PnlMat *path,
+<<<<<<< HEAD
+	int d, double h, double t, double timeStep){
+  pnl_mat_clone(_shift_path, path);
+  for (int i=0; i<timeStep+1; i++){
+	if (i>t){
+		//On ne ne shift pas les coefficients situés après la maturité ainsi les coefficients -1 seront détecté dans le payoff
+		if (pnl_mat_get(path, d,i) != -1){
+			pnl_mat_set(_shift_path, d,i, (1+h)*pnl_mat_get(path, d,i));
+		}else{
+			pnl_mat_set(_shift_path, d,i,-1);
+		}
+	}
+  }
+=======
 	int d, double h, double t, double timestep){
 		pnl_mat_clone(_shift_path, path);
 		for (int i=0; i<timestep+1; i++){
@@ -265,6 +279,7 @@ void Bs:: shift_asset (PnlMat *_shift_path, const PnlMat *path,
 				pnl_mat_set(_shift_path, d,i, (1+h)*pnl_mat_get(path, d,i));
 			}
 		}
+>>>>>>> 81a55d0753f66ee309aeb9f39b554770b65e970b
 }
 
 void Bs:: simul_market (PnlMat* past, int H, double T, PnlRng *rng){
