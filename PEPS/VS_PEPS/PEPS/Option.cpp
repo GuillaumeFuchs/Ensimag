@@ -1,12 +1,4 @@
-# include "option.h"
-#include "pnl/pnl_matrix.h"
-#include "pnl/pnl_vector.h"
-
-/*!
- * \file option.cpp
- * \brief classe option 
- * \author equipe 11
- */
+# include "Option.h"
 
 Option :: Option(){
   T_ = 0;
@@ -14,30 +6,24 @@ Option :: Option(){
   size_ = 0;
 }
 
-//Option::Option(Parser pars){
-//  T_ = pars.getDouble("maturity");
-//  timeStep_ = pars.getInt("timestep number");
-//  size_ = pars.getInt("option size");
-//}
-
 Option::Option(double T, int timeStep, int size){
 	T_ = T;
-    timeStep_ = timeStep;
-    size_ = size;
+	timeStep_ = timeStep;
+	size_ = size;
 }
 
 Option :: ~Option(){
 }
 
-double Option :: get_T(){
+double Option :: get_T() const{
   return T_;
 }
 
-int Option :: get_timeStep(){
+int Option :: get_timeStep() const{
   return timeStep_;
 }
 
-int Option :: get_size(){
+int Option :: get_size() const{
   return size_;
 }
 

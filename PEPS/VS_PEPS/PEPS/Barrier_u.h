@@ -1,4 +1,4 @@
-#include "option.h"
+#include "Option.h"
 #include "pnl/pnl_matrix.h"
 #include "pnl/pnl_vector.h"
 #ifndef barrier_ulH
@@ -17,7 +17,7 @@
 class Barrier_u : public Option {
 
   private:
-	double Strike_; /*!< strike du sous-jacent */
+	double strike_; /*!< strike du sous-jacent */
 	PnlVect *Coeff_; /*!< payoff coefficients */
 	PnlVect *Bu_; /*!< barriere haute */
 
@@ -29,16 +29,8 @@ class Barrier_u : public Option {
 	 * Constructeur par defaut de la classe barrier_u
 	 */
 	Barrier_u();
-
-	/*!
-	 * \brief Constructeur avec argument
-	 *
-	 * Constructeur avec argument de la classe barrier_u
-	 *
-	 * \param pars: Liste des donnees relatives à l'option du Parser
-	 */
-//	Barrier_u(Parser &pars);
-
+	Barrier_u(double strike, double* coeff, double *bu, double T, int timeStep, int size);
+	
 	/*!
 	 * \brief Destructeur
 	 *
@@ -47,13 +39,13 @@ class Barrier_u : public Option {
 	virtual ~Barrier_u();
 
 	/*!
-	 * \brief Accesseur de Strike_
+	 * \brief Accesseur de strike_
 	 *
 	 *  Acceder au strike du sous-jacent
 	 *
 	 * \return le strike du sous-jacent 
 	 */
-	double get_Strike();
+	double get_Strike() const;
 
 	/*!
 	 * \brief Accesseur de Coeff_
@@ -62,7 +54,7 @@ class Barrier_u : public Option {
 	 *
 	 * \return le vecteur des coefficients des payoff
 	 */
-	PnlVect* get_Coeff();
+	PnlVect* get_Coeff() const;
 
 	/*!
 	 * \brief Accesseur de Bu_
@@ -71,10 +63,10 @@ class Barrier_u : public Option {
 	 *
 	 * \return le vecteur de la barriere haute basse du sous-jacent
 	 */
-	PnlVect* get_Bu();
+	PnlVect* get_Bu() const;
 
 	/*!
-	 * \brief Mutateur de Strike_
+	 * \brief Mutateur de strike_
 	 *
 	 * Modifie la valeur du strike du sous-jacent
 	 *
@@ -108,6 +100,6 @@ class Barrier_u : public Option {
 	 * \param path: matrice de taille d x (N+1) contenant une trajectoire du modele telle que creee par la fonction asset
 	 * \return payoff du sous-jacent barriere haute
 	 */
-	double payoff (const PnlMat *path) ;
+	double payoff (const PnlMat *path) const;
 };
 #endif

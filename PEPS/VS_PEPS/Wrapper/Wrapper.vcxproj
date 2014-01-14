@@ -51,13 +51,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\include;C:\Users\Fuchsg\Documents\Ensimag\PEPS\VS_PEPS\PEPS;C:\Users\guillaume\Downloads\pnl-win32-1.6.0\include;C:\Users\guillaume\Documents\Projet IF 2013-2014\PEPS\PEPS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Fuchsg\Documents\Ensimag\PEPS\VS_PEPS\PEPS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;libpnl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
       <DelayLoadDLLs>Engine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <AdditionalLibraryDirectories>C:\Users\Fuchsg\Documents\Ensimag\PEPS\VS_PEPS\Debug;C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib;C:\Users\guillaume\Downloads\pnl-win32-1.6.0\lib;C:\Users\guillaume\Documents\Projet IF 2013-2014\PEPS\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

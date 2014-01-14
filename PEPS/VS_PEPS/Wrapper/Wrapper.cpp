@@ -1,45 +1,10 @@
 #include "stdafx.h"
 #include "Wrapper.h"
-#include <ctime>
-using namespace Engine;
+
+using namespace Computations;
 
 namespace Wrapper {
-	//On considère que les options basket
-	//void WrapperClass::createBasket(double strike, PnlVect* coeff, Basket *bask){
-	//	bask = new Basket(strike, coeff);
-	//}
-
-	//void WrapperClass::createBs(int size, double r, double rho, PnlVect *sigma, PnlVect *spot, PnlVect *trend, BS *Bsmod){
-	//	Bsmod = new BS(size,r,rho,sigma,spot,trend);
-	//}
-
-	//void WrapperClass::createMontecarlo(BS *Bs, Option *Opt, PnlRng* rng, double h, int samples, MonteCarlo *Mc){
-	//	Mc = new MonteCarlo(Bs, Opt, rng,h, samples);
-	//}
-
-	//void WrapperClass::getPriceOption(double strike, int size, double r, double rho, double h, int samples){
-	//	double ic, px;
-	//	//Création de l'option
-	//	Basket *bask = new Basket();
-	//	PnlVect *coeff = pnl_vect_create_from_double(1,1);
-	//	createBasket(strike,coeff,bask);
-	//	//Création du modèle
-	//	BS *bsmod = new BS();
-	//	PnlVect *sigma = pnl_vect_create_from_double(1,0.2);
-	//	PnlVect *spot = pnl_vect_create_from_double(1,100);
-	//	PnlVect *trend = pnl_vect_create_from_double(1,0.4);
-	//	createBs(size,r,rho,sigma,spot,trend,bsmod);
-	//	//Création de l'objet MonteCarlo
-	//	PnlRng *rng = pnl_rng_create(PNL_RNG_MERSENNE);
-	//	pnl_rng_sseed(rng, time(NULL));
-	//	MonteCarlo *mc = new MonteCarlo(rng);
-	//	createMontecarlo(bsmod,bask,rng,h,samples,mc);
-	//	//Enfin on price
-	//	(*mc).price(px,ic);
-	//	this->intConfiance = ic;
-	//	this->prix = px;
-	//}
-
+	/*
 	void WrapperClass::getPriceOption(String ^type_sharp, int size, array<double> ^spot_sharp, 
 double strike, double maturity, array<double> ^sigma_sharp, double r, array<double> ^rho_sharp, array<double> ^coeff_sharp, int timeStep, int samples){
 		double ic = 0;
@@ -71,6 +36,15 @@ double strike, double maturity, array<double> ^sigma_sharp, double r, array<doub
 		this->intConfiance = ic;
 		this->prix = px;
 	}
+	*/
+	void WrapperClass::getPriceOption(int M, double T, double S0, double K, double sigma, double r, int size, int timeStep)
+	{
+		double ic = 0;
+		double px = 0;
 
+		priceOption(ic, px, M, T, S0, K, sigma, r, size, timeStep);
 
+		this->intConfiance = ic;
+		this->prix = px;
+	}
 }

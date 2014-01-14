@@ -1,8 +1,7 @@
 #ifndef MonteCarloH
 #define MonteCarloH
 #include "Bs.h"
-#include "option.h"
-#include "playlist.h"
+#include "Option.h"
 #include <pnl/pnl_random.h>
 
 /*!
@@ -46,7 +45,7 @@ class MonteCarlo {
 	 * \param h_: pas de difference finie
 	 * \param samples_: nombre de tirages Monte Carlo
 	 */
-	MonteCarlo(Bs *mod_, Option *opt_, PnlRng *rng, double h_, int samples_);
+	MonteCarlo(Bs *mod, Option *opt, PnlRng *rng, double h, int samples);
 
 
 	/*!
@@ -64,7 +63,7 @@ class MonteCarlo {
 	 *
 	 *  \return le modele du sous-jacent
 	 */
-	Bs* get_mod();
+	Bs* get_mod() const;
 
 	/*!
 	 * \brief Accesseur de opt_
@@ -73,7 +72,7 @@ class MonteCarlo {
 	 *
 	 * \return l'option
 	 */
-	Option* get_opt();
+	Option* get_opt() const;
 
 	/*!
 	 * \brief Accesseur de rng_
@@ -82,7 +81,7 @@ class MonteCarlo {
 	 *
 	 * \return le generateur
 	 */
-	PnlRng* get_rng();
+	PnlRng* get_rng() const;
 
 	/*!
 	 * \brief Accesseur de h_
@@ -91,7 +90,7 @@ class MonteCarlo {
 	 *
 	 * \return le pas de difference finie
 	 */
-	double get_h();
+	double get_h() const;
 
 	/*!
 	 * \brief Accesseur de samples_
@@ -100,7 +99,7 @@ class MonteCarlo {
 	 *
 	 * \return le nombre de tirage Monte Carlo
 	 */
-	int get_samples();
+	int get_samples() const;
 
 
 

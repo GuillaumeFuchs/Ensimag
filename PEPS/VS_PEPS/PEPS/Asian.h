@@ -1,8 +1,7 @@
-#include "option.h"
+#include "Option.h"
 #include "pnl/pnl_matrix.h"
 #ifndef AsianH
 #define AsianH
-
 
 /*!
  *  \file	asian.h
@@ -17,7 +16,7 @@
 class Asian : public Option {
 
   private:
-	double Strike_; /*!< strike du sous-jacent */
+	double strike_; /*!< strike du sous-jacent */
 
   public:
 
@@ -27,15 +26,8 @@ class Asian : public Option {
 	 * Constructeur par defaut de la classe Asian
 	 */
 	Asian();
+	Asian(double strike, double T, int timeStep, int size);
 
-	/*!
-	 * \brief Constructeur avec argument
-	 *
-	 * Constructeur avec argument de la classe Asian
-	 *
-	 * \param pars: Liste des donnees relatives a l'option du Parser
-	 */
-	//Asian(Parser& pars);
 
 	/*!
 	 * \brief Destructeur
@@ -46,17 +38,17 @@ class Asian : public Option {
 
 
 	/*!
-	 * \brief Accesseur de Strike_
+	 * \brief Accesseur de strike_
 	 *
 	 *  Acceder au strike du sous-jacent
 	 *
 	 * \return le strike du sous-jacent 
 	 */
-	double get_Strike();
+	double get_Strike() const;
 
 
 	/*!
-	 * \brief Mutateur de Strike_
+	 * \brief Mutateur de strike_
 	 *
 	 * Modifie la valeur du strike du sous-jacent
 	 *
@@ -73,8 +65,7 @@ class Asian : public Option {
 	 * \param path: matrice de taille d x (N+1) contenant une trajectoire du modele telle que creee par la fonction asset
 	 * \return payoff du sous-jacent asiatique
 	 */
-	double payoff (const PnlMat *path);
+	double payoff (const PnlMat *path) const;
 };
-
 
 #endif
