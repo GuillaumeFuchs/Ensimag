@@ -1,76 +1,35 @@
+#include "Option.h"
 #include "pnl/pnl_matrix.h"
 #include "pnl/pnl_vector.h"
 #ifndef PlaylistH
 #define PlaylistH
-
-/*!
- *  \file	playlist.h
- *  \brief	Header de la classe fille d'Option: playlist
- *  \author Equipe 11
- */
-
 /*!
  * \class Playlist
- * \brief Classe representant le produit structuré Playlist
+ * \brief Classe representant l'option panier
  */
-class Playlist{
+class Playlist : public Option {
 
   private:
-	double T_; /*!< maturite fixé à 1an par défault */
-	int timeStep_; /*!< nombre de pas de temps de discretisation pour 1 année */
-	int size_; /*!< dimension du modele, redondant avec option::size_, fixé à 4 */
-	double strike_; /*!<Valeur d'une part normalement soit 150€*/
+	double strike_; /*! strike de l'option */ 
+	PnlVect *Coeff_; /*! payoff coefficients */
+	double r_;
 
   public:
 
 	/*!
 	 * \brief Constructeur par defaut
 	 *
-	 * Constructeur par defaut de la classe basket
+	 * Constructeur par defaut de la classe Playlist
 	 */
 	Playlist();
+	Playlist(double strike, double* coeff, double T, int timeStep, int size, double r);
 
-	/*!
-	 * \brief Constructeur avec argument
-	 *
-	 * Constructeur avec argument de la classe basket
-	 *
-	 * \param pars: Liste des donnees relatives a l'option du Parser
-	 */
-	Playlist(double T, int timeStep, int size, double strike);
 	/*!
 	 * \brief Destructeur
 	 *
-	 * Destructeur de la classe basket
+	 * Destructeur de la classe Playlist
 	 */
 	virtual ~Playlist();
-
-	/*!
-	 * \brief Accesseur de T__
-	 *
-	 *  Acceder à la maturité de l'option
-	 *
-	 * \return la maturité de l'option 
-	 */
-	double get_T();
-
-	/*!
-	 * \brief Accesseur de timeStep_
-	 *
-	 *  Acceder au nombre de pas de discrétisation par an de l'option
-	 *
-	 * \return le nombre de pas de discrétisation de l'option 
-	 */
-	int get_timeStep();
-
-	/*!
-	 * \brief Accesseur de size_
-	 *
-	 *  Acceder au nombre de sous ajcents de l'option
-	 *
-	 * \return le nombre de sous jacents de l'option 
-	 */
-	int get_size();
 
 	/*!
 	 * \brief Accesseur de strike_
@@ -79,34 +38,18 @@ class Playlist{
 	 *
 	 * \return le strike de l'option 
 	 */
-	double get_strike();
+	double get_Strike() const;
 
 	/*!
-	 * \brief Mutateur de T_
+	 * \brief Accesseur de Coeff_
 	 *
-	 * Modifie la valeur de la maturité de l'option
+	 *  Acceder au vecteur des coefficients des payoff de l'option
 	 *
-	 * \param T: nouvelle maturité
+	 * \return le vecteur des coefficients des payoff
 	 */
-	void set_T(double T);
-
-	/*!
-	 * \brief Mutateur de timeStep
-	 *
-	 * Modifie la valeur du nombre de discrétisation de l'option
-	 *
-	 * \param timeStep : nouveau nombre de dsicrétisation
-	 */
-	void set_timeStep(int timeStep);
-
-	/*!
-	 * \brief Mutateur de size_
-	 *
-	 * Modifie la valeur du nombre de sous jacents de l'option
-	 *
-	 * \param Size: nouveau nombre de sous jacent
-	 */
-	void set_size(int size);
+	PnlVect * get_Coeff() const;
+	
+	double get_r() const;
 
 	/*!
 	 * \brief Mutateur de strike_
@@ -115,8 +58,19 @@ class Playlist{
 	 *
 	 * \param Strike: nouveau strike
 	 */
-	void set_strike(double strike);
+	void set_Strike(double strike);
 
+	/*!
+	 * \brief Mutateur de Coeff_
+	 *
+	 * Modifie le vecteur des coefficients des payoff de l'option 
+	 *
+	 * \param Coeff: nouveau vecteur des coefficients des payoff
+	 */
+	void set_Coeff(PnlVect *Coeff);
+
+
+	void set_r(double r);
 	/*!
 	 * \brief Payoff option panier
 	 *
@@ -125,6 +79,8 @@ class Playlist{
 	 * \param path: matrice de taille d x (N+1) contenant une trajectoire du modele telle que creee par la fonction asset
 	 * \return payoff de l'option panier
 	 */
-	 double payoff (const PnlMat * path);
+	double payoff (const PnlMat * path) const;
 }; 
+
 #endif 
+

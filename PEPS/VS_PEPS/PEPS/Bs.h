@@ -2,13 +2,6 @@
 #define BsH
 #include <pnl/pnl_vector.h>
 #include <pnl/pnl_random.h>
-//#include "parser.h"
-
-/*!
- *  \file	Bs.h
- *  \brief	Header de la classe Bs
- *  \author Equipe 11
- */
 
 /*!
  * \class Bs
@@ -34,18 +27,10 @@ class Bs {
 	 * Constructeur par defaut de la classe Bs
 	 */
 	Bs();
+	Bs(int size, double r, double* rho, double* sigma, double* spot, double* trend);
 
 
 	/*!
-	 * \brief Constructeur avec argument
-	 *
-	 * Constructeur avec argument de la classe Bs
-	 *
-	 * \param pars: Liste des donnees relatives à l'option du Parser
-	 */
-	Bs(int size, double r, double* rho, double* sigma, double *spot, double *trend);
-	
-		/*!
 	 * \brief Destructeur
 	 *
 	 * Destructeur de la classe Bs
@@ -59,7 +44,7 @@ class Bs {
 	 *
 	 * \return la taille du sous-jacent
 	 */
-	int get_size();
+	int get_size() const;
 
 	/*!
 	 * \brief Accesseur de r_
@@ -68,8 +53,8 @@ class Bs {
 	 *
 	 * \return le taux d'interet du sous-jacent
 	 */
-	double get_r();
-	
+	double get_r() const;
+
 	/*!
 	 * \brief Accesseur de rho_
 	 *
@@ -77,8 +62,8 @@ class Bs {
 	 *
 	 * \return le parametre de correlation du sous-jacent 
 	 */
-	double* get_rho();
-
+	double* get_rho() const;
+ 
 	/*!
 	 * \brief Accesseur de Sigma_
 	 *
@@ -86,7 +71,7 @@ class Bs {
 	 *
 	 * \return le vecteur de volatilites
 	 */
-	PnlVect *get_sigma();
+	PnlVect *get_sigma() const;
 
 	/*!
 	 * \brief Accesseur de Spot_
@@ -95,7 +80,7 @@ class Bs {
 	 *
 	 * \return la valeurs initiales du sous-jacent
 	 */
-	PnlVect *get_spot();
+	PnlVect *get_spot() const;
 
 	/*!
 	 * \brief Accesseur de Trend_
@@ -104,7 +89,7 @@ class Bs {
 	 *
 	 * \return le vecteur de taux sous la probabilite historique
 	 */
-	PnlVect *get_trend();
+	PnlVect *get_trend() const;
 
 	/*!
 	 * \brief Accesseur de Cho_
@@ -113,7 +98,7 @@ class Bs {
 	 *
 	 *  \return la matrice de cholesky associee a la correlation du sous-jacent
 	 */
-	PnlMat *get_cho();
+	PnlMat *get_cho() const;
 
 	/*!
 	 * \brief Accesseur de Gi_
@@ -122,7 +107,7 @@ class Bs {
 	 *
 	 *  \return le vecteur gaussien centré du modele de Bs
 	 */
-	PnlVect *get_gi();
+	PnlVect *get_gi() const;
 
 	/*!
 	 * \brief Accesseur de Ld_
@@ -131,7 +116,7 @@ class Bs {
 	 *
 	 *  \return la ligne d de la matrice de Cholesky Cho_
 	 */
-	PnlVect *get_ld();
+	PnlVect *get_ld() const;
 
 	/*!
 	 * \brief Mutateur de size_
@@ -150,7 +135,7 @@ class Bs {
 	 * \param le nouveau taux d'interet du sous-jacent
 	 */
 	void set_r(double r);
-	
+
 	/*!
 	 * \brief Mutateur de rho_
 	 *
@@ -250,10 +235,10 @@ class Bs {
 	 * \param t (input) date a partir de laquelle on shift
 	 * \param h (input) pas de differences finies
 	 * \param d (input) indice du sous-jacent à shifter
-	 * \param timeStep (input) pas de constatation du sous-jacent
+	 * \param timestep (input) pas de constatation du sous-jacent
 	 */
 	void shift_asset (PnlMat *_shift_path, const PnlMat *path,
-		int d, double h, double t, double timeStep);
+		int d, double h, double t, double timestep);
 
 	/*!
 	 *

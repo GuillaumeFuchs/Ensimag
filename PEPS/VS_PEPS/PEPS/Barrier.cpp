@@ -1,4 +1,4 @@
-# include "option.h"
+# include "Option.h"
 # include "barrier.h"
 # include <pnl/pnl_mathtools.h>
 
@@ -9,18 +9,23 @@
  */
 
 Barrier :: Barrier() : Option() {
-  Strike_ = 0;
+  strike_ = 0;
   Coeff_ = pnl_vect_new();
   Bl_ = pnl_vect_new();
   Bu_ = pnl_vect_new();
 }
 
-//Barrier ::Barrier(Parser& pars) : Option(pars){
-//  Strike_ = pars.getDouble("strike");
-//  Coeff_ = pnl_vect_copy(pars.getVect("payoff coefficients"));
-//  Bu_ = pnl_vect_copy(pars.getVect("upper barrier"));
-//  Bl_ = pnl_vect_copy(pars.getVect("lower barrier"));
-//}
+Barrier::Barrier(double strike, double* coeff, double *bu, double *bl, double T, int timeStep, int size) : Option(T, timeStep, size){
+	strike_ = strike;
+	Coeff_ = pnl_vect_create(size_);
+	Bu_ = pnl_vect_create(size_);
+	Bl_ = pnl_vect_create(size_);
+	for (int i = 0; i < size_; i++){
+		LET(Coeff_, i) = coeff[i];
+		LET(Bu_, i) = bu[i];
+		LET(Bl_, i) = bl[i];
+	}
+}
 
 Barrier :: ~Barrier(){
   pnl_vect_free(&Coeff_);
@@ -28,24 +33,24 @@ Barrier :: ~Barrier(){
   pnl_vect_free(&Bl_);
 }
 
-double Barrier :: get_Strike(){
-  return Strike_;
+double Barrier :: get_Strike() const{
+  return strike_;
 }
 
-PnlVect* Barrier :: get_Coeff(){
+PnlVect* Barrier :: get_Coeff() const{
   return Coeff_;
 }
 
-PnlVect* Barrier :: get_Bl(){
+PnlVect* Barrier :: get_Bl() const{
   return Bl_;
 }
 
-PnlVect* Barrier :: get_Bu(){
+PnlVect* Barrier :: get_Bu() const{
   return Bu_;
 }
 
 void Barrier :: set_Strike(double Strike) {
-  Strike_ = Strike;
+  strike_ = Strike;
 }
 
 void Barrier :: set_Coeff(PnlVect *Coeff) {
@@ -60,16 +65,16 @@ void Barrier :: set_Bu(PnlVect *Bu) {
   Bu_ = Bu;
 }
 
-double Barrier :: payoff (const PnlMat *path) {
+double Barrier :: payoff (const PnlMat *path) const{
   double sum ;
   PnlVect* final = pnl_vect_create(size_);
 
   //On met dans final la dernière colonne de Path correspond à la valeur à maturité des sous-jacents.
-  pnl_mat_get_col(final, path, TimeSteps_);
-  sum = pnl_vect_scalar_prod(final, Coeff_) - Strike_;
+  pnl_mat_get_col(final, path, timeStep_);
+  sum = pnl_vect_scalar_prod(final, Coeff_) - strike_;
   //On vérifie que toutes les valeurs des sous-jacents soient entre les 2 barrières
   //Si on en trouve une alors le prix de l'option est de 0
-  for (int i=0; i<TimeSteps_+1; i++){
+  for (int i=0; i<timeStep_+1; i++){
 	for (int d=0; d<size_; d++){
 	  if ((pnl_mat_get(path,d,i) < pnl_vect_get(Bl_,d)) || (pnl_mat_get(path,d,i) > pnl_vect_get(Bu_, d))){
 		pnl_vect_free(&final);

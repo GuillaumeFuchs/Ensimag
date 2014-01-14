@@ -26,7 +26,6 @@ namespace Interface
             //System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
             //abyte1 = encoding.GetBytes(type.Text);
             //sbyte[] baske = Array.ConvertAll(abyte1, q => Convert.ToSByte(q));
-            String type = "basket";
             //double[] sigma = new double[5];
             //sigm[0] = double.Parse(sigma.Text);
             //double[] rho = new double[1];
@@ -34,19 +33,15 @@ namespace Interface
 
             // Valeurs manuels
             const int size = 1;
-            double strike = 100;
-            double[] spot = new double[size] {100};//, 80, 100, 120, 110};
-            double maturity = 1;
-
-            double[] sigma = new double[size] { 0.2};//, 0.2, 0.2, 0.15, 0.15 };
-            double r = 0.05;
-            double[] rho = new double[(size - 1) * size / 2] {};// 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
-            double[] coeff = new double[size] {1};// 0.2, 0.2, 0.2, 0.2, 0.2 };
-            
+            double S0 = 100;
+            double T = 1;
+            double K = 100;
+            int M = 50000;
+            double sigma = .2;
+            double r = .05;
             int timeStep = 1;
-            int samples = 50000;
 
-            wc.getPriceOption(type, size, spot, strike, maturity, sigma, r, rho, coeff, timeStep, samples);
+            wc.getPriceOption(M, T, S0, K, sigma, r, size, timeStep);
 
             prix_label.Text = wc.getPrice().ToString();
             ic_label.Text = wc.getIC().ToString();

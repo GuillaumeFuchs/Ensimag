@@ -10,6 +10,32 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Asian.cpp" />
+    <ClCompile Include="Barrier.cpp" />
+    <ClCompile Include="Barrier_l.cpp" />
+    <ClCompile Include="Barrier_u.cpp" />
+    <ClCompile Include="Basket.cpp" />
+    <ClCompile Include="Bs.cpp" />
+    <ClCompile Include="Computations.cpp" />
+    <ClCompile Include="Montecarlo.cpp" />
+    <ClCompile Include="Option.cpp" />
+    <ClCompile Include="Performance.cpp" />
+    <ClCompile Include="Playlist.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Asian.h" />
+    <ClInclude Include="Barrier.h" />
+    <ClInclude Include="Barrier_l.h" />
+    <ClInclude Include="Barrier_u.h" />
+    <ClInclude Include="Basket.h" />
+    <ClInclude Include="Bs.h" />
+    <ClInclude Include="Computations.h" />
+    <ClInclude Include="Montecarlo.h" />
+    <ClInclude Include="Option.h" />
+    <ClInclude Include="Performance.h" />
+    <ClInclude Include="Playlist.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8D4006CB-B6A0-42EB-8AFC-FE77FAB2E126}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -81,26 +107,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Basket.h" />
-    <ClInclude Include="Bs.h" />
-    <ClInclude Include="Montecarlo.h" />
-    <ClInclude Include="Option.h" />
-    <ClInclude Include="Performance.h" />
-    <ClInclude Include="Playlist.h" />
-    <ClInclude Include="Pricer.h" />
-    <ClInclude Include="Typeval.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Basket.cpp" />
-    <ClCompile Include="Bs.cpp" />
-    <ClCompile Include="Montecarlo.cpp" />
-    <ClCompile Include="Option.cpp" />
-    <ClCompile Include="Performance.cpp" />
-    <ClCompile Include="Playlist.cpp" />
-    <ClCompile Include="Pricer.cpp" />
-    <ClCompile Include="Typeval.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

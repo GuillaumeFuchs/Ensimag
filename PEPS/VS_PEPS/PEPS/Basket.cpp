@@ -25,15 +25,15 @@ Basket :: ~Basket(){
   pnl_vect_free(&Coeff_);
 }
 
-double Basket :: get_strike() {
+double Basket :: get_Strike() const{
   return strike_;
 }
 
-PnlVect * Basket :: get_Coeff() {
+PnlVect * Basket :: get_Coeff() const{
   return Coeff_;
 }
 
-void Basket :: set_strike(double strike) {
+void Basket :: set_Strike(double strike) {
   strike_ = strike;
 }
 
@@ -41,7 +41,7 @@ void Basket :: set_Coeff(PnlVect *Coeff) {
   Coeff_ = Coeff;
 }
 
-double Basket :: payoff (const PnlMat *path) {
+double Basket :: payoff (const PnlMat *path) const{
   double sum;
   PnlVect* final = pnl_vect_create(path->m);
 

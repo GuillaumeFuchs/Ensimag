@@ -37,7 +37,7 @@ class Basket : public Option {
 	 *
 	 * \return le strike de l'option 
 	 */
-	double get_strike();
+	double get_Strike() const;
 
 	/*!
 	 * \brief Accesseur de Coeff_
@@ -46,7 +46,7 @@ class Basket : public Option {
 	 *
 	 * \return le vecteur des coefficients des payoff
 	 */
-	PnlVect * get_Coeff();
+	PnlVect * get_Coeff() const;
 
 	/*!
 	 * \brief Mutateur de strike_
@@ -55,7 +55,7 @@ class Basket : public Option {
 	 *
 	 * \param Strike: nouveau strike
 	 */
-	void set_strike(double strike);
+	void set_Strike(double strike);
 
 	/*!
 	 * \brief Mutateur de Coeff_
@@ -74,7 +74,7 @@ class Basket : public Option {
 	 * \param path: matrice de taille d x (N+1) contenant une trajectoire du modele telle que creee par la fonction asset
 	 * \return payoff de l'option panier
 	 */
-	double payoff (const PnlMat * path);
+	double payoff (const PnlMat * path) const;
 }; 
 
 #endif 

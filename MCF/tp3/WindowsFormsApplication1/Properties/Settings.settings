@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WindowsFormsApplication1.Properties" GeneratedClassName="Settings">
-  <Profiles />
-  <Settings>
-    <Setting Name="AdditionalPaths" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\Fuchsg\Documents\Ensimag\MCF\tp3\Debug;C:\Users\Fuchsg\Documents\Visual Studio 2010\Projects\pnl-win32-1.6.0\lib</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>

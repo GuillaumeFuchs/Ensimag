@@ -1,15 +1,7 @@
-//#include "parser.h"
 #include "pnl/pnl_matrix.h"
 #include "pnl/pnl_vector.h"
 #ifndef OptionH
 #define OptionH
-
-/*!
- *  \file	option.h
- *  \brief	Header de la classe Option
- *  \author Equipe 11
- */
-
 /*!
  * \class option
  * \brief Classe representant la classe mere de tous les types d'options: Option
@@ -29,20 +21,9 @@ class Option {
 	 * Constructeur par defaut de la classe option
 	 */
 	Option();
-
-	/*!
-	 * \brief Constructeur avec argument
-	 *
-	 * Constructeur avec argument de la classe option
-	 *
-	 * \param pars: Liste des donnees relatives a l'option du Parser
-	 */
-	//Option(Parser pars);
-
-
-
 	Option(double T, int timeStep, int size);
-	
+
+
 	/*!
 	 * \brief Destructeur
 	 *
@@ -57,7 +38,7 @@ class Option {
 	 *
 	 * \return la maturite du sous-jacent
 	 */
-	double get_T();
+	double get_T() const;
 
 	/*!
 	 * \brief Accesseur de timeStep_
@@ -66,7 +47,7 @@ class Option {
 	 *
 	 *  \return le nombre de pas de temps de discretisation
 	 */
-	int get_timeStep();
+	int get_timeStep() const;
 
 	/*!
 	 * \brief Accesseur de size_
@@ -75,7 +56,7 @@ class Option {
 	 *
 	 * \return la taille du sous-jacent
 	 */
-	int get_size();
+	int get_size() const; 
 
 	/*!
 	 * \brief Mutateur de T_
@@ -112,6 +93,10 @@ class Option {
 	 *  trajectoire du modele telle que creee par la fonction asset.
 	 *  \return phi(trajectoire)
 	 */
+<<<<<<< HEAD
 	virtual double payoff (const PnlMat * path, double &maturite) = 0;
+=======
+	virtual double payoff (const PnlMat * path) const = 0;
+>>>>>>> 81a55d0753f66ee309aeb9f39b554770b65e970b
 };
 #endif 
