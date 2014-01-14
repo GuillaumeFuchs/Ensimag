@@ -154,11 +154,12 @@ void monteCarloControlBis(double S0, double sigma, double r, double T, double K,
 	double esp_control = exp(-r*T) * (-K * pnl_cdfnor(-d2) + S0*exp((r - pow(sigma, 2.0)/6)*T/2) * pnl_cdfnor(d1) );
 
 	double c = (cov - esp_control * sum_pay/M) / (var_control - pow(esp_control, 2.0));
-	sum_pay = sum_pay/M - c * (sum_control/M - esp_control);
 	
-	prix = exp(-r * T) * sum_pay;
+	prix = exp(-r * T) * (sum_pay/M - c * (sum_control/M - esp_control));
 
-	double variance = exp(-2 * r * T) * (var_pay - 2*c*cov  + c*c*var_control)/M - pow(prix, 2.0);
+//	double variance = exp(-2 * r * T) * (var_pay - 2*c*cov  + c*c*var_control)/M - pow(prix, 2.0);
+	double rho = (cov - esp_control * sum_pay/M) / ( (var_control - pow(esp_control, 2.0)) * (var_pay - pow(exp(r*T)*prix, 2.0)));
+	double variance = (1 - pow(rho, 2.0))*(exp(-2*r*T)*var_pay/M - pow(prix, 2.0));
 	ic = 1.96 * sqrt(variance/M);
 
 	pnl_vect_free(&G);
@@ -231,6 +232,8 @@ void asianCallControlZ(double &prix, double &ic, double S0, double K,
 		//var = var * exp(-2*r*T)/M - prix*prix;
 		ic = 1.96*sqrt(var/M);
 }
+
+
 void monteCarloBar(double S0, double K, double r, double sigma, double T, double L, int J, int M, double &prix, double& ic){
 	PnlRng *rng = pnl_rng_create(PNL_RNG_MERSENNE);
 	pnl_rng_sseed(rng, time(NULL));
@@ -239,20 +242,22 @@ void monteCarloBar(double S0, double K, double r, double sigma, double T, double
 	double mean_term = (r - pow(sigma, 2.0) / 2 ) * T/J;
 	double var_term = sigma * sqrt(T/J);
 
-	double s = 0;
+	double s;
 	double pay;
 	double sum = 0;
 	double variance = 0;
 
 	for (int i = 0; i < M; i++){
+		printf("%d\n", i);
 		pnl_vect_rng_normal(G, J, rng);
-
 		s = S0;
+		
 		for (int j = 1; j < J+1; j++){
 			if (s<L){
 				s = 0;
 				break;
-			}else{
+			}
+			else{
 				s = s * exp(mean_term + var_term*GET(G, j-1));
 			}
 		}
@@ -261,9 +266,47 @@ void monteCarloBar(double S0, double K, double r, double sigma, double T, double
 		sum += pay;
 		variance += pay*pay;
 	}
-	prix = exp(-r * T) * sum / (double)M;
+	prix = exp(-r * T) * sum/M;
 
-	variance = exp(-2 * r * T) * variance/(double)M - pow(prix, 2.0);
+	variance = exp(-2 * r * T) * variance/M - pow(prix, 2.0);
+	ic = 1.96 * sqrt(variance/M);
+	pnl_vect_free(&G);
+	pnl_rng_free(&rng);
+}
+
+void monteCarloBarBis(double S0, double K, double r, double sigma, double T, double L, int J, int M, double &prix, double& ic){
+	PnlRng *rng = pnl_rng_create(PNL_RNG_MERSENNE);
+	pnl_rng_sseed(rng, time(NULL));
+	PnlVect *G = pnl_vect_create(J);
+	
+	double dt = T/J;
+	double mean_term = (r - pow(sigma, 2.0) / 2 ) * dt;
+	double var_term = sigma * sqrt(dt);
+
+	double si, si1;
+	double pay;
+	double sum = 0;
+	double variance = 0;
+	double prod;
+
+	for (int i = 0; i < M; i++){
+		pnl_vect_rng_normal(G, J, rng);
+		si = S0;
+		prod = 1.;
+		
+		for (int j = 1; j < J+1; j++){
+			si1 = si * exp(mean_term + var_term*GET(G, j-1));
+			prod *= 1 -	exp(-2*log(L/si)*log(L/si1)/(pow(sigma, 2.)*dt));
+			si = si1;
+		}
+
+		pay = MAX(si-K, 0);
+		sum += pay * prod;
+		variance += pay*pay;
+	}
+	prix = exp(-r * T) * sum/M;
+
+	variance = exp(-2 * r * T) * variance/M - pow(prix, 2.0);
 	ic = 1.96 * sqrt(variance/M);
 	pnl_vect_free(&G);
 	pnl_rng_free(&rng);
@@ -281,18 +324,16 @@ int main(){
 	printf("prix: %f\n", px);
 	printf("ic: %f\n", ic);
 
-	*/
 	monteCarloControlBis(100, 0.2, 0.095, 1, 100, 52, 50000, px, ic);
 	printf("prix: %f\n", px);
 	printf("ic: %f\n", ic);
 	asianCallControlZ(px, ic, 100, 100, 1, 0.2, 0.095, 52, 50000);
 	printf("prix: %f\n", px);
 	printf("ic: %f\n", ic);
-	/*
-	monteCarloBar(100, 105, 0.02, 0.25, 1, 90, 100, 100000, px, ic);
+	*/
+	monteCarloBarBis(100, 105, 0.02, 0.25, 1, 90, 1000	, 50000, px, ic);
 	printf("prix: %f\n", px);
-	printf("ic: %f\n", ic);*/
-
+	printf("ic: %f\n", ic);
 	system("pause");
 	return 0;
 }
