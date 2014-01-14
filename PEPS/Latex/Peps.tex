@@ -59,7 +59,7 @@
 \renewcommand{\footrulewidth}{0.4pt}
 \title{Projet .NET : Gestion indicielle}
 \date{October 31, 475}
-\author{Guillaume Fuchs, Guillaume Pelletier, Samuel Rosilio}
+\author{Guillaume Fuchs, Guillaume Pelletier, Louis Perfumo, Samuel Rosilio}
 %Page de garde
 
 \begin{document}
@@ -88,7 +88,8 @@
 \emph{Etudiants:}\\
 Guillaume \textsc{Fuchs},\\
 Guillaume \textsc{Pelletier},\\
-Samuel \textsc{Rosilio}
+Samuel \textsc{Rosilio},\\
+Louis \textsc{Perfumo}
 \end{flushleft}
 \end{minipage}
 
@@ -684,6 +685,11 @@ Dans un premier temps, le gestionnaire doit avoir la possibilité de consulter l
 Le gestionnaire doit également avoir la possibilité de choisir le modèle d'évolution des sous jacents, que ce soit Black-Scholes ou bien le modèle de Merton.\\
 \indent \\
 \indent Enfin le gestionnaire doit avoir la possibilité de voir la composition de son portefeuille et notamment la répartition en pourcentage ou bien en quantité de chacun de ces investissements. Il pourra ainsi avoir la valeur liquidative de chacune de ses parts. Il pourra également avoir accès à la valeur liquidative en faisant un backtest en utilisant la méthode de couverture proposée.\\
+\indent \\
+\indent Plus précisemment le gestionnaire ne devra pas avoir la possibilité de modifier le modèle en cours de simulation par soucis de cohérence. De plus le gestionnaire devra avoir la possibilité d'indiquer ses propres dates de rebalancement. De plus lorsque celui ci affiche l'évolution des indices, il ne doit avoir la possibilité que de les afficher entre le début du produit moins un an et la fin du produit.\\
+On laissera la possibilité au gestionnaire de se couvrir différemment de ce qui est préconisé, ce qui implique que celui-ci aura la possibilité de relancer une simulation à partir de la composition de portefeuille qu'il a choisi. Il poura donc entrer la composition de son portefeuille.
+\indent \\
+\indent Chaque jour la simulation devra être refaite puisque nos graphiques intégrerons automatiquement les nouveaux cours des indices au jour le jour.
 
 \subsection{Architecture logiciel}
 
@@ -698,7 +704,7 @@ Voici une première schématisation de l'architecture de notre produit.
 \end{center}
 
 \noindent Ainsi on constate que l'architecture que nous avons adopté se base sur les cours disponibles sur des sites spécialisés tels que \lstinline!yahoo finance!, ainsi à partir d'un extracteur de données, nous récupérerons les données de ce site concernant les indices voulus, ce qui alimentera notre base de données. Les données seront alors traitées par le moteur de calcul notamment pour connaître la performance actuelle du fonds, avoir diverses modélisations de l'évolution des indices. Il vient alors l'interface qui à l'aide des sorties du moteur de calcul peut afficher l'évolution des différents indices ainsi que la performance du fonds.\\
-On constate également la présence d'un lien entre l'interface et la base de données en effet, lorsque l'utilisateur séléectionne de nouvelle date pour voir l'évolution des différents indices, il n'est pas nécessaire de faire appel au moteur de calcul.
+On constate également la présence d'un lien entre l'interface et la base de données en effet, lorsque l'utilisateur sélectionne de nouvelles dates pour voir l'évolution des différents indices, il n'est pas nécessaire de faire appel au moteur de calcul.
 
 \subsection{Spécifications}
 
