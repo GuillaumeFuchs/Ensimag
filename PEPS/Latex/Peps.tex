@@ -692,5 +692,129 @@ flux(var ValNom, var temps){
 }
 \end{verbatim}
 
+
+\section{Modèles Mathématiques}
+/*Intro sur la modélisation à faire */
+
+\subsection{Les sous-jacents}
+Ici on explique que les sous-jacents sont les indices + taux zéro coupon et on montre que ça peut etre modélisé par les modèles suivants.
+
+\subsection{Modélisation des indices}
+
+\subsubsection{Modèle de Black-Scholes}
+Le modèle de Black et Scholes permet de modéliser le cours des actions. Mais il permet aussi de modéliser l'évolution des indices. Il repose sur les hypothèses suivantes :
+\begin{itemize}
+\item[•] Absence d'Opportunité d'Arbitrage
+\item[•] Absence de coûts de transaction
+\item[•] Pas de restriction sur les ventes à découvert
+\item[•] Le marché est continu
+\item[•] Absence de dividendes
+\item[•] Le taux sans risque \textbf{r} est constant quelle que soit la maturité
+\end{itemize}
+\\ \\
+Dans le modèle de Black-Scholes, le cours du sous-jacent S vérifie l'équation stochastique :
+
+$$ dS = \mu Sdt + \sigma SdW $$  \\
+avec $W_{t}$ un processus de Wiener, $ W_{t} \rightarrow \mathcal{N}(0,\sqrt{t}) $ \\
+
+On obtient avec Itô : \\
+$$ d(ln(S))=(\mu - \frac{\sigma^{2}}{2})dt + \sigma dW $$ \\
+Soit \\
+$$ S(t) = S_{0} exp \left[(\mu - \frac{\sigma^{2}}{2})t + \sigma W \right] $$ \\
+
+Le principal problème avec le modèle de Black-Scholes est qu'il ne présente pas une queue de distribution suffisamment lourde par rapport à la réalité : il ne prend pas en compte la possibilité de saut d'un cours boursier. Le modèle qui suit est le modèle de Merton. Celui-ci permet de prendre en compte cette possibilité.\\
+
+\subsubsection{Modèle de Merton}
+Le modèle de Merton introduit la possibilité de saut d'un cours boursier à l'aide d'un processus de Poisson :\\
+
+$$ S(t) = S_{0} exp \left[(\mu - \frac{\sigma^{2}}{2})t + \sigma dW + \sum_{k=1}^{N(t)} U(k) \right] $$ \\
+où
+\begin{itemize}
+\item[•] N est un processus de Poisson
+\item[•] U est une suite de variables aléatoires iid suivant une loi normale centrée
+\item[•] W, N et U sont des processus indépendants les uns des autres
+\item[•] Les paramètres concernant U et N, ainsi que $\mu$ et $\sigma$ peuvent être estimés par la méthode du maximum de vraisemblance, entre autres
+\end{itemize}
+\\
+
+\subsubsection{Modèle de Heston}
+Les deux modèles précédant prennent pour hypothèse que la volatilité est constante. La réalité montre que celle-ci a une forme de smile, lorsque le prix d'exercice ou la maturité varie. Le modèle de Heston attribue donc à la volatilité une dynamique particulière : \\
+$$ dV(t) = K(\theta - V(t))dt + \sigma \sqrt{V(t)} dW_{v}(t)  $$ \\
+et \\
+$$ \frac{dS(t)}{S(t)} = rdt + \sqrt{V(t)}dW_{s}(t) $$ \\
+Où r est le taux sans risque, V la volatilité, K un paramètre de retour à la moyenne, $\theta$ la variance long terme, $\sigma$ la volatilité de la volatilité, et  $W_{s}$ et $W_{v}$ sont deux mouvements browniens corrélés.\\
+
+\subsubsection{Choix du modèle}
+Le modèle de Heston est reconnu comme étant le plus précis. Cependant, le nombre de paramètres étant très important, le calibrage de ces paramètres est très difficile à partir des ressources dont nous disposons. Le modèle de Black-Scholes étant le plus simple à implémenter, nous nous concentrerons tout d'abord sur celui-ci. L'implémentation du modèle de Merton pourrait représenter une bonne voie d'approfondissement, si le temps nous le permettait. \\
+
+
+\subsection{Modélisation de la variance}
+L'un des paramètres les plus déterminants dans la modélisation des indices est la volatilité. Il faut donc être en mesure de modéliser cette volatilité afin de l'utiliser comme paramètre dans la modélisation des indices.\\ \\
+Plusieurs modèles existent :
+\begin{itemize}
+\item[•] La volatilité \textbf{constante} : c'est le modèle le plus simple
+\item[•] La volatilité \textbf{stochastique} : comme dans le cas du modèle de Heston, on attribue une dynamique particulière à la volatilité
+\item[•] La volatilité \textbf{locale} : c'est un cas particulier de volatilité stochastique, où l'on considère que la volatilité dépend uniquement du cours de l'actif sous-jacent et du temps ($\sigma = f(S_{t},t)$)
+\end{itemize}
+\\
+Étant donné que nous nous concentrons dans un premier temps sur l'implémentation du modèle de Black-Scholes, et que celui-ci suppose que la volatilité est constante, nous allons tout d'abord nous intéresser à celle-ci.  Les deux principaux estimateurs de ce paramètre sont la volatilité historique et la volatilité implicite.
+
+\subsubsection{Volatilité historique}
+Elle est mesurée par l'écart-type du rendement du sous-jacent, durant la période qui précède l'émission des options. En rapprochant les observations du cours du sous-jacent, on peut donc estimer la volatilité instantanée.\\
+
+On peut donc considérer la racine carrée de la variance empirique sans biais comme son estimation :\\
+$$ \widehat{\sigma^{2}} = \frac{1}{n-1} \sum_{i=1}^n (ln(\frac{S_{t}}{S_{t-1}}) - \widehat{\mu})^{2}	$$ \\
+avec \\
+$$ \widehat{\mu} = \frac{1}{n} \sum_{i=1}^n ln(\frac{S_{t}}{S_{t-1}})  $$ \\
+où $n$ est le nombre d'observations, $S_{t}$ le cours du sous-jacent à l'instant $t$. \\ \\
+Par convention, l'unité de temps pour mesurer les paramètres est l'année. Il faut donc annualiser la volatilité calculée, en supposant que le nombre de jours ouvrés est 252 jours : \\
+$$ \sigma_{an} = \widehat{\sigma} \sqrt{\frac{252}{\Delta t}}  $$ \\
+avec $\Delta t $ l'intervalle de temps entre deux observations consécutives.\\ \\
+Concernant le nombre d'observations, d'après Hull, utiliser les données des cours les plus récents dans l'intervalle de 90 à 180 jours peut donner les estimations les plus raisonnables. En effet, utiliser des observations trop éloignées va biaiser l'estimation, de même qu'avoir trop peu d'observations.\\
+
+\subsubsection{Volatilité implicite}
+La volatilité implicite est obtenue à partir du prix de marché des options, en inversant l'équation :
+$$ C_{BS}(\sigma) = C $$ \\
+où $C_{BS}$ est le prix de l'option calculée avec la méthode de Black-Scholes, et $C$ est son prix observé sur le marché.\\
+
+\subsubsection{Choix du modèle}
+Etant donné que le calcul de la volatilité implicite nécessite d'avoir recours à des méthodes numériques pour inverser la formule (notamment la méthode itérative de Newton-Raphson) car celle-ci fait intervenir des intégrales, nous nous orienterons dans un premier temps vers le calcul présenté plus haut de la volatilité historique.
+
+\subsection{Modélisation des taux}
+
+Afin de pouvoir évaluer le produit structuré, nous devons aussi réussir à modéliser le taux sans risque. Plusieurs modèles de taux existent, présentant chacun des avantages et des inconvénients.
+
+\subsubsection{Modèle de Vasicek}
+Le modèle de Vasicek fait partie des premiers modèles de taux. Il repose sur l'hypothèse que les déformations de la structure du taux d'intérêt sont expliqués par le mouvement du taux court.\\
+Le taux court suit une diffusion de type Ornstein-Ulenbeck : \\
+$$ dr_{t} = a(b-r_{t})dt + \sigma dW_{t} $$ \\
+où
+\begin{itemize}
+\item[•] $\sigma$ est l'écart-type de variation instantanée de $r_{t}$ (volatilité instantanée)
+\item[•] $dW_{t}$ est un mouvement brownien
+\end{itemize}
+\\
+
+La remarque négative que l'on peut faire sur ce modèle est que la proportion de taux négatifs parfois importante. Cela crée des distorsions fortes dans la valorisation de certains produits dérivés.\\
+
+\subsubsection{Modèle de Cox-Ingersoll-Ross}
+Le modèle de Cox-Ingersoll-Ross est le suivant :
+$$ dr_{t} = a(b-r_{t})dt + \sigma \sqrt{r_{t}} dW_{t} $$
+
+\subsubsection{Modèle de Black-Derman-Toy}
+Le modèle de Black-Derman-Toy est un modèle log-normal :
+$$ d(logr_{t}) = (b_{t} - a_{t} logr_{t})dt + \sigma dW_{t} $$ \\
+
+Le problème avec les modèles log-normaux est qu'on observe des proportions trop élevées de taux importants pour des horizons lointains, par rapport à la réalité.\\
+
+Pb de ces trois modèles : ils ne sont pas compatibles avec la courbe des taux observés au comptant -> Opportunité d'arbitrage. Nouvelle classe de modèles : \\
+
+\subsubsection{Modèle de Heath-Jarrow-Morton}
+Principe : On assimile le sous-jacent à l'entière courbe des taux dont la dynamique repose sur les taux forwards instantanés. Cela assure la positivité du taux d'intérêt.
+
+\subsubsection{Modèle Hull et White}
+
+\subsubsection{Choix du modèle}
+
 \end{document}
 

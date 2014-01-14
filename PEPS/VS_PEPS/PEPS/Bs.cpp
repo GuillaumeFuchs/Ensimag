@@ -197,7 +197,6 @@ MLET(path, d, i+1) = s;
 }
 pnl_vect_free(&S0);
 }
-*/
 
 void Bs::asset(PnlMat *path, double T, int N, PnlRng *rng, PnlMat* G, PnlVect* grid){
 	//s: double pour la valeur du sous-jacent à la date t_{i+1}

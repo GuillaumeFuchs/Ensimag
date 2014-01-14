@@ -16,3 +16,21 @@
 \contentsline {subsection}{\numberline {7.1}Architecture logiciel}{18}
 \contentsline {section}{\numberline {8}Annexes}{18}
 \contentsline {subsection}{\numberline {8.1}Pseudo code pour la valeur du flux vers\IeC {\'e} en t}{18}
+\contentsline {section}{\numberline {9}Mod\IeC {\`e}les Math\IeC {\'e}matiques}{19}
+\contentsline {subsection}{\numberline {9.1}Les sous-jacents}{20}
+\contentsline {subsection}{\numberline {9.2}Mod\IeC {\'e}lisation des indices}{20}
+\contentsline {subsubsection}{\numberline {9.2.1}Mod\IeC {\`e}le de Black-Scholes}{20}
+\contentsline {subsubsection}{\numberline {9.2.2}Mod\IeC {\`e}le de Merton}{20}
+\contentsline {subsubsection}{\numberline {9.2.3}Mod\IeC {\`e}le de Heston}{21}
+\contentsline {subsubsection}{\numberline {9.2.4}Choix du mod\IeC {\`e}le}{21}
+\contentsline {subsection}{\numberline {9.3}Mod\IeC {\'e}lisation de la variance}{21}
+\contentsline {subsubsection}{\numberline {9.3.1}Volatilit\IeC {\'e} historique}{22}
+\contentsline {subsubsection}{\numberline {9.3.2}Volatilit\IeC {\'e} implicite}{22}
+\contentsline {subsubsection}{\numberline {9.3.3}Choix du mod\IeC {\`e}le}{23}
+\contentsline {subsection}{\numberline {9.4}Mod\IeC {\'e}lisation des taux}{23}
+\contentsline {subsubsection}{\numberline {9.4.1}Mod\IeC {\`e}le de Vasicek}{23}
+\contentsline {subsubsection}{\numberline {9.4.2}Mod\IeC {\`e}le de Cox-Ingersoll-Ross}{23}
+\contentsline {subsubsection}{\numberline {9.4.3}Mod\IeC {\`e}le de Black-Derman-Toy}{23}
+\contentsline {subsubsection}{\numberline {9.4.4}Mod\IeC {\`e}le de Heath-Jarrow-Morton}{24}
+\contentsline {subsubsection}{\numberline {9.4.5}Mod\IeC {\`e}le Hull et White}{24}
+\contentsline {subsubsection}{\numberline {9.4.6}Choix du mod\IeC {\`e}le}{24}
