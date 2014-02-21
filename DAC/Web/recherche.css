@@ -1,0 +1,68 @@
+﻿body 
+{
+    font-family : Times New Roman;
+    background-image : url();
+    font-size : x-large;
+}
+.option
+{
+    float : right;
+    margin-right : 5em;
+}
+
+#title
+{
+    color : Blue;
+}
+
+#deco
+{
+ color : Blue;
+ text-decoration : underline;   
+}
+
+.menu
+{
+ margin-top : 5em;   
+}
+
+li
+{
+    text-align : center;
+    padding : 5px 5px 5px 5px;
+    border : 1px solid black;
+    margin : 5px 0px 5px 0px;
+    list-style-type: none;
+}
+
+.recherche
+{
+    margin-right : 40em;
+	padding-left:1em;
+	padding-right: 1em;
+	padding-top : 1em;
+	padding-bottom : 1em;
+	margin-top : 10%;
+}
+
+#entête
+{
+  	border-bottom : 2px solid black;
+	border-top : 2px solid black;
+	border-left : 2px solid black;
+	border-right : 2px solid black;  
+}
+
+#form1
+{
+    padding: 2em 0em 20em 0em;
+    border-bottom : 2px solid black;
+	border-top : 2px solid black;
+	border-left : 2px solid black;
+	border-right : 2px solid black;
+}
+
+#adresse
+{
+ padding: 2em 0em 0em 0em;   
+}
