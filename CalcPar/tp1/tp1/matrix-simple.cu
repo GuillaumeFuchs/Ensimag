@@ -42,7 +42,7 @@
 //
 //	float * result;
 //
-//	/// Charger le fichier d'entree
+//	 Charger le fichier d'entree
 //	char * in0 = new char();
 //	strcpy(in0, file);
 //	strcat(in0, "/input0.raw");
@@ -64,37 +64,37 @@
 //		fin1 >> hostB[i];
 //	fin1.close();
 //
-//	/// Initialiser numCRows et numCColumns
+//	 Initialiser numCRows et numCColumns
 //	numCRows = numARows;
 //	numCColumns = numBColumns;
-//	/// Allouer hostC
+//	 Allouer hostC
 //	hostC = (float*)malloc(numCRows*numCColumns*sizeof(float));
 //
-//	/// Afficher les informations sur la matrice
-//	/// Allouer la memoire sur GPU
+//	 Afficher les informations sur la matrice
+//	 Allouer la memoire sur GPU
 //	cudaMalloc((float**)&deviceA, numARows*numAColumns*sizeof(float));
 //	cudaMalloc((float**)&deviceB, numBRows*numBColumns*sizeof(float));
 //	cudaMalloc((float**)&deviceC, numCRows*numCColumns*sizeof(float));
 //
-//	/// Copier la memoire sur le GPU
+//	 Copier la memoire sur le GPU
 //	cudaMemcpy(deviceA, hostA, numARows*numAColumns*sizeof(float), cudaMemcpyHostToDevice);
 //	cudaMemcpy(deviceB, hostB, numBRows*numBColumns*sizeof(float), cudaMemcpyHostToDevice);
 //
-//	/// Initialise la grille et les dimensions de chaque bloc
+//	 Initialise la grille et les dimensions de chaque bloc
 //	int gridX = ceil((double)numBColumns/16.);
 //	int gridY = ceil((double)numARows/16.);
 //	dim3 dimGrid(gridX, gridY, 1);
 //	dim3 dimBlock(16 , 16, 1);
 //
-//	/// Execute le kernel
+//	 Execute le kernel
 //	matrixMultiply<<<dimGrid , dimBlock>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
 //
 //	cudaThreadSynchronize();
 //
-//	/// Charge le resultat en memoire CPU
+//	 Charge le resultat en memoire CPU
 //	cudaMemcpy(hostC, deviceC, numCRows*numCColumns*sizeof(float), cudaMemcpyDeviceToHost);
 //
-//	//TEST
+//	TEST
 //	char * out = new char();
 //	strcpy(out, file);
 //	strcat(out, "/output.raw");
@@ -106,9 +106,9 @@
 //	fout.close();
 //
 //	for (int i = 0; i < numCRows*numCColumns; i++){
-//		printf("%f \n", fabs(result[i]-hostC[i]));
+//		printf("%d %f \n", i, fabs(result[i]-hostC[i]));
 //	}
-//	/// Libere la memoire
+//	 Libere la memoire
 //	free(hostA);
 //	free(hostB);
 //	free(hostC);
@@ -118,13 +118,15 @@
 //	free(result);
 //
 //	printf("\n%d %d\n%d %d\n%d %d\n", numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
-//	printf("%d %d\n", gridX, gridY);
+//	printf("%d %d\n", gridY, gridX);
 //}
 //
 //int main()
 //{
 //	clock_t tbegin, tend;
 //	tbegin = clock();
+//	calc("mp2_data/5");
+//	system("pause");
 //
 //	calc("ex2_data2/0");
 //	printf("0\n");

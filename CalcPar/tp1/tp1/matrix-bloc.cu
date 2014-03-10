@@ -12,7 +12,7 @@
 using namespace std;
 
 // Calcul C = A * B
-__global__ void matrixMultiply(float * A, float * B, float * C, int numARows, int numAColumns, int numBRows, int numBColumns,	int numCRows, int numCColumns) {
+__global__ void matrixMultiply(float * A, float * B, float * C, int numARows, int numAColumns, int numBRows, int numBColumns, int numCRows, int numCColumns) {
 	__shared__ float ds_A[TILE_WIDTH][TILE_WIDTH];
 	__shared__ float ds_B[TILE_WIDTH][TILE_WIDTH];
 
@@ -22,47 +22,44 @@ __global__ void matrixMultiply(float * A, float * B, float * C, int numARows, in
 	int Row = by * TILE_WIDTH + ty;
 	int Col = bx * TILE_WIDTH + tx; 
 
-	float Pvalue = 0.;
+	float Pvalue = 0.;	
 
-	int iteration = max(min(numAColumns, numBColumns)/TILE_WIDTH, 1);
+	int iteration = ceil((double)numAColumns/TILE_WIDTH);
 
 	for (int m = 0; m < iteration; ++m){
-		if (m * TILE_WIDTH + tx < numAColumns && Row < numARows)
-			ds_A[ty][tx] = A[Row * numAColumns + m * TILE_WIDTH + tx];
+		if (m*TILE_WIDTH+tx < numAColumns && Row < numARows)
+			ds_A[ty][tx] = A[Row*numAColumns + m*TILE_WIDTH + tx];
 		if (Col < numBColumns && m*TILE_WIDTH+ty < numBRows)
-			ds_B[ty][tx] = B[(m*TILE_WIDTH+ty) * numBColumns + Col];
+			ds_B[ty][tx] = B[(m*TILE_WIDTH+ty)*numBColumns + Col];
 
 		__syncthreads();
 
-		if (Col < numCColumns && Row < numCRows){
-			for (int k = 0; k < TILE_WIDTH; ++k)
+		for (int k = 0; k < TILE_WIDTH; ++k){
+			if (m*TILE_WIDTH+tx < numAColumns && m*TILE_WIDTH+ty < numBRows && Row < numARows && Col < numBColumns)
 				Pvalue += ds_A[ty][k] * ds_B[k][tx];
-			__syncthreads();
 		}
+
+		__syncthreads();
 	}
+
 	if (Col < numCColumns && Row < numCRows)
 		C[Row*numCColumns+Col] = Pvalue;
 }
 
 void calc(char *file)
 {
-	float * hostA;
-	float * hostB;
-	float * hostC;
-	float * deviceA;
-	float * deviceB;
-	float * deviceC;
-	int numARows;
-	int numAColumns;
-	int numBRows;
-	int numBColumns;
-	int numCRows;
-	int numCColumns;
+	float *hostA;
+	float *hostB;
+	float *hostC;
+	float *deviceA;
+	float *deviceB;
+	float *deviceC;
+	int numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns;
 
-	float * result;
+	float *result;
 
 	/// Charger le fichier d'entree
-	char * in0 = new char();
+	char *in0 = new char();
 	strcpy(in0, file);
 	strcat(in0, "/input0.raw");
 	ifstream fin0(in0);
@@ -73,7 +70,7 @@ void calc(char *file)
 	}
 	fin0.close();
 
-	char * in1 = new char();
+	char *in1 = new char();
 	strcpy(in1, file);
 	strcat(in1, "/input1.raw");
 	ifstream fin1(in1);
@@ -114,7 +111,7 @@ void calc(char *file)
 	cudaMemcpy(hostC, deviceC, numCRows*numCColumns*sizeof(float), cudaMemcpyDeviceToHost);
 
 	//TEST
-	char * out = new char();
+	char *out = new char();
 	strcpy(out, file);
 	strcat(out, "/output.raw");
 	ifstream fout(out) ;
@@ -124,9 +121,14 @@ void calc(char *file)
 		fout >> result[i];
 	fout.close();
 
+	printf("%f \n", result[0]-hostC[0]);
+	system("pause");
+
 	for (int i = 0; i < numCRows*numCColumns; i++){
-		printf("%f \n", fabs(result[i]-hostC[i]));
+		if (fabs(result[i] - hostC[i]) > 0.001)
+			printf("%d %f \n", i, fabs(result[i]-hostC[i]));
 	}
+
 	/// Libere la memoire
 	free(hostA);
 	free(hostB);
@@ -138,13 +140,18 @@ void calc(char *file)
 
 	printf("\n%d %d\n%d %d\n%d %d\n", numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
 	printf("%d %d\n", gridY, gridX);
-}
+ }
 
 int main()
 {
 	clock_t tbegin, tend;
 
-	/*
+	tbegin = clock();
+	calc("mp2_data/5");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	system("pause");
+
 	tbegin = clock();
 	calc("mp2_data/0");
 	tend = clock();
@@ -156,10 +163,21 @@ int main()
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
 	system("pause");
-	*/
 
 	tbegin = clock();
 	calc("mp2_data/2");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	system("pause");
+
+	tbegin = clock();
+	calc("mp2_data/3");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	system("pause");
+
+	tbegin = clock();
+	calc("mp2_data/4");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
 	system("pause");
