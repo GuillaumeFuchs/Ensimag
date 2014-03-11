@@ -22,22 +22,21 @@ __global__ void matrixMultiply(float * A, float * B, float * C, int numARows, in
 	int Row = by * TILE_WIDTH + ty;
 	int Col = bx * TILE_WIDTH + tx; 
 
-	float Pvalue = 0.;	
+	float Pvalue = 0.f;	
 
-	int iteration = ceil((double)numAColumns/TILE_WIDTH);
+	int iteration = ceil(((double)numAColumns)/TILE_WIDTH);
 
 	for (int m = 0; m < iteration; ++m){
-		if (m*TILE_WIDTH+tx < numAColumns && Row < numARows)
-			ds_A[ty][tx] = A[Row*numAColumns + m*TILE_WIDTH + tx];
-		if (Col < numBColumns && m*TILE_WIDTH+ty < numBRows)
-			ds_B[ty][tx] = B[(m*TILE_WIDTH+ty)*numBColumns + Col];
+	  ds_A[ty][tx] = A[Row*numAColumns + m*TILE_WIDTH + tx];
+	  ds_B[ty][tx] = B[(m*TILE_WIDTH+ty)*numBColumns + Col];
+      __syncthreads();
 
-		__syncthreads();
-
+      if (Row < numARows && Col < numBColumns){
 		for (int k = 0; k < TILE_WIDTH; ++k){
-			if (m*TILE_WIDTH+tx < numAColumns && m*TILE_WIDTH+ty < numBRows && Row < numARows && Col < numBColumns)
+			if (m*TILE_WIDTH+k < numAColumns) 
 				Pvalue += ds_A[ty][k] * ds_B[k][tx];
 		}
+      }
 
 		__syncthreads();
 	}
@@ -121,15 +120,12 @@ void calc(char *file)
 		fout >> result[i];
 	fout.close();
 
-	printf("%f \n", result[0]-hostC[0]);
-	system("pause");
-
-	for (int i = 0; i < numCRows*numCColumns; i++){
-		if (fabs(result[i] - hostC[i]) > 0.001)
-			printf("%d %f \n", i, fabs(result[i]-hostC[i]));
+	for (int i = 0; i < numCColumns; i++){
+	 if (fabs(result[i] - hostC[i]) > 0.01)
+	 		printf("%d %f \n", i, fabs(result[i]-hostC[i]));
 	}
-
-	/// Libere la memoire
+	
+    // Libere la memoire
 	free(hostA);
 	free(hostB);
 	free(hostC);
@@ -145,42 +141,195 @@ void calc(char *file)
 int main()
 {
 	clock_t tbegin, tend;
-
-	tbegin = clock();
-	calc("mp2_data/5");
-	tend = clock();
-	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
-
-	tbegin = clock();
+    tbegin = clock();
 	calc("mp2_data/0");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
-
-	tbegin = clock();
+	sleep(2);
+    
+    tbegin = clock();
 	calc("mp2_data/1");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
+	sleep(2);
 
 	tbegin = clock();
 	calc("mp2_data/2");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
+	sleep(2);
 
 	tbegin = clock();
 	calc("mp2_data/3");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
+	sleep(2);
 
 	tbegin = clock();
 	calc("mp2_data/4");
 	tend = clock();
 	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
-	system("pause");
+	sleep(2);
+    
+    tbegin = clock();
+	calc("mp2_data/5");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
 
-	return 0;
+    tbegin = clock();
+	calc("mp3_data/0");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+    tbegin = clock();
+	calc("mp3_data/1");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("mp3_data/2");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("mp3_data/3");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("mp3_data/4");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("mp3_data/5");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+    tbegin = clock();
+	calc("data/0");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+    tbegin = clock();
+	calc("data/1");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/2");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/3");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/4");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/5");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/6");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+	tbegin = clock();
+	calc("data/7");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/8");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data/9");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+    tbegin = clock();
+	calc("data2/0");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+    tbegin = clock();
+	calc("data2/1");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/2");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/3");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/4");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/5");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/6");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+	tbegin = clock();
+	calc("data2/7");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/8");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+
+	tbegin = clock();
+	calc("data2/9");
+	tend = clock();
+	printf("%f\n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	sleep(2);
+  
+    return 0;
 }
