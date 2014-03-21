@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique -->
+<html lang="fr" xmlns:og="http://ogp.me/ns#"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta charset="iso-8859-1">
+	<title>Une introduction à CUDA</title>
+	<meta name="generator" content="developpez-com">
+	<meta name="description" content="intro,introduction,cuda,nvidia,nvidia cuda,gpu,gpgpu,calcul,sur,gpu,calcul sur gpu">
+	<meta name="keywords" content="Une introduction à CUDA">
+	<script type="text/javascript" async="" src="./Une introduction à CUDA_files/ga.js"></script><script type="text/javascript" src="./Une introduction à CUDA_files/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="./Une introduction à CUDA_files/saved_resource"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="http://tcuvelier.developpez.com/template/favicon.ico">
+	<link rel="image_src" href="http://www.developpez.com/facebook-icon.png">
+	<link rel="stylesheet" type="text/css" href="./Une introduction à CUDA_files/gabarit0.css">
+	<link rel="stylesheet" type="text/css" media="print" href="./Une introduction à CUDA_files/printer.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="./Une introduction à CUDA_files/developpez-kit-generation.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="./Une introduction à CUDA_files/code.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="./Une introduction à CUDA_files/lightbox.2.51.css">
+	<script type="text/javascript" src="./Une introduction à CUDA_files/developpez-kit-generation.js"></script>
+	<script type="text/javascript" src="./Une introduction à CUDA_files/lightbox.2.51.js"></script>
+	<script type="text/javascript" src="./Une introduction à CUDA_files/fonctions-kit.js"></script>
+	<meta name="author" content="Thibaut Cuvelier">
+	<!--[if lt IE 7]>
+	<script src="/template/ie7/IE7.js" type="text/javascript"></script>
+	<![endif]-->
+
+	<!--[if IE 6]>
+	<link rel="stylesheet" type="text/css" href="/template/gabarit-ie6.css" />
+	<![endif]-->
+
+	<!--[if IE 7]>
+	<link rel="stylesheet" type="text/css" href="/template/gabarit-ie7.css" />
+	<![endif]-->
+
+	<!--[if IE 8]>
+	<link rel="stylesheet" type="text/css" href="/template/gabarit-ie8.css" />
+	<![endif]-->
+
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="/template/kit/html5_ie.js"></script>
+	<![endif]-->
+	<!--[if IE 9]><link rel="stylesheet" type="text/css" href="http://www.developpez.com/template/kit/ie9.css" /><![endif]-->
+	<!--[if IE 8]><link rel="stylesheet" type="text/css" href="http://www.developpez.com/template/kit/ie8.css" /><![endif]-->
+	<!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://www.developpez.com/template/kit/ie.css" /><![endif]-->
+	<!--[if IE 7]><link rel="stylesheet" type="text/css" href="http://www.developpez.com/template/kit/ie7.css" /><![endif]-->
+	<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="http://www.developpez.com/template/kit/ie6.css" /><![endif]-->
+	<!--[if lt IE 9]><script type="text/javascript" src="http://www.developpez.com/template/kit/html5_ie.js"></script><![endif]-->
+
+<style type="text/css"></style></head>
+<body>
+<header class="layout">
+
+<div id="quicknav">
+	<div id="quicksearch">
+		<form method="get" action="http://www.developpez.com/recherche/" id="cse-search-box">
+			<p>
+				<input type="text" name="q" id="recherche_g" style="border: 1px solid rgb(126, 157, 185); padding: 2px; background-image: url(http://www.google.com/cse/intl/fr/images/google_custom_search_watermark.gif); background-color: rgb(255, 255, 255); background-position: 0% 50%; background-repeat: no-repeat no-repeat;">
+				<input type="image" name="sa" id="recherche_submit" alt="Go" title="Rechercher" src="./Une introduction à CUDA_files/go-gray.png">
+				<input type="hidden" name="cx" value="006424388311999799839:-31tnf0iuqy">
+				<input type="hidden" name="cof" value="FORID:9">
+				<input type="hidden" name="ie" value="ISO-8859-1">
+			</p>
+		<input name="siteurl" type="hidden" value="tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique"><input name="ref" type="hidden" value="www.google.fr/"><input name="ss" type="hidden" value=""></form>
+		<script type="text/javascript" src="./Une introduction à CUDA_files/brand"></script>
+	</div>
+<nav>	<ul id="quicklinks">
+		<li class="first"><a href="http://www.developpez.net/forums/" title="">Forums</a></li>
+		<li><a href="http://general.developpez.com/cours/" title="">Tutoriels</a></li>
+		<li><a href="http://magazine.developpez.com/" title="">Magazine</a></li>
+		<li><a href="http://general.developpez.com/faq/" title="">FAQs</a></li>
+		<li><a href="http://blog.developpez.com/" title="">Blogs</a></li>
+		<li><a href="http://projets.developpez.com/" title="">Projets</a></li>
+		<li><a href="http://chat.developpez.com/" title="">Chat</a></li>
+		<li><a href="http://www.developpez.com/newsletter/">Newsletter</a></li>
+		<li><a href="http://etudes.developpez.com/">Études</a></li>
+		<li><a href="http://emploi.developpez.com/" title="">Emploi</a></li>
+		<li><a href="http://club.developpez.com/">Club</a></li>
+		<li><a href="http://club.developpez.com/contacts/" title="">Contacts</a></li>
+	</ul>
+</nav></div>
+	<div id="publicite">
+		<!-- BEGIN Hi-Media Media Settings - v1.0 -->
+<script type="text/javascript">
+<!--
+	var adlSite='developpez.com';
+	var adlZone='c';
+	var adlKv='';
+	var adlHasDcopt = false;
+	var adlPro=window.location.protocal=='https:'?'https:':'http:';
+	document.write('<'+'sc'+'ript type="text/javascript" src="'+adlPro+'//js.himediads.com/js?lang=fr&s='+adlSite+'&z='+adlZone+'&d='+Math.floor(Math.random()*10000000000)+'"><\/'+'sc'+'ript>');
+//-->
+</script><script type="text/javascript" src="http://js.himediads.com/js?lang=fr&s=developpez.com&z=c&d=9732707364"></script>
+<!-- END Hi-Media Media Settings - v1.0 -->
+
+<!-- BEGIN Hi-Media Media AdTag, developpez.com 728x90 - v1.0 -->
+<div id="adl_728x90">
+	<table class="gabarit_pub_bigbanner">
+		<tbody><tr>
+			<td>
+				<script type="text/javascript">if (typeof getAdLinkAdTag=='function') getAdLinkAdTag( '728x90' );</script>
+				<noscript>
+					&lt;a href="http://rd.himediads.com/fr/jump/developpez.com/c;sz=728x90;tile=2;ord=" target="_blank"&gt;&lt;img src="http://rd.himediads.com/fr/ad/developpez.com/homepage;sz=728x90;tile=2;ord=?" width="728" height="90" alt="" /&gt;&lt;/a&gt;
+				</noscript>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+<!-- END Hi-Media Media AdTag, developpez.com 728x90 - v1.0 -->
+			</div>
+
+	<div id="logo_dvp">
+		<a href="http://www.developpez.com/" title="Accueil Developpez.com">
+			<img src="./Une introduction à CUDA_files/logo.png" alt="">
+		</a>
+	</div>
+
+<nav id="gabarit">
+
+<div id="gabarit_tabmenu">
+	<div>&nbsp;</div>
+	<ul id="tabs">
+	<li class="item first">
+	
+	<a href="http://www.developpez.com/">
+		Accueil
+	<span class="tooltip">Actualités IT Pro</span>	</a>
+
+		</li>
+	<li class="item">
+	
+	<a href="http://alm.developpez.com/">
+		ALM
+	<span class="tooltip">Cycle de vie du logiciel</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://alm.developpez.com/">ALM</a></li>
+					<li>			<a href="http://uml.developpez.com/">UML</a></li>
+					<li class="last">			<a href="http://merise.developpez.com/">Merise</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://java.developpez.com/">
+		Java
+	<span class="tooltip">Plateforme et langage Java</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://java.developpez.com/">Java</a></li>
+					<li>			<a href="http://javaweb.developpez.com/">Java Web</a></li>
+					<li>			<a href="http://spring.developpez.com/">Spring</a></li>
+					<li>			<a href="http://android.developpez.com/">Android</a></li>
+					<li>			<a href="http://eclipse.developpez.com/">Eclipse</a></li>
+					<li class="last">			<a href="http://netbeans.developpez.com/">NetBeans</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://dotnet.developpez.com/">
+		.NET
+	<span class="tooltip">Microsoft Framework .NET</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://dotnet.developpez.com/">Microsoft DotNET</a></li>
+					<li>			<a href="http://dotnet.developpez.com/visual-studio/">Visual Studio</a></li>
+					<li>			<a href="http://dotnet.developpez.com/aspnet/">ASP.NET</a></li>
+					<li>			<a href="http://dotnet.developpez.com/csharp/">C#</a></li>
+					<li>			<a href="http://dotnet.developpez.com/vbnet/">VB.NET</a></li>
+					<li>			<a href="http://windowsphone.developpez.com/">Windows Phone</a></li>
+					<li class="last">			<a href="http://windows-azure.developpez.com/">Windows Azure</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://web.developpez.com/">
+		Dév. Web
+	<span class="tooltip">Développement Web et Webmarketing</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://web.developpez.com/">Développement Web</a></li>
+					<li>			<a href="http://ajax.developpez.com/">AJAX</a></li>
+					<li>			<a href="http://apache.developpez.com/">Apache</a></li>
+					<li>			<a href="http://asp.developpez.com/">ASP</a></li>
+					<li>			<a href="http://css.developpez.com/">CSS</a></li>
+					<li>			<a href="http://flash.developpez.com/">Flash / Flex</a></li>
+					<li>			<a href="http://javascript.developpez.com/">JavaScript</a></li>
+					<li>			<a href="http://php.developpez.com/">PHP</a></li>
+					<li>			<a href="http://ruby.developpez.com/">Ruby &amp; Rails</a></li>
+					<li>			<a href="http://web-semantique.developpez.com/">Web sémantique</a></li>
+					<li>			<a href="http://webmarketing.developpez.com/">Webmarketing</a></li>
+					<li class="last">			<a href="http://xhtml.developpez.com/">(X)HTML</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://edi.developpez.com/">
+		EDI
+	<span class="tooltip">Environnements de Développement Intégré</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://edi.developpez.com/">EDI</a></li>
+					<li>			<a href="http://4d.developpez.com/">4D</a></li>
+					<li>			<a href="http://delphi.developpez.com/">Delphi</a></li>
+					<li>			<a href="http://eclipse.developpez.com/">Eclipse</a></li>
+					<li>			<a href="http://labview.developpez.com/">LabVIEW</a></li>
+					<li>			<a href="http://netbeans.developpez.com/">NetBeans</a></li>
+					<li>			<a href="http://matlab.developpez.com/">MATLAB</a></li>
+					<li>			<a href="http://scilab.developpez.com/">Scilab</a></li>
+					<li>			<a href="http://dotnet.developpez.com/visual-studio/">Visual Studio</a></li>
+					<li>			<a href="http://wind.developpez.com/">WinDev</a></li>
+					<li>			<a href="http://vb.developpez.com/">Visual Basic 6</a></li>
+					<li>			<a href="http://lazarus.developpez.com/">Lazarus</a></li>
+					<li class="last">			<a href="http://qt-creator.developpez.com/">Qt Creator</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://programmation.developpez.com/" class="selected">
+		Programmation
+	<span class="tooltip">Programmation et langages de programmation applicatifs</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://programmation.developpez.com/">Programmation</a></li>
+					<li>			<a href="http://algo.developpez.com/">Débuter - Algorithmique</a></li>
+					<li>			<a href="http://asm.developpez.com/">Assembleur</a></li>
+					<li>			<a href="http://c.developpez.com/">C</a></li>
+					<li>			<a href="http://cpp.developpez.com/">C++</a></li>
+					<li>			<a href="http://objective-c.developpez.com/">Objective C</a></li>
+					<li>			<a href="http://pascal.developpez.com/">Pascal</a></li>
+					<li>			<a href="http://perl.developpez.com/">Perl</a></li>
+					<li>			<a href="http://python.developpez.com/">Python</a></li>
+					<li>			<a href="http://xml.developpez.com/">XML</a></li>
+					<li class="last">			<a href="http://general.developpez.com/cours/">Autres</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://sgbd.developpez.com/">
+		SGBD
+	<span class="tooltip">Systèmes de Gestion de Bases de Données</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://sgbd.developpez.com/">SGBD &amp; SQL</a></li>
+					<li>			<a href="http://4d.developpez.com/">4D</a></li>
+					<li>			<a href="http://access.developpez.com/">Access</a></li>
+					<li>			<a href="http://db2.developpez.com/">DB2</a></li>
+					<li>			<a href="http://firebird.developpez.com/">Firebird</a></li>
+					<li>			<a href="http://interbase.developpez.com/">InterBase</a></li>
+					<li>			<a href="http://mysql.developpez.com/">MySQL</a></li>
+					<li>			<a href="http://nosql.developpez.com/">NoSQL</a></li>
+					<li>			<a href="http://oracle.developpez.com/">Oracle</a></li>
+					<li>			<a href="http://postgresql.developpez.com/">PostgreSQL</a></li>
+					<li>			<a href="http://sqlserver.developpez.com/">SQL-Server</a></li>
+					<li class="last">			<a href="http://sybase.developpez.com/">Sybase</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://office.developpez.com/">
+		Office
+	<span class="tooltip">Bureautique pour l'entreprise</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://office.developpez.com/">Microsoft Office</a></li>
+					<li>			<a href="http://access.developpez.com/">Access</a></li>
+					<li>			<a href="http://excel.developpez.com/">Excel</a></li>
+					<li>			<a href="http://word.developpez.com/">Word</a></li>
+					<li>			<a href="http://outlook.developpez.com/">Outlook</a></li>
+					<li>			<a href="http://powerpoint.developpez.com/">PowerPoint</a></li>
+					<li>			<a href="http://sharepoint.developpez.com/">SharePoint</a></li>
+					<li class="last">			<a href="http://project.developpez.com/">Microsoft Project</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://solutions-entreprise.developpez.com/">
+		Solutions d'entreprise
+	<span class="tooltip">Autres logiciels pour l'entreprise</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://solutions-entreprise.developpez.com/">Solutions d'entreprise</a></li>
+					<li>			<a href="http://business-intelligence.developpez.com/">Business Intelligence</a></li>
+					<li>			<a href="http://solutions-entreprise.developpez.com/erp-pgi/presentation-erp-pgi/">ERP / PGI</a></li>
+					<li>			<a href="http://crm.developpez.com/">CRM</a></li>
+					<li>			<a href="http://sas.developpez.com/">SAS</a></li>
+					<li>			<a href="http://cloud-computing.developpez.com/">Cloud Computing</a></li>
+					<li>			<a href="http://sap.developpez.com/">SAP</a></li>
+					<li>			<a href="http://www.developpez.net/forums/f1664/systemes/windows/windows-serveur/biztalk-server/">Microsoft BizTalk Server</a></li>
+					<li class="last">			<a href="http://talend.developpez.com/">Talend</a></li>
+		
+			</ul>	</li>
+	<li class="item">
+	
+	<a href="http://applications.developpez.com/">
+		Applications
+	<span class="tooltip">Applications logicielles</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://applications.developpez.com/">Applications</a></li>
+					<li>			<a href="http://jeux.developpez.com/">2D - 3D - Jeux</a></li>
+					<li>			<a href="http://open-source.developpez.com/">Libres &amp; Open Source</a></li>
+					<li>			<a href="http://openoffice-libreoffice.developpez.com/">OpenOffice &amp; LibreOffice</a></li>
+					<li class="last">			<a href="http://portail-projets.developpez.com/">Projets</a></li>
+		
+			</ul>	</li>
+	<li class="item prelast">
+	
+	<a href="http://mobiles.developpez.com/">
+		Mobiles
+	<span class="tooltip">Logiciels et matériels mobiles</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://mobiles.developpez.com/">Mobiles</a></li>
+					<li>			<a href="http://android.developpez.com/">Android</a></li>
+					<li>			<a href="http://ios.developpez.com/">iOS</a></li>
+					<li class="last">			<a href="http://windowsphone.developpez.com/">Windows Phone</a></li>
+		
+			</ul>	</li>
+	<li class="item last">
+	
+	<a href="http://systeme.developpez.com/">
+		Systèmes
+	<span class="tooltip">Logiciels et matériels systèmes</span>	</a>
+
+	<ul class="submenu">
+		<li><a href="http://systeme.developpez.com/">Systèmes</a></li>
+					<li>			<a href="http://windows.developpez.com/">Windows</a></li>
+					<li>			<a href="http://linux.developpez.com/">Linux Professionnel</a></li>
+					<li>			<a href="http://securite.developpez.com/">Sécurité</a></li>
+					<li>			<a href="http://hardware.developpez.com/">PC</a></li>
+					<li>			<a href="http://mac.developpez.com/">Mac</a></li>
+					<li>			<a href="http://reseau.developpez.com/">Réseau</a></li>
+					<li>			<a href="http://green-it.developpez.com/">Green IT</a></li>
+					<li>			<a href="http://virtualisation.developpez.com/">Virtualisation</a></li>
+					<li class="last">			<a href="http://embarque.developpez.com/">Systèmes Embarqués</a></li>
+		
+			</ul>	</li>
+	</ul>
+</div>
+
+	<div id="gabarit_topicmenu">
+		<div>&nbsp;</div>
+		<ul id="topics">
+												<li>
+								<span><strong><a href="http://programmation.developpez.com/">Programmation</a></strong></span></li>
+															<li>
+								<span><strong><a href="http://algo.developpez.com/">Algorithmique</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://asm.developpez.com/">Assembleur</a></strong></span>
+				</li>
+												<li class="selected">
+								<span><strong><a href="http://c.developpez.com/">C</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://cpp.developpez.com/">C++</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://objective-c.developpez.com/">Objective C</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://pascal.developpez.com/">Pascal</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://perl.developpez.com/">Perl</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://python.developpez.com/">Python</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://xml.developpez.com/">XML</a></strong></span>
+				</li>
+												<li>
+								<span><strong><a href="http://general.developpez.com/cours/">Autres</a></strong></span>
+				</li>
+					</ul>
+	</div>
+
+<div id="gabarit_resourcemenu">
+	<div id="gabarit_resourcemenu_left">&nbsp;</div>
+	<div id="gabarit_resourcemenu_right">&nbsp;</div>
+	
+	<div id="facebook_bloc">
+		<a href="http://www.facebook.com/pages/C/108584359174497" target="_blank"><img src="./Une introduction à CUDA_files/facebook.png" alt="Facebook" title="Retrouver Developpez sur Facebook"></a>
+	</div>
+	<div id="twitter_bloc">
+		<a href="http://twitter.com/C_Developpez" target="_blank"><img src="./Une introduction à CUDA_files/twitter.png" alt="Twitter" title="Retrouver Developpez sur Twitter"></a>
+	</div>
+	<div id="rss_syndication">
+		<a href="http://c.developpez.com/index/rss" target="_blank"><img src="./Une introduction à CUDA_files/rss.png" alt="RSS" title="Flux RSS"></a>
+	</div>
+	<ul id="resources">		<li><span><strong><a href="http://c.developpez.com/">Accueil C</a></strong></span></li>
+			<li><span><strong><a href="http://www.developpez.net/forums/f7/c-cpp/">Forums C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/faq/">FAQ C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/cours/">Tutoriels C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/livres/">Livres C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/telecharger/index/categorie/30/Outils-C-C">Compilateurs et outils C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/telecharger/index/categorie/149/Sources-C">Sources C</a></strong></span></li>
+			<li><span><strong><a href="http://c.developpez.com/telecharger/index/categorie/451/Bibliotheques-C">Bibliothèques C</a></strong></span></li>
+			<li><span><strong><a href="http://gtk.developpez.com/">GTK+</a></strong></span></li>
+	</ul>
+</div>
+</nav>
+</header>
+
+<section class="layout">
+	<div id="shadow1">
+		<div id="shadow2">
+			<div class="contenuPage">		<article class="ArticleComplet" itemscope="" itemtype="http://schema.org/Article" style="margin: 0px 20px;">
+<meta itemprop="genre" content="informatique">
+<meta itemprop="inLanguage" content="fr-FR">
+		
+<header class="EnteteTitres">
+<h1 class="titre-article" itemprop="name">Une introduction à CUDA</h1>
+
+</header><nav class="nav-sommaire ArticleHorsLigne fixed2" style="width: 216px;"><header><h1 class="TitreHeader StopArrondi ToggleGecko">Table des matières<img class="ToggleImgPlier" title="Plier" alt="Plier" src="./Une introduction à CUDA_files/fleche-haut-bleue.gif"><img class="ToggleImgDeplier" title="Déplier" alt="Déplier" style="display:none;" src="./Une introduction à CUDA_files/fleche-bas-bleue.gif"></h1></header><ul id="nav_sommaire_ul_principal" class="nav-sommaire-ul" style="overflow-y: auto;">
+  
+  
+  
+  
+  
+  <li><a class="summaryIndent0" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV">V. Les mains dans le cambouis</a><ul class="nav-sommaire-ul IndentationV">
+      
+      
+      
+      
+      <li><a class="summaryIndent1" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-A">V-A. Les kernels</a></li>
+      <li><a class="summaryIndent1" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-B">V-B. Qualifieurs de kernels</a><ul class="nav-sommaire-ul IndentationV-B">
+        
+        
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-B-1">V-B-1. __global__</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-B-2">V-B-2. __device__</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-B-3">V-B-3. __host__</a></li>
+      </ul></li>
+      <li><a class="summaryIndent1" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-C">V-C. Configuration de l'exécution</a><ul class="nav-sommaire-ul IndentationV-C">
+        
+        
+        
+        
+        
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-C-1">V-C-1. Dg</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-C-2">V-C-2. Db</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-C-3">V-C-3. Ns</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-C-4">V-C-4. S</a></li>
+      </ul></li>
+      <li><a class="summaryIndent1" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-D">V-D. Qualificateurs de variables</a><ul class="nav-sommaire-ul IndentationV-D">
+        
+        
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-D-1">V-D-1. __device__</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-D-2">V-D-2. __constant__</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-D-3">V-D-3. __shared__</a></li>
+        <li><a class="summaryIndent2" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-D-4">V-D-4. Généralités</a></li>
+      </ul></li>
+      <li><a class="summaryIndent1" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#LV-E">V-E. Compilation</a></li>
+    </ul></li>
+  
+</ul></nav><section class="ArticleHorsLigne"><section class="articleBody" itemprop="articleBody" style="margin-left: 231px; margin-top: 0px; clear: none;"><div class="cachee"><div class="barreNavigation" style="margin-top: -25px;"><hr class="hr-separation"><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=theorie"><img title="Page précédente" alt="précédent" src="./Une introduction à CUDA_files/kitprecedent.gif"></a><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/"><img title="Revenir au sommaire" alt="sommaire" src="./Une introduction à CUDA_files/kitsommaire.gif"></a><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=conclusions"><img alt="suivant" title="Page suivante" src="./Une introduction à CUDA_files/kitsuivant.gif"></a><hr class="hr-separation"></div></div>
+  
+  
+  
+  
+  
+  
+		<h2 class="TitreSection1" id="LV">V. Les mains dans le cambouis<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h2><div class="BlocSection1">
+      
+      <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e925">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e925" onclick="selectionCode(&#39;contenuCoded0e925&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e925" class="contenuCode">
+Il n'y a pas de langage informatique dans lequel vous ne puissiez Ã©crire de mauvais programme.
+</code></pre></div>
+      <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e928">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e928" onclick="selectionCode(&#39;contenuCoded0e928&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e928" class="contenuCode">
+Si vous ne savez pas ce que votre programme est censÃ© faire, vous feriez bien de ne pas commencer Ã&nbsp; l'Ã©crire.
+</code></pre></div>
+      <p>
+                (Extraits de <a class="lienArticle simple" href="http://courtois.cc/murphy/murphy_informatique.html#progsbugs">Les lois de Murphy</a>).
+            </p>
+      
+		<h3 class="TitreSection2" id="LV-A">V-A. Les kernels<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h3><div class="BlocSection2">
+        
+        
+        <p>
+                    Très simplement, un kernel est une fonction exécutée sur le GPU.
+                </p>
+        <p>
+                    Il en existe différent types, qualifiés de :
+                </p>
+        <ol type="1">
+          <li><span class="codeinline">__global__</span> ; </li>
+          <li><span class="codeinline">__device__</span> ; </li>
+          <li><span class="codeinline">__host__</span>.</li>
+        </ol>
+        <p>
+                    Le premier correspond à un kernel exécuté sur le GPU mais appelé par le CPU ; le deuxième, à un kernel exécuté et
+                    appelé par le GPU ; le troisième, à une fonction exécutée et appelée par le CPU.
+                    Ce dernier n'est pas obligatoire : c'est le mode de fonctionnement par défaut.
+                </p>
+        <p>
+                    Un kernel ne s'appelle pas de la même manière qu'une fonction. Voici un appel de fonction.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e974">Appel de fonction<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e974" onclick="selectionCode(&#39;contenuCoded0e974&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e974" class="contenuCode"><code class="c_function">fonction</code>(parametre, parametre);
+</code></pre></div>
+        <p>
+                    Mais avant de vous parler de l'appel d'un kernel, il faut que vous compreniez bien le mode de fonctionnement
+                    d'un GPU.
+                </p>
+        <p>
+                    Une grille représente la totalité de la tâche à effectuer. Chaque grille peut être divisée en un ou plusieurs
+                    blocs, chacun exécutant plusieurs threads.
+                </p>
+        <p class="imgtext-warning">
+                    Un thread sur un GPU n'a pas le même sens qu'un thread sur le CPU.<br>
+                    Sur un GPU, il s'agit de la plus petite subdivision de la tâche à effectuer.
+                </p>
+        <figure class="TextAlign-center"><a data-rel="lightbox[article]" href="./Une introduction à CUDA_files/grille-blocs-threads.png"><img class="ImgCliquable" src="./Une introduction à CUDA_files/grille-blocs-threads.png" alt="Image non disponible" width="305px" height="325px"></a></figure>
+        <p>
+                    Un appel de kernel se fait en spécifiant 2 paramètres entre triples chevrons précédant les paramètres passés
+                    au kernel.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e995">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e995" onclick="selectionCode(&#39;contenuCoded0e995&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e995" class="contenuCode">kernel <code class="operator">&lt;</code><code class="operator">&lt;</code><code class="operator">&lt;</code> nBlocs, threadsParBloc <code class="operator">&gt;</code><code class="operator">&gt;</code><code class="operator">&gt;</code> (arguments);
+</code></pre></div>
+        <p><span class="codeinline"><b>nBlocs</b></span> est le nombre de subdivisions appliquées à la grille à calculer et est de type
+                    <span class="codeinline">dim3</span> (le cast à partir d'un entier N initialise le <i>dim3</i> à <i>{N, 1, 1}</i>).<br><span class="codeinline"><b>threadsParBloc</b></span> indique le nombre de threads à exécuter simultanément pour chaque bloc.
+                    Ici encore, cette valeur est de type <span class="codeinline">dim3</span>.
+                </p>
+        <p>
+                    Les valeurs à appliquer dépendent simultanément du problème à résoudre (choix des dimensions des blocs)
+                    et du matériel utilisé (nombre de threads par bloc). Choisir un nombre de threads supérieurs à la quantité
+                    nativement supportée entraînera une perte de performances. Cette notation permet ainsi d'adapter dynamiquement
+                    le programme aux matériels passés, présents et futurs.
+                </p>
+        <p>
+                    Chaque kernel dispose de variables implicites en lecture seule (toutes de type <span class="codeinline">dim3</span>).
+                </p>
+        <ol type="1">
+          <li><span class="codeinline"><b>blockIdx</b></span> : index du bloc dans la grille, </li>
+          <li><span class="codeinline"><b>threadIdx</b></span> : index du thread dans le bloc, </li>
+          <li><span class="codeinline"><b>blockDim</b></span> : nombre de threads par bloc (valeur de <i>threadsParBloc</i> du
+                        paramétrage du kernel).</li>
+        </ol>
+        <p>
+                    La grille est ici considérée comme un seul et unique bloc à une seule dimension.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1071">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1071" onclick="selectionCode(&#39;contenuCoded0e1071&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1071" class="contenuCode"><code class="keyword2">__global__</code> <code class="keyword3">void</code> <code class="function">vecAdd</code>(<code class="keyword3">float</code> <code class="operator">*</code> A, <code class="keyword3">float</code> <code class="operator">*</code> B, <code class="keyword3">float</code> <code class="operator">*</code> C)
+<code class="operator">{</code>
+    <code class="keyword3">int</code> i <code class="operator">=</code> <code class="literal2">threadIdx</code>.x;
+    C[i] <code class="operator">=</code> A[i] <code class="operator">+</code> B[i];
+<code class="operator">}</code>
+
+<code class="keyword3">int</code> <code class="function">main</code>()
+<code class="operator">{</code>
+    <code class="comment2">//</code><code class="comment2"> </code><code class="comment2">utilisation</code><code class="comment2"> </code><code class="comment2">du</code><code class="comment2"> </code><code class="comment2">kernel</code>
+    vecAdd<code class="operator">&lt;</code><code class="operator">&lt;</code><code class="operator">&lt;</code><code class="digit">1</code>, N<code class="operator">&gt;</code><code class="operator">&gt;</code><code class="operator">&gt;</code>(A, B, C);
+        <code class="comment2">//</code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2">|-&gt;</code><code class="comment2"> </code><code class="comment2">vecteurs</code><code class="comment2"> </code><code class="comment2">additionnés</code><code class="comment2"> </code><code class="comment2">une</code><code class="comment2"> </code><code class="comment2">seule</code><code class="comment2"> </code><code class="comment2">fois</code>
+        <code class="comment2">//</code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2"> </code><code class="comment2">|-&gt;</code><code class="comment2"> </code><code class="comment2">nombre</code><code class="comment2"> </code><code class="comment2">de</code><code class="comment2"> </code><code class="comment2">composante</code><code class="comment2"> </code><code class="comment2">des</code><code class="comment2"> </code><code class="comment2">vecteurs</code>
+<code class="operator">}</code>
+</code></pre></div>
+        <p>
+                    Dans le cas où la grille est sous-divisée en N blocs (tous de 1 dimension), l'index pourrait être trouvé de la
+                    manière suivante.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1243">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1243" onclick="selectionCode(&#39;contenuCoded0e1243&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1243" class="contenuCode"><code class="keyword2">__global__</code> <code class="keyword3">void</code> <code class="function">vecAdd</code>(<code class="keyword3">float</code> <code class="operator">*</code> A, <code class="keyword3">float</code> <code class="operator">*</code> B, <code class="keyword3">float</code> <code class="operator">*</code> C)
+<code class="operator">{</code>
+    <code class="keyword3">int</code> i <code class="operator">=</code> <code class="literal2">blockIdx</code>.x <code class="operator">*</code> <code class="literal2">blockDim</code>.x <code class="operator">+</code> <code class="literal2">threadIdx</code>.x;
+    C[i] <code class="operator">=</code> A[i] <code class="operator">+</code> B[i];
+<code class="operator">}</code>
+
+<code class="keyword3">int</code> <code class="function">main</code>()
+<code class="operator">{</code>
+    <code class="comment2">//</code><code class="comment2"> </code><code class="comment2">utilisation</code><code class="comment2"> </code><code class="comment2">du</code><code class="comment2"> </code><code class="comment2">kernel</code>
+    <code class="keyword1">const</code> <code class="keyword3">int</code> nThreadsPerBlocks  <code class="operator">=</code> <code class="digit">4</code>;
+    <code class="keyword1">const</code> <code class="keyword3">int</code> nBlocks            <code class="operator">=</code> (arraySize <code class="operator">/</code> nThreadsPerBlocks) <code class="operator">+</code> ( (arraySize <code class="operator">%</code> nThreadsPerBlocks) <code class="operator">=</code><code class="operator">=</code> <code class="digit">0</code> ? <code class="digit">0</code> : <code class="digit">1</code>);
+    vecAdd<code class="operator">&lt;</code><code class="operator">&lt;</code><code class="operator">&lt;</code>nBlocks, nThreadsPerBlocks<code class="operator">&gt;</code><code class="operator">&gt;</code><code class="operator">&gt;</code>(A, B, C);
+<code class="operator">}</code>
+</code></pre></div>
+        <p>
+                    Les variables doivent être qualifiées, pour définir leur lieu de résidence : voyez la section qui y est réservée.
+                </p>
+        <p class="imgtext-info">
+                    Les paramètres entre chevrons sont requis, car le kernel est de type <span class="codeinline">__global__</span>. S'il était d'un
+                    autre type, ils n'auraient pas dû être précisés !
+                </p>
+      </div>
+      
+		<h3 class="TitreSection2" id="LV-B">V-B. Qualifieurs de kernels<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h3><div class="BlocSection2">
+        
+        
+        
+		<h4 class="TitreSection3" id="LV-B-1">V-B-1. __global__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li>Exécuté sur le périphérique, </li>
+            <li>Appelable de l'hôte.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>Pas de récursion possible,</li>
+            <li>Pas de variables statiques,</li>
+            <li>Pas de liste de paramètres variable.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>On ne peut demander leur adresse mémoire,</li>
+            <li>Incompatible avec <span class="codeinline">__device__</span>,</li>
+            <li>Ne peut rien retourner,</li>
+            <li>À l'exécution, on doit préciser la configuration,</li>
+            <li>Appel asynchrone (le kernel retourne avant d'avoir effectué les calculs),</li>
+            <li>Paramètres stockés dans la mémoire partagée, limités à 256 octets,</li>
+            <li>Dure aussi longtemps que le kernel.</li>
+          </ul>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-B-2">V-B-2. __device__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li>Exécuté sur le périphérique,</li>
+            <li>Appelable du périphérique.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>Pas de récursion possible,</li>
+            <li>Pas de variables statiques,</li>
+            <li>Pas de liste de paramètres variable.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>On ne peut demander leur adresse mémoire,</li>
+            <li>Incompatible avec <span class="codeinline">__global__</span>,</li>
+            <li>Dure aussi longtemps que l'application.</li>
+          </ul>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-B-3">V-B-3. __host__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li>Exécuté sur l'hôte,</li>
+            <li>Appelable de l'hôte.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>Appliqué par défaut.</li>
+          </ul>
+          <ul class="ListeDVP">
+            <li>Compatible avec <span class="codeinline">__device__</span>
+                        (dans ce cas, le kernel pourra être exécuté sur l'hôte et sur le périphérique),</li>
+            <li>Incompatible avec <span class="codeinline">__global__</span>,</li>
+            <li>Dure aussi longtemps que le kernel.</li>
+          </ul>
+        </div>
+      </div>
+      
+		<h3 class="TitreSection2" id="LV-C">V-C. Configuration de l'exécution<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h3><div class="BlocSection2">
+        
+        
+        <p class="imgtext-warning">
+                    Ceci n'est <i><b>requis</b></i> que pour les kernels <span class="codeinline">__global__</span> ! Requis signifie bien que l'on
+                    ne peut s'en passer, sans quoi rien ne fonctionne (avec, à la clé, beaux plantages) !
+                </p>
+        <p>
+                    Cette configuration doit être passée entre triples chevrons avant les paramètres.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1563">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1563" onclick="selectionCode(&#39;contenuCoded0e1563&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1563" class="contenuCode"><code class="comment2">//</code><code class="comment2">Définition</code><code class="comment2"> </code><code class="comment2">du</code><code class="comment2"> </code><code class="comment2">kernel</code>
+<code class="keyword2">__global__</code> <code class="keyword3">void</code> <code class="function">func</code>(<code class="keyword3">float</code> <code class="operator">*</code> parameter);
+<code class="comment2">//</code><code class="comment2">Utilisation</code><code class="comment2"> </code><code class="comment2">du</code><code class="comment2"> </code><code class="comment2">kernel</code>
+func <code class="operator">&lt;</code><code class="operator">&lt;</code><code class="operator">&lt;</code> Dg, Db, Ns, S <code class="operator">&gt;</code><code class="operator">&gt;</code><code class="operator">&gt;</code> (parameter);
+</code></pre></div>
+        
+		<h4 class="TitreSection3" id="LV-C-1">V-C-1. Dg<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li><b>Type</b> : <span class="codeinline">dim3</span> ;</li>
+            <li><b>Utilité</b> : spécifier la taille et la dimension de la grille (le produit des trois composantes
+                        est le nombre de blocs lancés) ;</li>
+            <li><b>Remarque</b> : <i>z</i> n'est pas encore utilisé et doit valoir 1.</li>
+          </ul>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-C-2">V-C-2. Db<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li><b>Type</b> : <span class="codeinline">dim3</span> ;</li>
+            <li><b>Utilité</b> : spécifier la taille et la dimension de chaque bloc (le produit des trois
+                        composantes est le nombre de threads par bloc)</li>
+          </ul>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-C-3">V-C-3. Ns<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li><b>Type</b> : <span class="codeinline">size_t</span> ;</li>
+            <li><b>Utilité</b> : spécifier le nombre d'octets en mémoire partagée alloués dynamiquement par bloc
+                        en plus de la mémoire allouée statiquement ;</li>
+            <li><b>Remarque</b> : paramètre optionnel, valeur par défaut : 0.</li>
+          </ul>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-C-4">V-C-4. S<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <ul class="ListeDVP">
+            <li><b>Type</b> : <span class="codeinline">cudaStream_t</span> ;</li>
+            <li><b>Utilité</b> : spécifier le flux associé ;</li>
+            <li><b>Remarque</b> : paramètre optionnel, valeur par défaut : 0 ; </li>
+            <li>La notion de flux sera abordée plus tard : sachez simplement qu'il s'agit d'une suite d'éléments
+                            de même type (comme une texture).</li>
+          </ul>
+        </div>
+      </div>
+      
+		<h3 class="TitreSection2" id="LV-D">V-D. Qualificateurs de variables<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h3><div class="BlocSection2">
+        
+        
+        
+		<h4 class="TitreSection3" id="LV-D-1">V-D-1. __device__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <p>
+                        Cette variable est et restera sur le périphérique. Elle ne vivra pas plus longtemps que l'application et est
+                        accessible à tous les threads de la grille et à l'hôte grâce au runtime.
+                    </p>
+          <p>
+                        Ce type peut se marier avec un des deux suivants.
+                    </p>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-D-2">V-D-2. __constant__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <p>
+                        Ce type peut être utilisé avec <span class="codeinline">__device__</span>.
+                    </p>
+          <p>
+                        La variable restera en mémoire constante. Elle ne vivra pas plus longtemps que l'application et est
+                        accessible à tous les threads de la grille et à l'hôte par le runtime.
+                    </p>
+          <p class="imgtext-warning">
+                        Ces variables ne peuvent être déclarées que de l'hôte, pas du périphérique !
+                    </p>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-D-3">V-D-3. __shared__<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <p>
+                        Ce type peut être utilisé avec <span class="codeinline">__device__</span>.
+                    </p>
+          <p>
+                        La variable résidera dans la mémoire partagée et ne survivra pas au bloc. Elle ne sera accessible qu'aux 
+                        threads du bloc.
+                    </p>
+          <p>
+                        Avant que les modifications soient écrites dans la variable et visibles pour tous les autres threads, il 
+                        faut appeler <i>__syncthreads();</i>. À noter que cet appel ne sert qu'à le garantir, il est <i>possible</i>
+                        que les modifications soient visibles avant.
+                    </p>
+          <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1790">Tableau externe<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1790" onclick="selectionCode(&#39;contenuCoded0e1790&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1790" class="contenuCode"><code class="keyword1">extern</code> <code class="keyword2">__shared__</code> <code class="keyword3">float</code> shared[];
+</code></pre></div>
+          <p>
+                        Quand la variable est déclarée en tant que tableau externe, comme précédemment, sa taille sera fixée
+                        à l'exécution. Toutes les variables déclarées de cette manière ne sont pas contiguës : le premier bit de la
+                        première correspond au premier bit des autres, contrairement aux autres langages comme le C ou le C++.
+                    </p>
+          <figure class="TextAlign-center"><a data-rel="lightbox[article]" href="./Une introduction à CUDA_files/cuda-contiguite.png"><img class="ImgCliquable" src="./Une introduction à CUDA_files/cuda-contiguite.png" alt="Image non disponible" width="550px" height="145px"></a></figure>
+          <p>
+                        C'est pourquoi il faut préciser l'offset de début. Pour avoir l'équivalent de ce premier code, il faut écrire
+                        le contenu du second.
+                    </p>
+          <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1809">Code C++<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1809" onclick="selectionCode(&#39;contenuCoded0e1809&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1809" class="contenuCode"><code class="cpp_keyword3">short</code> array0[<code class="cpp_digit">128</code>];
+<code class="cpp_keyword3">float</code> array1[<code class="cpp_digit">64</code>];
+<code class="cpp_keyword3">int</code> array2[<code class="cpp_digit">256</code>];
+</code></pre></div>
+          <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1829">Équivalent CUDA<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1829" onclick="selectionCode(&#39;contenuCoded0e1829&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1829" class="contenuCode"><code class="keyword1">extern</code> <code class="keyword2">__shared__</code> <code class="keyword3">char</code> array[];
+<code class="keyword2">__device__</code> <code class="keyword3">void</code> <code class="function">func</code>()        <code class="comment2">//</code><code class="comment2"> </code><code class="comment2">kernel</code><code class="comment2"> </code><code class="comment2">__device__</code><code class="comment2"> </code><code class="comment2">ou</code><code class="comment2"> </code><code class="comment2">bien</code><code class="comment2"> </code><code class="comment2">__global__</code>
+<code class="operator">{</code>
+    <code class="keyword3">short</code><code class="operator">*</code> array0 <code class="operator">=</code> (<code class="keyword3">short</code><code class="operator">*</code>) array;
+    <code class="keyword3">float</code><code class="operator">*</code> array1 <code class="operator">=</code> (<code class="keyword3">float</code><code class="operator">*</code>)<code class="operator">&amp;</code>array0[<code class="digit">128</code>];
+    <code class="keyword3">int</code>  <code class="operator">*</code> array2 <code class="operator">=</code> (<code class="keyword3">int</code><code class="operator">*</code>)  <code class="operator">&amp;</code>array1[<code class="digit">64</code>];
+<code class="operator">}</code>
+</code></pre></div>
+          <p class="imgtext-info">
+                        Ceci est le seul moyen d'utiliser le mot-clé <i>extern</i> sur des variables : tous les autres emplois sont 
+                        interdits.
+                    </p>
+          <p class="imgtext-warning">
+                        Ces variables ne peuvent pas être initialisées en même temps que leur déclaration !
+                    </p>
+          <p class="imgtext-info">
+                        Si nous avions utilisé le premier code dans CUDA, en écrivant une valeur dans le premier tableau, une
+                        partie de cette variable aurait été imputée au deuxième et au troisième tableau. Ce qui pourrait donner des
+                        résultats très aberrants.
+                    </p>
+        </div>
+        
+		<h4 class="TitreSection3" id="LV-D-4">V-D-4. Généralités<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h4><div class="BlocSection3">
+          
+          <p>
+                        Ces paramètres ne sont pas permis sur des unions ou des structures.
+                    </p>
+          <p>
+                        En définissant une variable <i>__shared__</i> ou <i>__constant__</i>, elle sera définie statique.
+                    </p>
+        </div>
+      </div>
+      
+		<h3 class="TitreSection2" id="LV-E">V-E. Compilation<a class="HautPage" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=pratique#" title="Haut de page">&#9650;</a></h3><div class="BlocSection2">
+        
+        <p>
+                    NVIDIA, dans son immense bonté, nous fournit un compilateur prévu pour CUDA. Celui-ci dispose d'une interface 
+                    en ligne de commande simple et comparable à celles que nous connaissons, <span class="codeinline">cl</span>, de Visual Studio,
+                    ou <span class="codeinline">gcc</span>, l'interface de GCC. Ce compilateur, <span class="codeinline">nvcc</span>, s'occupe de toutes les étapes
+                    de la compilation.
+                </p>
+        <p>
+                    Pour pouvoir définir les portions de code spécifiques à ce compilateur, il définit la macro
+                    <span class="codeinline">__CUDACC__</span>.
+                </p>
+        <p>
+                    Comme dit précédemment, il s'occupe de toutes les phases de la compilation : l'assemblage, la compilation, 
+                    et l'édition des liens. Vous pouvez choisir ces parties grâce à la ligne de commande.
+                </p>
+        <p>
+                    Ce compilateur fonctionne très bien avec les Makefiles, c'est d'ailleurs cette technique qui va être ici
+                    développée, compatible avec les chaînes de compilation GNU (<span class="codeinline">make</span>) et Microsoft
+                    (<span class="codeinline">nmake</span>).
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e1997">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e1997" onclick="selectionCode(&#39;contenuCoded0e1997&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e1997" class="contenuCode"><code class="comment1">#</code><code class="comment1"> </code><code class="comment1">Précise</code><code class="comment1"> </code><code class="comment1">le</code><code class="comment1"> </code><code class="comment1">compilateur</code><code class="comment1"> </code><code class="comment1">précis</code><code class="comment1"> </code><code class="comment1">à</code><code class="comment1"> </code><code class="comment1">utiliser</code>
+<code class="keyword1">ifdef</code> ON_WINDOWS
+    export compiler-bindir <code class="operator">:=</code> <code class="literal1">"</code><code class="literal1">a:/program</code><code class="literal1"> </code><code class="literal1">files/microsoft</code><code class="literal1"> </code><code class="literal1">visual</code><code class="literal1"> </code><code class="literal1">studio</code><code class="literal1"> </code><code class="literal1">9.0/vc/bin</code><code class="literal1">"</code>
+<code class="keyword1">endif</code>
+
+export NVCC <code class="operator">:=</code> <code class="label">a:</code>/cuda/bin/nvcc.exe
+
+cpp.obj <code class="label">:</code> cpp.cpp
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c cpp.cpp <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o cpp.obj
+
+c.o <code class="label">:</code> c.c
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c c.c <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o c.obj
+
+cu.o <code class="label">:</code> cu.cu
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c cu.cu <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o cu.obj
+
+OBJECTS <code class="operator">=</code> cpp.obj c.obj cu.obj
+
+all <code class="label">:</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code>
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">LDFLAGS</code><code class="keyword2">)</code> -o app.exe
+
+clean <code class="label">:</code>
+    <code class="keyword2">$(</code><code class="keyword2">RM</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code>
+</code></pre></div>
+        <p class="imgtext-info">
+                    Ce Makefile doit être utilisé après avoir appelé le script <span class="codeinline">vsvars.bat</span> s'il est utilisé avec
+                    Visual Studio !
+                </p>
+        <p>
+                    Si vous utilisez un <span class="codeinline">make</span> d'origine GNU, vous pouvez utiliser ce Makefile
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e2178">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e2178" onclick="selectionCode(&#39;contenuCoded0e2178&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e2178" class="contenuCode"><code class="comment1">#</code><code class="comment1"> </code><code class="comment1">Précise</code><code class="comment1"> </code><code class="comment1">le</code><code class="comment1"> </code><code class="comment1">compilateur</code><code class="comment1"> </code><code class="comment1">précis</code><code class="comment1"> </code><code class="comment1">à</code><code class="comment1"> </code><code class="comment1">utiliser</code>
+<code class="keyword1">ifdef</code> ON_WINDOWS
+    export compiler-bindir <code class="operator">:=</code> <code class="literal1">"</code><code class="literal1">a:/program</code><code class="literal1"> </code><code class="literal1">files/microsoft</code><code class="literal1"> </code><code class="literal1">visual</code><code class="literal1"> </code><code class="literal1">studio</code><code class="literal1"> </code><code class="literal1">9.0/vc/bin</code><code class="literal1">"</code>
+<code class="keyword1">endif</code>
+
+export NVCC <code class="operator">:=</code> <code class="label">a:</code>/cuda/bin/nvcc.exe
+
+%.o <code class="label">:</code> %.cpp
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o <code class="keyword2">$</code>@
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -M %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> &gt; <code class="keyword2">$</code>@.dep
+
+%.o <code class="label">:</code> %.c
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o <code class="keyword2">$</code>@
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -M %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> &gt; <code class="keyword2">$</code>@.dep
+
+%.o <code class="label">:</code> %.cu
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -c %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> -o <code class="keyword2">$</code>@
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> -M %^ <code class="keyword2">$(</code><code class="keyword2">CFLAGS</code><code class="keyword2">)</code> &gt; <code class="keyword2">$</code>@.dep
+
+include <code class="keyword2">$(</code><code class="keyword2">wildcard</code><code class="keyword2"> </code><code class="keyword2">*</code><code class="keyword2">.</code><code class="keyword2">dep</code><code class="keyword2">)</code> /dev/null
+
+all <code class="label">:</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code>
+    <code class="keyword2">$(</code><code class="keyword2">NVCC</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">LDFLAGS</code><code class="keyword2">)</code> -o app.exe
+
+clean <code class="label">:</code>
+    <code class="keyword2">$(</code><code class="keyword2">RM</code><code class="keyword2">)</code> <code class="keyword2">$(</code><code class="keyword2">OBJECTS</code><code class="keyword2">)</code> *.dep
+</code></pre></div>
+        <p>
+                    Vous pouvez aussi utiliser la ligne de commande directement :
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e2422">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e2422" onclick="selectionCode(&#39;contenuCoded0e2422&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e2422" class="contenuCode">nvcc -c cu.cu -o cu.obj
+nvcc cu.obj -o app.exe
+</code></pre></div>
+        <p>
+                    Vous pouvez aussi décider que le code CUDA sera exécuté sur le processeur, qui émulera alors un GPU. Il suffit 
+                    d'ajouter <span class="codeinline">emu=1</span> à la ligne de commandes, comme ceci.
+                </p>
+        <div class="code_et_titre"><div class="titre_des_codes" id="IdTitreCode-d0e2431">&nbsp;<div class="selectionner_code"><span class="selectionner_code LienSelectionne" id="code-d0e2431" onclick="selectionCode(&#39;contenuCoded0e2431&#39;);">Sélectionnez</span></div></div><pre class="code_uniquement" style="overflow:auto;"><code id="contenuCoded0e2431" class="contenuCode">make <code class="shellscript_keyword2">emu</code>=<code class="shellscript_digit">1</code>
+</code></pre></div>
+      </div>
+    </div>
+  
+<div class="cachee"><div class="barreNavigation" style="margin-top: -25px;"><hr class="hr-separation"><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=theorie"><img title="Page précédente" alt="précédent" src="./Une introduction à CUDA_files/kitprecedent.gif"></a><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/"><img title="Revenir au sommaire" alt="sommaire" src="./Une introduction à CUDA_files/kitsommaire.gif"></a><a class="lientelechargement" href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/?page=conclusions"><img alt="suivant" title="Page suivante" src="./Une introduction à CUDA_files/kitsuivant.gif"></a><hr class="hr-separation"></div></div></section></section>
+  
+  
+  
+  
+  
+  <section class="ArticleHorsLigne"><section class="SectionNoteBasPage articleBody" style="margin-left: 231px; margin-top: 0px; clear: none;"><hr class="hr-separation clear"></section></section>
+  
+	<section class="articleBody" style="margin-left: 231px; margin-top: 0px; clear: none;">			<div style="text-align:center;"><table class="tableref">
+		<tbody><tr class="trreftitle"><td class="trreftitle">CUDA et le GPGPU</td></tr><tr class="trrefelem"><td class="trrefelem"><a href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/introduction/" class="lienArticle">Introduction à CUDA</a></td></tr><tr class="trrefelem"><td class="trrefelem"><a href="http://tcuvelier.developpez.com/tutoriels/gpgpu/cuda/approfondi/" class="lienArticle">CUDA approfondi</a></td></tr><tr class="trrefelem"><td class="trrefelem"><a href="http://jeux.developpez.com/faq/gpgpu/" class="lienArticle">La FAQ GPGPU &amp; CUDA</a></td></tr>
+			</tbody></table></div>
+		</section>
+</article>
+		<div class="clear">&nbsp;&nbsp;</div>
+<p class="licence" style="margin-left: 216px;">Copyright © 2009 Thibaut Cuvelier. 
+Aucune reproduction, même partielle, ne peut être faite 
+de ce site et de l'ensemble de son contenu&nbsp;: textes, documents, images, etc.
+sans l'autorisation expresse de l'auteur. Sinon vous encourez selon la loi jusqu'à 
+trois ans de prison et jusqu'à 300&nbsp;000&nbsp;€ de dommages et intérêts. 
+</p>							<div style="clear: both;"></div>
+						</div>
+					</div>
+				</div>
+</section>
+
+<footer class="layout">				<div id="gabarit_footer">
+		<div id="gabarit_footer_right">&nbsp;</div>
+		<div id="gabarit_footer_left">&nbsp;</div>
+
+		<p id="responsable"><strong>
+							Responsable bénévole
+						de la rubrique C :
+
+							le Rédacteur en Chef -
+			
+				<script type="text/javascript">
+	<!--
+	Ch=new Array(4);Res=new Array(4);
+	Ch[0]='le_club_des_developeur';Ch[1]='ÙÆÈÏàä';
+	Ch[2]='¬×ÄÇÍØÖÈÓÓ';Ch[3]='ÐÊÕÈØäÒÏÉß¡ÂÓÒ';
+	for(y=1;y<4;y++){Res[y]="";for(x=0;x<Ch[y].length;x++)
+	Res[y]+=String.fromCharCode(Ch[y].charCodeAt(x)-Ch[0].charCodeAt(x));}
+	var st = '<a href="'+Res[1]+':c'+Res[2]+'-'+Res[3]+'">Contacter par email<\/a>';	document.write(st);
+	//-->
+	</script><a href="mailto:c@redaction-developpez.com">Contacter par email</a>
+
+		</strong></p>
+	</div>
+	
+	<script type="text/javascript">
+	<!--
+	xtn2 = "5";
+	//-->
+	</script>
+	
+
+<div id="gabarit_pied">
+	<div id="gabarit_pied_right">&nbsp;</div>
+
+	<div id="gabarit_pied_left">&nbsp;</div>
+
+	<div id="gabarit_pied_contenu_superieur">
+	<div id="gabarit_pied_contenu">
+		<div class="gabarit_pied_div">
+			<span>Developpez.com</span>
+			<p><a href="http://club.developpez.com/contacts/">Nous contacter</a></p>
+			<p><a href="http://www.developpez.com/participez/">Participez</a></p>
+			<p><a href="http://www.developpez.com/legal/">Informations légales</a></p>
+		</div>
+		<div class="gabarit_pied_div_separation">&nbsp;</div>
+		<div class="gabarit_pied_div">
+			<span>Services</span>
+			<p><a href="http://www.developpez.net/forums/f7/c-cpp/" onclick="window.open(this.href); return false;">Forum C</a></p>
+			<p><a href="http://blog.developpez.com/">Blogs</a></p>
+			<p><a href="http://www.developpez.com/hebergement/">Hébergement</a></p>
+		</div>
+		<div class="gabarit_pied_div_separation">&nbsp;</div>
+		<div class="gabarit_pied_div">
+			<span>Partenaires</span>
+			<p><a href="http://www.developpez.com/redirect/1058" target="_blank">PlanetHoster</a><br><a href="http://www.developpez.com/redirect/991" target="_blank">Ikoula</a></p>
+		</div>
+		<div style="clear: both;"></div>
+		<div id="gabarit_pied_copyright">
+			<p>Copyright © 2000-2014 - www.developpez.com</p>
+		</div>
+	</div>
+	</div>
+</div>
+
+</footer>
+<!-- Google Analytics général -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28115938-1']);
+  _gaq.push(['_setDomainName', 'developpez.com']);
+  _gaq.push(['_setCustomVar', 1, 'rubrique', 'c', 3]);
+  _gaq.push(['_setCustomVar', 2, 'type', 'Tutoriel', 3]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./Une introduction à CUDA_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-6749412-2");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+
+
+
+		
+<div id="lightboxOverlay" style="display: none;"></div><div id="lightbox" style="display: none;"><div class="lb-outerContainer"><div class="lb-container"><img class="lb-image"><div class="lb-nav"><a class="lb-prev"></a><a class="lb-next"></a></div><div class="lb-loader"><a class="lb-cancel"><img src="./Une introduction à CUDA_files/lightbox-ico-loading.gif"></a></div></div></div><div class="lb-dataContainer"><div class="lb-data"><div class="lb-details"><span class="lb-caption"></span><span class="lb-number"></span></div><div class="lb-closeContainer"><a class="lb-close"><img src="./Une introduction à CUDA_files/lightbox-btn-close.png"></a></div></div></div></div></body></html>

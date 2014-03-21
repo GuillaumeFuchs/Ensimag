@@ -1,0 +1,16 @@
+option size 5
+strike 100 
+spot 100 90 110 80 70 
+maturity 2
+volatility 0.2
+interest rate   0.05
+correlation 0.3
+trend 0.06
+
+option type barrier_l
+payoff coefficients 0.2
+lower barrier 90 80 95 70 60
+
+timestep number 24
+sample number 100000
+

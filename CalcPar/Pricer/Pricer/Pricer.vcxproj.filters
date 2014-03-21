@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Exemples">
+      <UniqueIdentifier>{63336588-c529-439c-95ba-3c16a6062a26}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="asian.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="barrier.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="barrier_l.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="barrier_u.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="basket.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="option.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="performance.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="typeval.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="asian.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="barrier.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="barrier_l.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="barrier_u.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="basket.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="bs.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="montecarlo.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="option.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="performance.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="typeval.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="pricer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+    <CudaCompile Include="montecarlo.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+    <CudaCompile Include="bs.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exemples\barrier_u.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\barrier_u2.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\basket_1.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\basket_2.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\basket_5d.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\call.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\perf.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\put.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\asian.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\barrier.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\barrier_l.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="exemples\barrier_l2.dat">
+      <Filter>Exemples</Filter>
+    </None>
+    <None Include="montecarlo.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="bs.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+  </ItemGroup>
+</Project>
