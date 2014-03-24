@@ -9,10 +9,11 @@
  */
 
 Barrier :: Barrier() : Option() {
-  Strike_ = 0;
+  Strike_ = 0.;
   Coeff_ = pnl_vect_new();
   Bl_ = pnl_vect_new();
   Bu_ = pnl_vect_new();
+  Strike_gpu = 0.;
 }
 
 Barrier ::Barrier(Parser& pars) : Option(pars){
