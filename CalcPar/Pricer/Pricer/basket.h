@@ -21,7 +21,6 @@ class Basket : public Option {
 	double Strike_; /*! strike de l'option */ 
 	PnlVect *Coeff_; /*! payoff coefficients */
 
-	float Strike_gpu;
 	float* Coeff_gpu;
 
   public:
