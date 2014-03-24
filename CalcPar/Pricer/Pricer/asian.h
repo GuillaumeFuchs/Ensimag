@@ -17,6 +17,7 @@ class Asian : public Option {
 
   private:
 	double Strike_; /*!< strike du sous-jacent */
+	float Strike_gpu;
 
   public:
 
