@@ -13,14 +13,14 @@
 //int N: nombre de pas de temps
 //int tid: numero thread dans la grille
 //int size: taille de l'option
-//double K: strike de l'option
+//float K: strike de l'option
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins
 __device__ float payoff_basket(
 	int N,
 	int tid,
 	int size,
-	double K,
+	float K,
 	float* d_coeff,
 	float* d_path)
 {
@@ -34,7 +34,7 @@ __device__ float payoff_basket(
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
-//double K: strike de l'option
+//float K: strike de l'option
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
 //float* per_block_results_price: resultat du payoff pour le calcul du prix
@@ -53,20 +53,20 @@ __global__ void mc_basket(
 		//Calcul du payoff
 		sdata_price[threadIdx.x] = payoff_basket(N, tid, size, K, d_coeff, d_path);
 
-		//On charge le résultat du payoff dans la mémoire partagé
-		//On attend que tous les threads aient calculés le payoff
+		//On charge le rï¿½sultat du payoff dans la mï¿½moire partagï¿½
+		//On attend que tous les threads aient calculï¿½s le payoff
 		__syncthreads();
 
-		//Réduction partielle pour chaque thread
+		//Rï¿½duction partielle pour chaque thread
 		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
 			if (threadIdx.x < offset)
 				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
 			
-			//On attend que tous les threads aient effectués leur somme partielle
+			//On attend que tous les threads aient effectuï¿½s leur somme partielle
 			__syncthreads();
 		}
 
-		//Le thread 0 charge le résultat
+		//Le thread 0 charge le rï¿½sultat
 		if (threadIdx.x == 0){
 			per_block_results_price[blockIdx.x] = sdata_price[0];
 		}
