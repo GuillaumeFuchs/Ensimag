@@ -13,7 +13,6 @@ Barrier :: Barrier() : Option() {
   Coeff_ = pnl_vect_new();
   Bl_ = pnl_vect_new();
   Bu_ = pnl_vect_new();
-  Strike_gpu = 0.;
 }
 
 Barrier ::Barrier(Parser& pars) : Option(pars){
@@ -22,7 +21,6 @@ Barrier ::Barrier(Parser& pars) : Option(pars){
   Bu_ = pnl_vect_copy(pars.getVect("upper barrier"));
   Bl_ = pnl_vect_copy(pars.getVect("lower barrier"));
 
-  Strike_gpu = (float)Strike_;
   Coeff_gpu = (float*)malloc(size_*sizeof(float));
   Bu_gpu = (float*)malloc(size_*sizeof(float));
   Bl_gpu = (float*)malloc(size_*sizeof(float));
