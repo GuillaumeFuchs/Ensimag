@@ -26,6 +26,8 @@ class BS {
 	PnlVect *Gi_; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
 	PnlVect *Ld_; /*!< Ligne d de la matrice de Cholesky Cho_*/
 
+	float r_gpu;
+	float rho_gpu;
 	float *sigma_gpu; /*!< vecteur de volatilites */
 	float *spot_gpu; /*!< valeurs initiales du sous-jacent */
 	float *trend_gpu; /*!< taux utilise sous la probabilite historique */
@@ -231,7 +233,7 @@ class BS {
 	 * \param grid contient les indices de temps utilises pour l'evolution du sous-jacent
 	 */
 	void asset(PnlMat *path, double T,  int N, PnlRng *rng, PnlMat* G, PnlVect* grid) ;
-	float* assetGPU(int &nBlocks, int &nThreads, int samples, int N, double T);
+	float* assetGPU(int &nBlocks, int &nThreads, int samples, int N, float T);
 
 	/*!
 	 * \brief Calcule une trajectoire du sous-jacent connaissant le passe jusqu'a la date t
