@@ -10,6 +10,8 @@
 #include "montecarlo.h"
 #include "bs.cuh"
 
+#define N_THREADS 16;
+
 using namespace std;
 BS::BS(){
 	size_ = 0;
@@ -21,7 +23,6 @@ BS::BS(){
 	Cho_ = pnl_mat_new();
 	Gi_ = pnl_vect_new();
 	Ld_ = pnl_vect_new();
-
 }
 
 BS::BS(Parser &pars){
@@ -40,20 +41,20 @@ BS::BS(Parser &pars){
 	Gi_ = pnl_vect_create(size_);
 	Ld_ = pnl_vect_create(size_);
 
-	sigma_float = (float*)malloc(size_*sizeof(float));
-	spot_float = (float*)malloc(size_*sizeof(float));
-	trend_float = (float*)malloc(size_*sizeof(float));
-	Cho_float = (float*)malloc(size_*(size_+1)/2*sizeof(float));
+	sigma_gpu = (float*)malloc(size_*sizeof(float));
+	spot_gpu = (float*)malloc(size_*sizeof(float));
+	trend_gpu = (float*)malloc(size_*sizeof(float));
+	Cho_gpu = (float*)malloc(size_*(size_+1)/2*sizeof(float));
 
 	for (int i = 0; i < size_; i++){
-		sigma_float[i] = GET(sigma_, i);
-		spot_float[i] = GET(spot_, i);
-		trend_float[i] = GET(trend_, i);
+		sigma_gpu[i] = GET(sigma_, i);
+		spot_gpu[i] = GET(spot_, i);
+		trend_gpu[i] = GET(trend_, i);
 	}
 	int k = 0;
 	for (int i = 0; i < size_; i++){
 		for (int j = 0; j < i+1; j++){
-			Cho_float[k] = MGET(Cho_, i, j);
+			Cho_gpu[k] = MGET(Cho_, i, j);
 			k++;
 		}
 	}
@@ -168,25 +169,78 @@ void BS::asset(PnlMat *path, double T, int N, PnlRng *rng, PnlMat* G, PnlVect* g
 	}
 }
 
-void BS::assetGPU(
-	int nBlocks,
-	int nThreads,
+float* BS::assetGPU(
+	int &nBlocks,
+	int &nThreads,
 	int samples,
 	int N,
-	double T,
-	float* d_path,
-	float* d_rand)
+	double T)
 {
-		float *d_cho;
-		cudaMalloc((float**)&d_cho , size_*(size_+1)/2*sizeof(float));
-		cudaMemcpy(d_cho, Cho_float, size_*(size_+1)/2*sizeof(float), cudaMemcpyHostToDevice);
 
-		double dt = T/(double)N;
-		asset_compute<<<nBlocks, nThreads>>>(N, samples, spot_float[0], sigma_float[0], r_, dt, d_cho, d_path, d_rand);
-		cudaThreadSynchronize();
+	//Property grid & blocks
+	nThreads = N_THREADS;
+	nBlocks = ceil((double)samples/(double)nThreads);
+	dim3 dimGrid(nBlocks, 1, 1);
+	dim3 dimBlock(nThreads, 1, 1);
 
-		float* path = (float*)malloc(samples*(N+1)*sizeof(float));
-		cudaMemcpy(path, d_path, samples*(N+1)*sizeof(float), cudaMemcpyDeviceToHost);
+	//Génération de nombre aléatoire
+	curandState *d_state;
+	float *d_rand;
+
+	cudaMalloc((float**)&d_rand, samples*N*size_*sizeof(float));
+	cudaMalloc(&d_state, samples*sizeof(curandState));
+
+	init_stuff<<<nBlocks, nThreads>>>(samples, time(NULL), d_state);
+	cudaThreadSynchronize();
+	make_rand<<<nBlocks, nThreads>>>(samples, N, size_, d_state, d_rand);
+	cudaThreadSynchronize();
+
+	float *rand = (float*)malloc(samples*N*size_*sizeof(float));
+	cudaMemcpy(rand, d_rand, N*samples*size_*sizeof(float), cudaMemcpyDeviceToHost);
+	
+	//printf("RAND:\n");
+	//for (int m = 0; m < samples; m++){
+	//for (int i = 0; i < N; i++){
+	//for (int d = 0; d < size_; d++)
+	//printf("%f ", rand[d+i*size_+(N*size_)*m]);
+	//printf("\n");
+	//}
+	//printf("\n");
+	//}
+
+	//Compute asset
+	float *d_cho;
+	float *d_path;
+	float *d_spot;
+	float *d_sigma;
+
+	cudaMalloc((float**)&d_cho , size_*(size_+1)/2*sizeof(float));
+	cudaMemcpy(d_cho, Cho_gpu, size_*(size_+1)/2*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMalloc((float**)&d_path, samples*(N+1)*size_*sizeof(float));
+	cudaMalloc((float**)&d_spot, size_*sizeof(float));
+	cudaMemcpy(d_spot, spot_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMalloc((float**)&d_sigma, size_*sizeof(float));
+	cudaMemcpy(d_sigma, sigma_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+
+	double dt = T/(double)N;
+	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_, dt, d_cho, d_path, d_rand);
+	cudaThreadSynchronize();
+	
+	//printf("PATH:\n");
+	//float *path = (float*)malloc(samples*(N+1)*size_*sizeof(float));
+	//cudaMemcpy(path, d_path, samples*(N+1)*size_*sizeof(float), cudaMemcpyDeviceToHost);
+	//for (int m = 0; m < samples; m++){
+	//for (int d = 0; d < size_; d++){
+	//for (int i = 0; i < N+1; i++)
+	//printf("%f ", path[i+d*(N+1)+size_*(N+1)*m]);
+	//printf("\n");
+	//}
+	//printf("\n");
+	//}
+
+	cudaFree(d_rand);
+	cudaFree(d_state);
+	return d_path;
 }
 
 

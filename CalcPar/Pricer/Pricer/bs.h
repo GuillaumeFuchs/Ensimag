@@ -26,12 +26,12 @@ class BS {
 	PnlVect *Gi_; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
 	PnlVect *Ld_; /*!< Ligne d de la matrice de Cholesky Cho_*/
 
-	float *sigma_float; /*!< vecteur de volatilites */
-	float *spot_float; /*!< valeurs initiales du sous-jacent */
-	float *trend_float; /*!< taux utilise sous la probabilite historique */
-	float *Cho_float; /*!< Matrice de Cholesky utilise pour la correlation*/
-	float *Gi_float; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
-	float *Ld_float; /*!< Ligne d de la matrice de Cholesky Cho_*/
+	float *sigma_gpu; /*!< vecteur de volatilites */
+	float *spot_gpu; /*!< valeurs initiales du sous-jacent */
+	float *trend_gpu; /*!< taux utilise sous la probabilite historique */
+	float *Cho_gpu; /*!< Matrice de Cholesky utilise pour la correlation*/
+	float *Gi_gpu; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
+	float *Ld_gpu; /*!< Ligne d de la matrice de Cholesky Cho_*/
   public:
 
 	/*!
@@ -231,7 +231,7 @@ class BS {
 	 * \param grid contient les indices de temps utilises pour l'evolution du sous-jacent
 	 */
 	void asset(PnlMat *path, double T,  int N, PnlRng *rng, PnlMat* G, PnlVect* grid) ;
-	void assetGPU(int nBlocks, int nThreads, int samples, int N,double T, float* path, float* d_rand);
+	float* assetGPU(int &nBlocks, int &nThreads, int samples, int N, double T);
 
 	/*!
 	 * \brief Calcule une trajectoire du sous-jacent connaissant le passe jusqu'a la date t

@@ -18,6 +18,7 @@ class Performance : public Option {
 
   private:
 	PnlVect *Coeff_; /*! payoff coefficients */
+	float* Coeff_gpu;
 
   public:
 
@@ -71,5 +72,6 @@ class Performance : public Option {
 	 * \return payoff du sous-jacent performance
 	 */
 	double payoff (const PnlMat *path);
+	void price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path);
 };
 #endif

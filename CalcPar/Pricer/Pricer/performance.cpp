@@ -14,6 +14,11 @@ Performance :: Performance() : Option() {
 
 Performance :: Performance(Parser & pars) : Option(pars){
   Coeff_ = pnl_vect_copy(pars.getVect("payoff coefficients"));
+
+  Coeff_gpu = (float*)malloc(size_*sizeof(float));
+
+  for (int i = 0; i < size_; i++)
+	  Coeff_gpu[i] = GET(Coeff_, i);
 }
  
 Performance :: ~Performance(){
@@ -52,4 +57,8 @@ double Performance :: payoff (const PnlMat *path) {
   pnl_vect_free(&numerateur);
   pnl_vect_free(&denominateur);
   return 1+MIN(MAX(sum,0), 0.1);
+}
+
+void Performance::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+{
 }

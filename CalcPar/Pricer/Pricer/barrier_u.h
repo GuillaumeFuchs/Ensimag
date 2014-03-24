@@ -21,6 +21,9 @@ class Barrier_u : public Option {
 	PnlVect *Coeff_; /*!< payoff coefficients */
 	PnlVect *Bu_; /*!< barriere haute */
 
+	float* Coeff_gpu;
+	float* Bu_gpu;
+
   public:
 
 	/*!
@@ -109,5 +112,6 @@ class Barrier_u : public Option {
 	 * \return payoff du sous-jacent barriere haute
 	 */
 	double payoff (const PnlMat *path) ;
+	void price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path);
 };
 #endif

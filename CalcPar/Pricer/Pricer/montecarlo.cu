@@ -14,10 +14,6 @@
 #include <cstdio>
 #include <ctime>
 
-#include "montecarlo.cuh"
-
-#define N_THREADS 16;
-
 using namespace std;
 
 MonteCarlo::MonteCarlo(PnlRng * rng){
@@ -119,54 +115,19 @@ void MonteCarlo::price(double &prix, double &ic){
 	tbegin = clock();
 	{
 		//Property grid & blocks
-		int nThreads = N_THREADS;
-		int nBlocks = ceil((double)samples_/(double)nThreads);
-		dim3 dimGrid(nBlocks, 1, 1);
-		dim3 dimBlock(nThreads, 1, 1);
-		
-		//Génération de nombre aléatoire
-		curandState *d_state;
-		float *d_rand;
-		cudaMalloc((float**)&d_rand, samples_*N*sizeof(float));
-		cudaMalloc(&d_state, samples_*N*sizeof(curandState));
+		int nThreads;
+		int nBlocks;
+		float *d_path;
+		d_path = mod_->assetGPU(nBlocks, nThreads, samples_, N, T);
+		printf("%d %d\n", nBlocks, nThreads);
 
-		printf("%d %d\n\n", nBlocks, nThreads);
-		init_stuff<<<nBlocks, nThreads>>>(samples_, N, time(NULL), d_state);
-		cudaThreadSynchronize();
-		make_rand<<<nBlocks, nThreads>>>(samples_, N, d_state, d_rand);
-		cudaThreadSynchronize();
-		
-		float* rand = (float*)malloc(samples_*N*sizeof(float));
-		cudaMemcpy(rand, d_rand, samples_*N*sizeof(float), cudaMemcpyDeviceToHost);
-
-		//Compute asset
-		float* d_path;
-		cudaMalloc((float**)&d_path, samples_*(N+1)*sizeof(float));
-
-		mod_->assetGPU(nBlocks, nThreads, samples_, N, T, d_path, d_rand);
-
-		//Compute price
-		float *per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
-		float *d_per_block_results_price;
-		cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
-
-		monte_carlo_iteration<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, d_path, d_per_block_results_price);
-		cudaThreadSynchronize();
-		
-		cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
-		
-		double prix = 0.;
-		for (int i = 0; i < nBlocks; i++){
-			prix += per_block_results_price[i];
-		}
+		double prix = 0.0;
+		opt_->price_mc(prix, nBlocks, nThreads, N, d_path);
 		prix = exp(-r*T)/(double)samples_*prix;
 
 		printf("%f\n", prix);
-
-		cudaFree(d_rand);
-		cudaFree(d_state);
+		
 		cudaFree(d_path);
-		cudaFree(d_per_block_results_price);
 	}
 	tend = clock();
 	printf("  Time: %f \n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
@@ -183,9 +144,9 @@ void MonteCarlo::price(double &prix, double &ic){
 		prix += payoff;
 		ic += payoff*payoff;
 	}
-
 	//Calcul du prix à l'aide de la formule de MC
 	prix = exp(-r*T)*(1/(double)samples_)*prix;
+
 	tend = clock();
 	printf("  Time: %f \n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
 	//Calcul de la variance de l'estimateur pour avoir l'intervalle de confiance

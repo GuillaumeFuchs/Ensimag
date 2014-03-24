@@ -1,67 +1,57 @@
-#ifndef MONTECARLO_CUH
-#define MONTECARLO_CUH
+#ifndef BASKET_CUH
+#define BASKET_CUH
 
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <cuda.h>
 #include <curand.h>
 #include <curand_kernel.h>
-#include <algorithm>
 #pragma comment(lib, "cuda.lib") 
 #pragma comment(lib, "cudart.lib") 
 
-
-// INITIALISE LE GENERATEUR DE NOMBRE ALEATOIRE
-//int samples: donne le nombre d'itération de Monte-Carlo
+// PAYOFF D'UNE OPTION BASKET
 //int N: nombre de pas de temps
-//int seed: noyau du générateur
-//curandState* state: donne un randState à chaque thread
-__global__ void init_stuff(
-	int samples,
+//int tid: numero thread dans la grille
+//int size: taille de l'option
+//double K: strike de l'option
+//float* d_coeff: proportion de chaque actif dans l'option
+//float* d_path: ensemble des chemins
+__device__ float payoff_basket(
 	int N,
-	int seed,
-	curandState *state)
+	int tid,
+	int size,
+	double K,
+	float* d_coeff,
+	float* d_path)
 {
-	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-	if (tid < samples)
-		curand_init(seed, tid, 0, &state[tid]);
-}
-
-// GENERATION DU NOMBRE ALEATOIRE
-//int samples: donne le nombre d'itération de Monte-Carlo
-//int N: nombre de pas de temps
-//curandState* state: donne un randState à chaque thread
-//float* rand: tableau où est stocké les nombres aléatoires
-__global__ void make_rand(
-	int samples,
-	int N,
-	curandState * state,
-	float *d_rand)
-{
-	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-	if (tid < samples){
-		for (int i = 0; i < N; i++)
-			d_rand[tid*N+i] = curand_normal(&state[tid]);
-	}
+	double pay = 0.;
+	for (int d = 0; d < size; d++)
+		pay+=d_path[(d+1)*(N+1)-1+tid*(N+1)*size]*d_coeff[d];
+	
+	return max(pay - K, 0.0);
 }
 
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
+//int size: taille de l'option
+//double K: strike de l'option
+//float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
 //float* per_block_results_price: resultat du payoff pour le calcul du prix
 //float* per_block_results_ic: resultat du payoff pour le calcul de l'ic
-__global__ void monte_carlo_iteration(
+__global__ void mc_basket(
 	int N,
-	float *d_path,
-	float *per_block_results_price)
+	int size,
+	double K,
+	float* d_coeff,
+	float* d_path,
+	float* per_block_results_price)
 {
 		extern __shared__ float sdata_price[];
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-		float payoff;
 
-		const int endPath = (N+1)*(tid+1)-1;
-		payoff = max(d_path[endPath] - 100., 0.0);
-		sdata_price[threadIdx.x] = payoff;
+		//Calcul du payoff
+		sdata_price[threadIdx.x] = payoff_basket(N, tid, size, K, d_coeff, d_path);
 
 		//On charge le résultat du payoff dans la mémoire partagé
 		//On attend que tous les threads aient calculés le payoff
@@ -81,5 +71,4 @@ __global__ void monte_carlo_iteration(
 			per_block_results_price[blockIdx.x] = sdata_price[0];
 		}
 }
-
 #endif

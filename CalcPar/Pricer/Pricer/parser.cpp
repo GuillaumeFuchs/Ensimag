@@ -46,26 +46,6 @@ Parser::Parser(const char *nomFichier){
 }
 
 Parser::~Parser(){
-  ///////////////////////////////////////////////////////////////////////////
-  //     Lorsqu'on décommente ce destructeur, il est appelé automatiquement
-  //   au milieu du main, ce qui pose bien sûr problème.......
-  ///////////////////////////////////////////////////////////////////////////
-  /*
-    cout << "DESTRUCTION PARSER !!!!!!!"<<endl;
-    // //On libère les V_vector et V_string de la map :
-    std::map <const char *, TypeVal, ltstr>::iterator it = table.begin();
-    while(it!=table.end()){
-    if(it->second.is_set){
-    if(it->second.type==T_STRING) free(it->second.V_string);
-    else if(it->second.type==T_VECTOR) pnl_vect_free(&it->second.V_vector);
-    }
-    it++;
-    }
-    //On libère le contenu de data :
-    for(int i=0; i<size; i++){
-    delete[] data[i];
-    }
-  */
 }
 
 HashParam Parser::get_Table(){
@@ -147,7 +127,6 @@ void Parser::dataToMap(){
 	  }
 	}
 	char cle[40];
-	//cout << "La clé courante est : "<<it->first<<endl;
 	strcpy(cle,it->first);
 
 	//Puis on traite la ligne selon le type correspondant à la clé trouvée
@@ -198,7 +177,6 @@ void Parser::dataToMap(){
 	table[cle].is_set = true;
 	compteur++;
   }
-  //delete[] data;
 }
 
 
@@ -214,16 +192,3 @@ char *Parser::getString(char *cle){
 PnlVect *Parser::getVect(char *cle){
   return table[cle].V_vector;
 }
-
-// void set_from_map (const HashParam &table, const char *cle, int &valeur){
-//   valeur = table[cle].V_int;
-// }
-// void set_from_map (const HashParam &table, const char *cle, double &valeur){
-//   valeur = table[cle].V_double;
-// }
-// void set_from_map (const HashParam &table, const char *cle, PnlVect **valeur, int size){
-//   //valeur = table[cle].V_vector; ///// PAS BON //////
-// }
-// void set_from_map (const HashParam &table, const char *cle, char const **valeur){
-//   //  valeur = table[cle].V_string; ///// NON PLUS /////
-// }

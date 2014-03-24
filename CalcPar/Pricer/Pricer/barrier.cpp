@@ -20,6 +20,16 @@ Barrier ::Barrier(Parser& pars) : Option(pars){
   Coeff_ = pnl_vect_copy(pars.getVect("payoff coefficients"));
   Bu_ = pnl_vect_copy(pars.getVect("upper barrier"));
   Bl_ = pnl_vect_copy(pars.getVect("lower barrier"));
+
+  Coeff_gpu = (float*)malloc(size_*sizeof(float));
+  Bu_gpu = (float*)malloc(size_*sizeof(float));
+  Bl_gpu = (float*)malloc(size_*sizeof(float));
+
+  for (int i = 0; i < size_; i++){
+	  Coeff_gpu[i] = GET(Coeff_, i);
+	  Bu_gpu[i] = GET(Bu_, i);
+	  Bl_gpu[i] = GET(Bl_, i);
+  }
 }
 
 Barrier :: ~Barrier(){
@@ -78,4 +88,8 @@ double Barrier :: payoff (const PnlMat *path) {
 	}
   }
   return MAX(sum, 0);
+}
+
+void Barrier::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+{
 }

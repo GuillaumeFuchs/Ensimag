@@ -73,6 +73,7 @@ class Asian : public Option {
 	 * \return payoff du sous-jacent asiatique
 	 */
 	double payoff (const PnlMat *path);
+	void price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path);
 };
 
 #endif

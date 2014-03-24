@@ -21,6 +21,8 @@ class Basket : public Option {
 	double Strike_; /*! strike de l'option */ 
 	PnlVect *Coeff_; /*! payoff coefficients */
 
+	float* Coeff_gpu;
+
   public:
 
 	/*!
@@ -91,6 +93,7 @@ class Basket : public Option {
 	 * \return payoff de l'option panier
 	 */
 	double payoff (const PnlMat * path);
+	void price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path);
 }; 
 
 #endif 

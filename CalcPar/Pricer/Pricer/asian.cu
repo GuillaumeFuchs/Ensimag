@@ -3,6 +3,8 @@
 # include <pnl/pnl_mathtools.h>
 #include <pnl/pnl_vector.h>
 
+#include "asian.cuh"
+
 /*!
  * \file asian.cpp
  * \brief Implémentation de la classe fille d'Option: Asian 
@@ -38,4 +40,23 @@ double Asian :: payoff (const PnlMat *path) {
   sum = (1/(double)(TimeSteps_))*pnl_vect_sum(final) - Strike_;
   pnl_vect_free(&final);
   return MAX(sum, 0);
+}
+
+void Asian::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+{
+	//Compute price
+	float* d_per_block_results_price;
+	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
+
+	mc_asian<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, Strike_, d_path, d_per_block_results_price);
+	cudaThreadSynchronize();
+
+	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+
+	prix = 0.0;
+	for (int i = 0; i < nBlocks; i++){
+		prix += per_block_results_price[i];
+	}
+	cudaFree(d_per_block_results_price);
 }
