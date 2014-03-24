@@ -21,7 +21,6 @@ class Barrier_l : public Option {
 	PnlVect *Coeff_; /*!< payoff coefficients */
 	PnlVect *Bl_; /*!< barriere basse */
 
-	float Strike_gpu;
 	float* Coeff_gpu;
 	float* Bl_gpu;
 
