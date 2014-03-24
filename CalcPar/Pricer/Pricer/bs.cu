@@ -223,7 +223,7 @@ float* BS::assetGPU(
 	cudaMemcpy(d_sigma, sigma_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
 	float dt = T/(float)N;
-	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_, dt, d_cho, d_path, d_rand);
+	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, (float)r_, dt, d_cho, d_path, d_rand);
 	cudaThreadSynchronize();
 	
 	//printf("PATH:\n");
