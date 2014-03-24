@@ -50,7 +50,7 @@ void Asian::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_pa
 	float* d_per_block_results_price;
 	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
 
-	mc_asian<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, Strike_, d_path, d_per_block_results_price);
+	mc_asian<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, Strike_gpu, d_path, d_per_block_results_price);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
