@@ -21,6 +21,7 @@ class Barrier_l : public Option {
 	PnlVect *Coeff_; /*!< payoff coefficients */
 	PnlVect *Bl_; /*!< barriere basse */
 
+	float Strike_gpu;
 	float* Coeff_gpu;
 	float* Bl_gpu;
 
@@ -38,7 +39,7 @@ class Barrier_l : public Option {
 	 *
 	 * Constructeur avec argument de la classe barrier_l
 	 *
-	 * \param pars: Liste des donnees relatives à l'option du Parser
+	 * \param pars: Liste des donnees relatives ï¿½ l'option du Parser
 	 */
 	Barrier_l(Parser &pars);
 
