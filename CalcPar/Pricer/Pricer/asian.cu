@@ -12,11 +12,13 @@
  */
 
 Asian :: Asian() : Option() {
-  Strike_ = 0;
+  Strike_ = 0.;
+  Strike_gpu = 0.;
 }
 
 Asian::Asian(Parser &pars) : Option(pars){
   Strike_ = pars.getDouble("strike");
+  Strike_gpu = (float)Strike_;
 }
 
 Asian :: ~Asian(){
