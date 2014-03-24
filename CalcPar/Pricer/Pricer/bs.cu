@@ -23,9 +23,6 @@ BS::BS(){
 	Cho_ = pnl_mat_new();
 	Gi_ = pnl_vect_new();
 	Ld_ = pnl_vect_new();
-	
-	r_gpu = 0.;
-	rho_gpu = 0.;
 }
 
 BS::BS(Parser &pars){
@@ -44,8 +41,6 @@ BS::BS(Parser &pars){
 	Gi_ = pnl_vect_create(size_);
 	Ld_ = pnl_vect_create(size_);
 
-	r_gpu = (float)r_;
-	rho_gpu = (float)rho_;
 	sigma_gpu = (float*)malloc(size_*sizeof(float));
 	spot_gpu = (float*)malloc(size_*sizeof(float));
 	trend_gpu = (float*)malloc(size_*sizeof(float));
@@ -228,7 +223,7 @@ float* BS::assetGPU(
 	cudaMemcpy(d_sigma, sigma_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
 	float dt = T/(float)N;
-	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_gpu, dt, d_cho, d_path, d_rand);
+	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_, dt, d_cho, d_path, d_rand);
 	cudaThreadSynchronize();
 	
 	//printf("PATH:\n");
