@@ -179,7 +179,7 @@ float* BS::assetGPU(
 	int &nThreads,
 	int samples,
 	int N,
-	double T)
+	float T)
 {
 
 	//Property grid & blocks
@@ -227,8 +227,8 @@ float* BS::assetGPU(
 	cudaMalloc((float**)&d_sigma, size_*sizeof(float));
 	cudaMemcpy(d_sigma, sigma_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
-	double dt = T/(double)N;
-	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_, dt, d_cho, d_path, d_rand);
+	float dt = T/(float)N;
+	asset_compute<<<nBlocks, nThreads>>>(N, size_, samples, d_spot, d_sigma, r_gpu, dt, d_cho, d_path, d_rand);
 	cudaThreadSynchronize();
 	
 	//printf("PATH:\n");
