@@ -13,12 +13,14 @@
 Basket :: Basket() : Option() {
 	Strike_ = 0;
 	Coeff_ = pnl_vect_new();
+	Strike_gpu = 0.;
 }
 
 Basket :: Basket(Parser& pars):Option(pars){
 	Strike_ = pars.getDouble("strike");
 	Coeff_ = pnl_vect_copy(pars.getVect("payoff coefficients"));
 
+	Strike_gpu = (float)Strike_;
 	Coeff_gpu = (float*)malloc(size_*sizeof(float));
 
 	for (int i = 0; i < size_; i++)
