@@ -33,13 +33,13 @@ int main(int argc, char ** argv) {
         // Afficher le nom de la device
 	cout << "Le nom de la device est :" << deviceProp.name << "\n" << endl;
         // Donner le numero de version majeur et mineur
-	cout << "Les numéros de version majeur et mineur sont :" << deviceProp.major << "   " << deviceProp.minor << "\n" << endl;
+	cout << "Les numeros de version majeur et mineur sont :" << deviceProp.major << "   " << deviceProp.minor << "\n" << endl;
         // Donner la taille de la memoire globale
-	cout << "La taille de la mémoire globale est de :" << deviceProp.totalGlobalMem << "\n" << endl;
+	cout << "La taille de la memoire globale est de :" << deviceProp.totalGlobalMem << "\n" << endl;
         // Donner la taille de la memoire constante
-	cout << "La taille de la mémoire constante est de :" << deviceProp.totalConstMem << "\n" << endl;
+	cout << "La taille de la memoire constante est de :" << deviceProp.totalConstMem << "\n" << endl;
         // Donner la taille de la memoire partagee par bloc
-	cout << "La taille de la mémoire partagée est de :" << deviceProp.sharedMemPerBlock << "\n" << endl;
+	cout << "La taille de la memoire partagee est de :" << deviceProp.sharedMemPerBlock << "\n" << endl;
         // Donner le nombre de thread max dans chacune des directions
 	cout << "La nombre de threads max par direction est :" << deviceProp.maxThreadsDim[0] << "  " << deviceProp.maxThreadsDim[1] << "   " << deviceProp.maxThreadsDim[2] << "\n" << endl;
 

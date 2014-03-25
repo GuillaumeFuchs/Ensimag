@@ -42,6 +42,7 @@ __device__ float payoff_performance(
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
+//int samples: nb échantillon de MC
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
 //float* per_block_results_price: resultat du payoff pour le calcul du prix
@@ -49,13 +50,15 @@ __device__ float payoff_performance(
 __global__ void mc_performance(
 	int N,
 	int size,
+	int samples,
 	float* d_coeff,
 	float* d_path,
 	float* per_block_results_price)
 {
-		extern __shared__ float sdata_price[];
-		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
+	extern __shared__ float sdata_price[];
+	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
+	if (tid < samples){
 		//Calcul du payoff
 		sdata_price[threadIdx.x] = payoff_performance(N, tid, size, d_coeff, d_path);
 
@@ -67,7 +70,7 @@ __global__ void mc_performance(
 		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
 			if (threadIdx.x < offset)
 				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
-			
+
 			//On attend que tous les threads aient effectu�s leur somme partielle
 			__syncthreads();
 		}
@@ -76,5 +79,6 @@ __global__ void mc_performance(
 		if (threadIdx.x == 0){
 			per_block_results_price[blockIdx.x] = sdata_price[0];
 		}
+	}
 }
 #endif

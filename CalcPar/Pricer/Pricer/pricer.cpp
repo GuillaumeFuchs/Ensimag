@@ -76,6 +76,7 @@ int main(int argc, char **argv)
   printf("**               RESULTATS                 **\n"); 
   printf("*********************************************\n");
 
+  price_compute("exemples/basket_5d.dat", rng);
   price_compute("exemples/asian.dat", rng);
   price_compute("exemples/barrier.dat", rng);
   price_compute("exemples/barrier_l.dat", rng);
@@ -84,7 +85,6 @@ int main(int argc, char **argv)
   price_compute("exemples/barrier_u2.dat", rng);
   price_compute("exemples/basket_1.dat", rng);
   price_compute("exemples/basket_2.dat", rng);
-  price_compute("exemples/basket_5d.dat", rng);
   price_compute("exemples/call.dat", rng);
   price_compute("exemples/perf.dat", rng);
   price_compute("exemples/put.dat", rng);

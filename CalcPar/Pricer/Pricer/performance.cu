@@ -72,7 +72,7 @@ void Performance::price_mc(
 	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
 	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
-	mc_performance<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, d_coeff, d_path, d_per_block_results_price);
+	mc_performance<<<nBlocks, nThreads, nThreads*sizeof(float)>>>(N, size_, samples, d_coeff, d_path, d_per_block_results_price);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));

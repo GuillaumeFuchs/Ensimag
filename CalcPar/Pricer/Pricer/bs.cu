@@ -10,7 +10,7 @@
 #include "montecarlo.h"
 #include "bs.cuh"
 
-#define N_THREADS 32;
+#define N_THREADS 512;
 
 using namespace std;
 BS::BS(){
@@ -198,15 +198,15 @@ float* BS::assetGPU(
 	float *rand = (float*)malloc(samples*N*size_*sizeof(float));
 	cudaMemcpy(rand, d_rand, N*samples*size_*sizeof(float), cudaMemcpyDeviceToHost);
 	
-	/*printf("RAND:\n");
-	for (int m = 0; m < samples; m++){
-	for (int i = 0; i < N; i++){
-	for (int d = 0; d < size_; d++)
-	printf("%f ", rand[d+i*size_+(N*size_)*m]);
-	printf("\n");
-	}
-	printf("\n");
-	}*/
+	//printf("RAND:\n");
+	//for (int m = 0; m < samples; m++){
+	//for (int i = 0; i < N; i++){
+	//for (int d = 0; d < size_; d++)
+	//printf("%f ", rand[d+i*size_+(N*size_)*m]);
+	//printf("\n");
+	//}
+	//printf("\n");
+	//}
 
 	//Compute asset
 	float *d_cho;

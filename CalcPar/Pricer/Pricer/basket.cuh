@@ -51,11 +51,10 @@ __global__ void mc_basket(
 {
 		extern __shared__ float sdata_price[];
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-
+		
 		if (tid < samples){
 			//Calcul du payoff
 			sdata_price[threadIdx.x] = payoff_basket(N, tid, size, K, d_coeff, d_path);
-
 			//On charge le r�sultat du payoff dans la m�moire partag�
 			//On attend que tous les threads aient calcul�s le payoff
 			__syncthreads();

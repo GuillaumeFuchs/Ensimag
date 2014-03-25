@@ -71,7 +71,7 @@ void Basket::price_mc(
 	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
 	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
-	mc_basket<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_path, d_per_block_results_price);
+	mc_basket<<<nBlocks, nThreads, nThreads*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_path, d_per_block_results_price);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));

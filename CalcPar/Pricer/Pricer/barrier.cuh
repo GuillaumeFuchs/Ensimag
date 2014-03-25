@@ -51,6 +51,7 @@ __device__ float payoff_barrier(
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
+//int samples: nb échantillon de MC
 //float K: strike de l'option
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_bu: barrière désactivante up de chaque actif
@@ -61,6 +62,7 @@ __device__ float payoff_barrier(
 __global__ void mc_barrier(
 	int N,
 	int size,
+	int samples,
 	float K,
 	float* d_coeff,
 	float* d_bu,
@@ -71,25 +73,27 @@ __global__ void mc_barrier(
 		extern __shared__ float sdata_price[];
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
-		//Calcul du payoff
-		sdata_price[threadIdx.x] = payoff_barrier(N, tid, size, K, d_coeff, d_bu, d_bl, d_path);
+		if (tid < samples){
+			//Calcul du payoff
+			sdata_price[threadIdx.x] = payoff_barrier(N, tid, size, K, d_coeff, d_bu, d_bl, d_path);
 
-		//On charge le r�sultat du payoff dans la m�moire partag�
-		//On attend que tous les threads aient calcul�s le payoff
-		__syncthreads();
-
-		//R�duction partielle pour chaque thread
-		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
-			if (threadIdx.x < offset)
-				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
-			
-			//On attend que tous les threads aient effectu�s leur somme partielle
+			//On charge le r�sultat du payoff dans la m�moire partag�
+			//On attend que tous les threads aient calcul�s le payoff
 			__syncthreads();
-		}
 
-		//Le thread 0 charge le r�sultat
-		if (threadIdx.x == 0){
-			per_block_results_price[blockIdx.x] = sdata_price[0];
+			//R�duction partielle pour chaque thread
+			for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
+				if (threadIdx.x < offset)
+					sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
+
+				//On attend que tous les threads aient effectu�s leur somme partielle
+				__syncthreads();
+			}
+
+			//Le thread 0 charge le r�sultat
+			if (threadIdx.x == 0){
+				per_block_results_price[blockIdx.x] = sdata_price[0];
+			}
 		}
 }
 #endif
