@@ -154,8 +154,12 @@ class MonteCarlo {
 	 *
 	 * \param prix (ouptut) contient le prix
 	 * \param ic (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du prix
+	 * \param time_cpu (ouptut) temps d'exécution via le calcul uniquement par CPU
+	 * \param prix_gpu (ouptut) contient le prix calculé via CUDA
+	 * \param ic_gpu (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du prix via CUDA
+	 * \param time_gpu (ouptut) temps d'exécution via le calcul par CUDA
 	 */
-	void price (double &prix, double &ic);	
+	void price (double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu);	
 
 	/*!
 	 * \brief Calcule le prix de l’option a la date t

@@ -2,10 +2,11 @@
 # include "barrier.h"
 # include <pnl/pnl_mathtools.h>
 
+#include "barrier.cuh"
+
 /*!
  * \file barrier.cpp
  * \brief Option barrière
- * \author Equipe 11
  */
 
 Barrier :: Barrier() : Option() {
@@ -90,6 +91,36 @@ double Barrier :: payoff (const PnlMat *path) {
   return MAX(sum, 0);
 }
 
-void Barrier::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+void Barrier::price_mc(
+	double &prix, 
+	int nBlocks, 
+	int nThreads, 
+	int N, 
+	int samples,
+	float* d_path) 
 {
+	//Compute price
+	float* d_per_block_results_price;
+	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
+	float* d_coeff;
+	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
+	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+	float* d_bu;
+	cudaMalloc((float**)&d_bu, size_*sizeof(float));
+	cudaMemcpy(d_bu, Bu_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+	float* d_bl;
+	cudaMalloc((float**)&d_bl, size_*sizeof(float));
+	cudaMemcpy(d_bl, Bl_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+
+	mc_barrier<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, (float)Strike_, d_coeff, d_bu, d_bl, d_path, d_per_block_results_price);
+	cudaThreadSynchronize();
+
+	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+
+	prix = 0.0;
+	for (int i = 0; i < nBlocks; i++){
+		prix += per_block_results_price[i];
+	}
+	cudaFree(d_per_block_results_price);
 }

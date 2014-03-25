@@ -22,14 +22,17 @@ __device__ float payoff_asian(
 	float K,
 	float* d_path)
 {
-	double pay = 0.;
+	float pay = 0.;
+	for (int i = 0; i < N+1; i++)
+		pay += d_path[tid*(N+1) + i];
 	
-	return max(pay - K, 0.0);
+	return max(pay/(float)N- K, 0.0);
 }
 
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
+//int samples: nombre d'échantillon de MC
 //float K: strike de l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
 //float* per_block_results_price: resultat du payoff pour le calcul du prix
@@ -37,6 +40,7 @@ __device__ float payoff_asian(
 __global__ void mc_asian(
 	int N,
 	int size,
+	int samples,
 	float K,
 	float* d_path,
 	float* per_block_results_price)
@@ -44,25 +48,27 @@ __global__ void mc_asian(
 		extern __shared__ float sdata_price[];
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
-		//Calcul du payoff
-		sdata_price[threadIdx.x] = payoff_asian(N, tid, size, K, d_path);
+		if (tid < samples){
+			//Calcul du payoff
+			sdata_price[threadIdx.x] = payoff_asian(N, tid, size, K, d_path);
 
-		//On charge le r�sultat du payoff dans la m�moire partag�
-		//On attend que tous les threads aient calcul�s le payoff
-		__syncthreads();
-
-		//R�duction partielle pour chaque thread
-		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
-			if (threadIdx.x < offset)
-				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
-			
-			//On attend que tous les threads aient effectu�s leur somme partielle
+			//On charge le r�sultat du payoff dans la m�moire partag�
+			//On attend que tous les threads aient calcul�s le payoff
 			__syncthreads();
-		}
 
-		//Le thread 0 charge le r�sultat
-		if (threadIdx.x == 0){
-			per_block_results_price[blockIdx.x] = sdata_price[0];
+			//R�duction partielle pour chaque thread
+			for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
+				if (threadIdx.x < offset)
+					sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
+
+				//On attend que tous les threads aient effectu�s leur somme partielle
+				__syncthreads();
+			}
+
+			//Le thread 0 charge le r�sultat
+			if (threadIdx.x == 0){
+				per_block_results_price[blockIdx.x] = sdata_price[0];
+			}
 		}
 }
 #endif

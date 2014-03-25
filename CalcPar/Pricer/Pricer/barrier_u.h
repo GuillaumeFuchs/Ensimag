@@ -112,6 +112,6 @@ class Barrier_u : public Option {
 	 * \return payoff du sous-jacent barriere haute
 	 */
 	double payoff (const PnlMat *path) ;
-	void price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path);
+	void price_mc(double &prix, int nBlocks, int nThreads, int N, int samples, float* d_path);
 };
 #endif

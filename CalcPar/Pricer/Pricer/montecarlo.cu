@@ -85,7 +85,7 @@ void MonteCarlo::set_samples(int samples){
 * Price
 *
 */
-void MonteCarlo::price(double &prix, double &ic){
+void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu){
 	int size = opt_->get_size();
 	int N = opt_->get_timesteps();
 	double r = mod_->get_r();
@@ -119,18 +119,15 @@ void MonteCarlo::price(double &prix, double &ic){
 		int nBlocks;
 		float *d_path;
 		d_path = mod_->assetGPU(nBlocks, nThreads, samples_, N, T);
-		printf("%d %d\n", nBlocks, nThreads);
 
-		double prix = 0.0;
-		opt_->price_mc(prix, nBlocks, nThreads, N, d_path);
-		prix = exp(-r*T)/(double)samples_*prix;
+		opt_->price_mc(prix_gpu, nBlocks, nThreads, N, samples_, d_path);
+		prix_gpu = exp(-r*T)/(double)samples_*prix_gpu;
+		ic_gpu = 0.;
 
-		printf("%f\n", prix);
-		
 		cudaFree(d_path);
 	}
 	tend = clock();
-	printf("  Time: %f \n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	time_gpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
 
 	//Ajout du prix spot dans la première colonne de path
 	pnl_mat_set_col(path, mod_->get_spot(), 0);
@@ -146,9 +143,9 @@ void MonteCarlo::price(double &prix, double &ic){
 	}
 	//Calcul du prix à l'aide de la formule de MC
 	prix = exp(-r*T)*(1/(double)samples_)*prix;
-
 	tend = clock();
-	printf("  Time: %f \n", (float)(tend-tbegin)/CLOCKS_PER_SEC);
+	time_cpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
+
 	//Calcul de la variance de l'estimateur pour avoir l'intervalle de confiance
 	ic = exp(-2 * r * T) * ic/(double)samples_ - prix * prix;
 	ic = 1.96 * sqrt(ic/(double)samples_);
@@ -331,107 +328,107 @@ void MonteCarlo::delta (const PnlMat *past, double t, PnlVect *delta, PnlVect *i
 
 void MonteCarlo::couv(PnlMat *past, double &pl, int H, double T)
 {
-	//Simulation du modèle sous la probabilité historique
-	mod_->simul_market(past, H, T, rng);
+	////Simulation du modèle sous la probabilité historique
+	//mod_->simul_market(past, H, T, rng);
 
-	double r = mod_->get_r();
-	int size = opt_->get_size();
-	int N = opt_->get_timesteps();
-	//temps_tau: pas de discrétisation du temps avec H comme nombre de dates
-	double temps_tau = T/H;
-	//mult: coefficient multiplicateur de H et N
-	int mult = (int)(H/N);
-	//compteur: permet de savoir à quel length correspond les colonnes de past avec H dates et les colonnes dont on a besoin avec N dates
-	int compteur = 0;
-	int length =0;
+	//double r = mod_->get_r();
+	//int size = opt_->get_size();
+	//int N = opt_->get_timesteps();
+	////temps_tau: pas de discrétisation du temps avec H comme nombre de dates
+	//double temps_tau = T/H;
+	////mult: coefficient multiplicateur de H et N
+	//int mult = (int)(H/N);
+	////compteur: permet de savoir à quel length correspond les colonnes de past avec H dates et les colonnes dont on a besoin avec N dates
+	//int compteur = 0;
+	//int length =0;
 
-	//prix: prix du sous-jacent à l'instant 0
-	double prix;
-	double ic;
-	price(prix, ic);
+	////prix: prix du sous-jacent à l'instant 0
+	//double prix;
+	//double ic;
+	//price(prix, ic);
 
-	//delta1: vecteur contenant le delta à un instant donné
-	PnlVect* delta1 = pnl_vect_create(size);
-	PnlVect* ic_vect = pnl_vect_create(size);
+	////delta1: vecteur contenant le delta à un instant donné
+	//PnlVect* delta1 = pnl_vect_create(size);
+	//PnlVect* ic_vect = pnl_vect_create(size);
 
-	//past_sub: matrice contenant la matrice past jusqu'à un instant donné
-	PnlMat* past_sub = pnl_mat_create(size,1);
-	pnl_mat_extract_subblock(past_sub, past, 0, size, 0, 1);
+	////past_sub: matrice contenant la matrice past jusqu'à un instant donné
+	//PnlMat* past_sub = pnl_mat_create(size,1);
+	//pnl_mat_extract_subblock(past_sub, past, 0, size, 0, 1);
 
-	//extract: vecteur utilisé pour extraire des colonne de past et les insérer dans past_sub
-	PnlVect* extract = pnl_vect_create(size);
+	////extract: vecteur utilisé pour extraire des colonne de past et les insérer dans past_sub
+	//PnlVect* extract = pnl_vect_create(size);
 
-	//S: vecteur contenant le prix dusous-jacent à un instant donné
-	PnlVect* S = pnl_vect_create(size);
-	//result: vecteur contenant le résultat de la soustraction entre delta1 et delta2
-	PnlVect* result;
+	////S: vecteur contenant le prix dusous-jacent à un instant donné
+	//PnlVect* S = pnl_vect_create(size);
+	////result: vecteur contenant le résultat de la soustraction entre delta1 et delta2
+	//PnlVect* result;
 
-	//Calcul à l'instant 0 de l'évolution de l'évolution de la part investie
-	delta(past_sub, 0, delta1, ic_vect);
-	pnl_mat_get_col(S, past, 0);
+	////Calcul à l'instant 0 de l'évolution de l'évolution de la part investie
+	//delta(past_sub, 0, delta1, ic_vect);
+	//pnl_mat_get_col(S, past, 0);
 
-	PnlVect* V = pnl_vect_create(H);
-	pnl_vect_set(V, 0, prix - pnl_vect_scalar_prod(delta1, S));
-	compteur=mult;
+	//PnlVect* V = pnl_vect_create(H);
+	//pnl_vect_set(V, 0, prix - pnl_vect_scalar_prod(delta1, S));
+	//compteur=mult;
 
-	//delta2: vecteur contenant le delta à une date de constation précédente de delta1
-	PnlVect* hist;
-	for (int i=1; i<H+1; i++)
-	{
-		//On met dans delta2 la valeur du delta à l'instant i-1
-		PnlVect* delta2 = pnl_vect_copy(delta1);
+	////delta2: vecteur contenant le delta à une date de constation précédente de delta1
+	//PnlVect* hist;
+	//for (int i=1; i<H+1; i++)
+	//{
+	//	//On met dans delta2 la valeur du delta à l'instant i-1
+	//	PnlVect* delta2 = pnl_vect_copy(delta1);
 
-		//On cherche l'indice k tel que tau{i} < t_{k} < tau_{i+1}
-		//On met dans past_sub les colonne correspondant à
-		//past[,j*mult] tel que j = 0..i
-		//past_sub est une matrice de dimension size * (i+1)
-		if (compteur == mult){
-			length++;
-			pnl_mat_resize(past_sub, size, length+1);
-			compteur=0;
-		}
-		compteur++;
-		for (int j=0; j<length; j++){
-			//On extrait la colonne d'length j*mult de past 
-			//et on l'insère dans la colonne d'length j de past
-			pnl_mat_get_col(extract, past, j*mult);
-			pnl_mat_set_col(past_sub, extract, j);
-		}
-		pnl_mat_get_col(extract, past, i);
-		pnl_mat_set_col(past_sub, extract, length);
+	//	//On cherche l'indice k tel que tau{i} < t_{k} < tau_{i+1}
+	//	//On met dans past_sub les colonne correspondant à
+	//	//past[,j*mult] tel que j = 0..i
+	//	//past_sub est une matrice de dimension size * (i+1)
+	//	if (compteur == mult){
+	//		length++;
+	//		pnl_mat_resize(past_sub, size, length+1);
+	//		compteur=0;
+	//	}
+	//	compteur++;
+	//	for (int j=0; j<length; j++){
+	//		//On extrait la colonne d'length j*mult de past 
+	//		//et on l'insère dans la colonne d'length j de past
+	//		pnl_mat_get_col(extract, past, j*mult);
+	//		pnl_mat_set_col(past_sub, extract, j);
+	//	}
+	//	pnl_mat_get_col(extract, past, i);
+	//	pnl_mat_set_col(past_sub, extract, length);
 
-		if (i == H){
-			hist = pnl_vect_copy(delta2);
-			price(past_sub, temps_tau*i, prix, ic);
-		}else{
+	//	if (i == H){
+	//		hist = pnl_vect_copy(delta2);
+	//		price(past_sub, temps_tau*i, prix, ic);
+	//	}else{
 
-			//Calcul du delta à l'instant i
-			delta(past_sub, temps_tau*i, delta1, ic_vect);
-			price(past_sub, temps_tau*i, prix, ic);
+	//		//Calcul du delta à l'instant i
+	//		delta(past_sub, temps_tau*i, delta1, ic_vect);
+	//		price(past_sub, temps_tau*i, prix, ic);
 
-			//On met delta1 dans result pour pouvoir faire la soustraction de delta1 avec delta2 dans result car on aura besoin de delta1 dans la boucle suivant
-			result = pnl_vect_copy(delta1);
-			pnl_vect_minus_vect(result, delta2);
+	//		//On met delta1 dans result pour pouvoir faire la soustraction de delta1 avec delta2 dans result car on aura besoin de delta1 dans la boucle suivant
+	//		result = pnl_vect_copy(delta1);
+	//		pnl_vect_minus_vect(result, delta2);
 
-			pnl_mat_get_col(S, past, i);
-			pnl_vect_set(V, i, pnl_vect_get(V,i-1) * exp(r*T/H) - pnl_vect_scalar_prod(result , S)); 
-			pnl_vect_free(&result);
-		}
-		pnl_vect_free(&delta2);
-	}
-	//Calcul à l'instant H du delta et du prix des actifs
-	pnl_mat_get_col(S, past, H);
+	//		pnl_mat_get_col(S, past, i);
+	//		pnl_vect_set(V, i, pnl_vect_get(V,i-1) * exp(r*T/H) - pnl_vect_scalar_prod(result , S)); 
+	//		pnl_vect_free(&result);
+	//	}
+	//	pnl_vect_free(&delta2);
+	//}
+	////Calcul à l'instant H du delta et du prix des actifs
+	//pnl_mat_get_col(S, past, H);
 
-	prix = opt_->payoff(past_sub);
+	//prix = opt_->payoff(past_sub);
 
-	//Calcul de l'erreur de couverture
-	pl = pnl_vect_get(V, H-1) * exp(r*T/H) + pnl_vect_scalar_prod(hist, S) - prix;
+	////Calcul de l'erreur de couverture
+	//pl = pnl_vect_get(V, H-1) * exp(r*T/H) + pnl_vect_scalar_prod(hist, S) - prix;
 
-	pnl_vect_free(&V);
-	pnl_vect_free(&S);
-	pnl_vect_free(&hist);
-	pnl_vect_free(&extract);
-	pnl_mat_free(&past_sub);
-	pnl_vect_free(&delta1);
-	pnl_vect_free(&ic_vect);
+	//pnl_vect_free(&V);
+	//pnl_vect_free(&S);
+	//pnl_vect_free(&hist);
+	//pnl_vect_free(&extract);
+	//pnl_mat_free(&past_sub);
+	//pnl_vect_free(&delta1);
+	//pnl_vect_free(&ic_vect);
 }

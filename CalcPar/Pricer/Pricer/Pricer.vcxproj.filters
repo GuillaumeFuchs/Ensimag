@@ -18,19 +18,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="barrier.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="barrier_l.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="barrier_u.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="option.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="performance.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="parser.cpp">
@@ -91,6 +79,18 @@
     <CudaCompile Include="asian.cu">
       <Filter>Fichiers sources</Filter>
     </CudaCompile>
+    <CudaCompile Include="barrier.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+    <CudaCompile Include="barrier_u.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+    <CudaCompile Include="barrier_l.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
+    <CudaCompile Include="performance.cu">
+      <Filter>Fichiers sources</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="exemples\barrier_u.dat">
@@ -136,6 +136,18 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
     <None Include="asian.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="barrier.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="barrier_u.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="barrier_l.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="performance.cuh">
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
   </ItemGroup>

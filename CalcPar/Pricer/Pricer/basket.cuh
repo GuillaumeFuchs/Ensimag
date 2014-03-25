@@ -24,7 +24,7 @@ __device__ float payoff_basket(
 	float* d_coeff,
 	float* d_path)
 {
-	double pay = 0.;
+	float pay = 0.;
 	for (int d = 0; d < size; d++)
 		pay+=d_path[(d+1)*(N+1)-1+tid*(N+1)*size]*d_coeff[d];
 	
@@ -34,6 +34,7 @@ __device__ float payoff_basket(
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
+//int samples: nb échantillon de MC
 //float K: strike de l'option
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
@@ -42,7 +43,8 @@ __device__ float payoff_basket(
 __global__ void mc_basket(
 	int N,
 	int size,
-	double K,
+	int samples,
+	float K,
 	float* d_coeff,
 	float* d_path,
 	float* per_block_results_price)
@@ -50,25 +52,27 @@ __global__ void mc_basket(
 		extern __shared__ float sdata_price[];
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
-		//Calcul du payoff
-		sdata_price[threadIdx.x] = payoff_basket(N, tid, size, K, d_coeff, d_path);
+		if (tid < samples){
+			//Calcul du payoff
+			sdata_price[threadIdx.x] = payoff_basket(N, tid, size, K, d_coeff, d_path);
 
-		//On charge le r�sultat du payoff dans la m�moire partag�
-		//On attend que tous les threads aient calcul�s le payoff
-		__syncthreads();
-
-		//R�duction partielle pour chaque thread
-		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
-			if (threadIdx.x < offset)
-				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
-			
-			//On attend que tous les threads aient effectu�s leur somme partielle
+			//On charge le r�sultat du payoff dans la m�moire partag�
+			//On attend que tous les threads aient calcul�s le payoff
 			__syncthreads();
-		}
 
-		//Le thread 0 charge le r�sultat
-		if (threadIdx.x == 0){
-			per_block_results_price[blockIdx.x] = sdata_price[0];
+			//R�duction partielle pour chaque thread
+			for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
+				if (threadIdx.x < offset)
+					sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
+
+				//On attend que tous les threads aient effectu�s leur somme partielle
+				__syncthreads();
+			}
+
+			//Le thread 0 charge le r�sultat
+			if (threadIdx.x == 0){
+				per_block_results_price[blockIdx.x] = sdata_price[0];
+			}
 		}
 }
 #endif

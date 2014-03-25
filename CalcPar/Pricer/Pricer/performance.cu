@@ -2,10 +2,10 @@
 # include "performance.h"
 # include <pnl/pnl_mathtools.h>
 
+#include "performance.cuh"
 /*!
  * \file performance.cpp
  * \brief option performance 
- * \author equipe 11
  */
 
 Performance :: Performance() : Option() {
@@ -43,7 +43,6 @@ double Performance :: payoff (const PnlMat *path) {
   PnlVect* denominateur = pnl_vect_create(size_);
 
   for (int i=1; i<TimeSteps_+1; i++){
-	for (int d=0; d<size_; d++){
 	  //On met les d actif au temps t_i dans numerateur
 	  //et ceux au temps t_{i-1} dans denominateur
 	  pnl_mat_get_col(numerateur, path, i);
@@ -51,7 +50,6 @@ double Performance :: payoff (const PnlMat *path) {
 	  temp_num = pnl_vect_scalar_prod(numerateur, Coeff_);
 	  temp_deno = pnl_vect_scalar_prod(denominateur, Coeff_);
 	  sum = sum + temp_num/temp_deno;
-	}
   }
   sum = sum/(double)(TimeSteps_) - 1;
   pnl_vect_free(&numerateur);
@@ -59,6 +57,30 @@ double Performance :: payoff (const PnlMat *path) {
   return 1+MIN(MAX(sum,0), 0.1);
 }
 
-void Performance::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+void Performance::price_mc(
+	double &prix, 
+	int nBlocks,
+	int nThreads,
+	int N,
+	int samples,
+	float* d_path) 
 {
+	//Compute price
+	float* d_per_block_results_price;
+	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
+	float* d_coeff;
+	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
+	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+
+	mc_performance<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, d_coeff, d_path, d_per_block_results_price);
+	cudaThreadSynchronize();
+
+	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+
+	prix = 0.0;
+	for (int i = 0; i < nBlocks; i++){
+		prix += per_block_results_price[i];
+	}
+	cudaFree(d_per_block_results_price);
 }

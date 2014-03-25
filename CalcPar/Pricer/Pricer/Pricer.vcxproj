@@ -14,9 +14,13 @@
     <CudaCompile Include="asian.cu">
       <FileType>CppCode</FileType>
     </CudaCompile>
-    <ClCompile Include="barrier.cpp" />
-    <ClCompile Include="barrier_l.cpp" />
-    <ClCompile Include="barrier_u.cpp" />
+    <CudaCompile Include="barrier.cu" />
+    <CudaCompile Include="barrier_l.cu">
+      <FileType>CppCode</FileType>
+    </CudaCompile>
+    <CudaCompile Include="barrier_u.cu">
+      <FileType>CppCode</FileType>
+    </CudaCompile>
     <CudaCompile Include="basket.cu">
       <FileType>CppCode</FileType>
     </CudaCompile>
@@ -28,7 +32,9 @@
     </CudaCompile>
     <ClCompile Include="option.cpp" />
     <ClCompile Include="parser.cpp" />
-    <ClCompile Include="performance.cpp" />
+    <CudaCompile Include="performance.cu">
+      <FileType>CppCode</FileType>
+    </CudaCompile>
     <ClCompile Include="typeval.cpp" />
     <CudaCompile Include="pricer.cpp">
       <FileType>Document</FileType>
@@ -49,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="asian.cuh" />
+    <None Include="barrier.cuh" />
+    <None Include="barrier_l.cuh" />
+    <None Include="barrier_u.cuh" />
     <None Include="basket.cuh" />
     <None Include="bs.cuh" />
     <None Include="exemples\asian.dat" />
@@ -63,6 +72,7 @@
     <None Include="exemples\call.dat" />
     <None Include="exemples\perf.dat" />
     <None Include="exemples\put.dat" />
+    <None Include="performance.cuh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{745BFC7D-44DE-40FD-A185-8C3E2BA8A48B}</ProjectGuid>

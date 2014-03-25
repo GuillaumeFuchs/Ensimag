@@ -42,13 +42,19 @@ double Asian :: payoff (const PnlMat *path) {
   return MAX(sum, 0);
 }
 
-void Asian::price_mc(double &prix, int nBlocks, int nThreads, int N, float* d_path) 
+void Asian::price_mc(
+	double &prix,
+	int nBlocks,
+	int nThreads,
+	int N,
+	int samples,
+	float* d_path) 
 {
 	//Compute price
 	float* d_per_block_results_price;
 	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
 
-	mc_asian<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, (float)Strike_, d_path, d_per_block_results_price);
+	mc_asian<<<nBlocks, nThreads, nBlocks*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_path, d_per_block_results_price);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
