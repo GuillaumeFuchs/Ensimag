@@ -16,7 +16,6 @@
 /*!
  * \file pricer.cpp
  * \brief Fichier de test pour le price d'option à t=0
- * \author equipe 11
  */
 
 void price_compute(char *file, PnlRng* rng)
@@ -76,18 +75,18 @@ int main(int argc, char **argv)
   printf("**               RESULTATS                 **\n"); 
   printf("*********************************************\n");
 
-  price_compute("exemples/basket_5d.dat", rng);
-  price_compute("exemples/asian.dat", rng);
-  price_compute("exemples/barrier.dat", rng);
+  //price_compute("exemples/call.dat", rng);
+  //price_compute("exemples/basket_5d.dat", rng);
+  //price_compute("exemples/asian.dat", rng);
+  //price_compute("exemples/barrier.dat", rng);
   price_compute("exemples/barrier_l.dat", rng);
-  price_compute("exemples/barrier_l2.dat", rng);
-  price_compute("exemples/barrier_u.dat", rng);
-  price_compute("exemples/barrier_u2.dat", rng);
-  price_compute("exemples/basket_1.dat", rng);
-  price_compute("exemples/basket_2.dat", rng);
-  price_compute("exemples/call.dat", rng);
-  price_compute("exemples/perf.dat", rng);
-  price_compute("exemples/put.dat", rng);
+  //price_compute("exemples/barrier_l2.dat", rng);
+  //price_compute("exemples/barrier_u.dat", rng);
+  //price_compute("exemples/barrier_u2.dat", rng);
+  //price_compute("exemples/basket_1.dat", rng);
+  //price_compute("exemples/basket_2.dat", rng);
+  //price_compute("exemples/perf.dat", rng);
+  //price_compute("exemples/put.dat", rng);
 
   pnl_rng_free(&rng);
   return 0;

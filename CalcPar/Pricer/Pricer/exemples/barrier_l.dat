@@ -12,5 +12,5 @@ payoff coefficients 0.2
 lower barrier 90 80 95 70 60
 
 timestep number 24
-sample number 100000
+sample number 50000
 

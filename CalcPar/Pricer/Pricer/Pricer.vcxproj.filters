@@ -150,5 +150,8 @@
     <None Include="performance.cuh">
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
+    <None Include="montecarlo.cuh">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
   </ItemGroup>
 </Project>

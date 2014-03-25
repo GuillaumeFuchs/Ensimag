@@ -3,7 +3,6 @@
 /*!
  * \file option.cpp
  * \brief classe option 
- * \author equipe 11
  */
 
 Option :: Option(){

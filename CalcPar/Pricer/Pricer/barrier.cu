@@ -92,16 +92,19 @@ double Barrier :: payoff (const PnlMat *path) {
 }
 
 void Barrier::price_mc(
+	dim3 dimGrid,
+	dim3 dimBlock,
 	double &prix, 
-	int nBlocks, 
-	int nThreads, 
+	double &ic,
 	int N, 
 	int samples,
 	float* d_path) 
 {
 	//Compute price
 	float* d_per_block_results_price;
-	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
+	cudaMalloc((float**)&d_per_block_results_price, (dimGrid.x)*sizeof(float));
+	float* d_per_block_results_ic;
+	cudaMalloc((float**)&d_per_block_results_ic, (dimGrid.x)*sizeof(float));
 	float* d_coeff;
 	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
 	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
@@ -112,15 +115,21 @@ void Barrier::price_mc(
 	cudaMalloc((float**)&d_bl, size_*sizeof(float));
 	cudaMemcpy(d_bl, Bl_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
-	mc_barrier<<<nBlocks, nThreads, nThreads*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_bu, d_bl, d_path, d_per_block_results_price);
+	int nUseThreads = samples/100;
+	mc_barrier<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, nUseThreads, (float)Strike_, d_coeff, d_bu, d_bl, d_path, d_per_block_results_price, d_per_block_results_ic);
 	cudaThreadSynchronize();
 
-	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
-	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_price = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_ic = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_ic, d_per_block_results_ic, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
 
-	prix = 0.0;
-	for (int i = 0; i < nBlocks; i++){
+	prix = 0.;
+	ic = 0.;
+	for (int i = 0; i < dimGrid.x; i++){
 		prix += per_block_results_price[i];
+		ic += per_block_results_ic[i];
 	}
 	cudaFree(d_per_block_results_price);
+	cudaFree(d_per_block_results_ic);
 }

@@ -14,6 +14,10 @@
 #include <cstdio>
 #include <ctime>
 
+#include "montecarlo.cuh"
+
+#define N_THREADS 512;
+
 using namespace std;
 
 MonteCarlo::MonteCarlo(PnlRng * rng){
@@ -114,16 +118,67 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 	clock_t tbegin, tend;
 	tbegin = clock();
 	{
+		int separ = 1;
+
 		//Property grid & blocks
-		int nThreads;
-		int nBlocks;
+		int nThreads = N_THREADS;
+		int nBlocks_rand = ceil((double)samples_/(double)separ * N * size / (double)nThreads);
+		int nBlocks = ceil((double)samples_/(double)separ / (double)nThreads);
+		int nAll = samples_/separ * N * size;
+
+		dim3 dimGrid_rand(nBlocks_rand, 1, 1);
+		dim3 dimGrid(nBlocks, 1, 1);
+		dim3 dimBlock(nThreads, 1, 1);
+
+		//Rand variables
+		curandState *d_state;
+		float *d_rand;
+
+		//Asset variables
 		float *d_path;
-		d_path = mod_->assetGPU(nBlocks, nThreads, samples_, N, T);
 
-		opt_->price_mc(prix_gpu, nBlocks, nThreads, N, samples_, d_path);
-		prix_gpu = exp(-r*T)/(double)samples_*prix_gpu;
-		ic_gpu = 0.;
+		cudaMalloc(&d_state, nAll*sizeof(curandState));
+		cudaMalloc((float**)&d_rand, nAll*sizeof(float));
+		cudaMalloc((float**)&d_path, samples_/separ *(N+1)*size*sizeof(float));
 
+		double sum_prix_gpu = 0.;
+		double sum_ic_gpu = 0.;
+
+		for (int k = 0; k < separ; k++){
+			//Random generator
+			init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
+			cudaThreadSynchronize();
+			make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
+			cudaThreadSynchronize();
+			
+			//TEST RAND
+			//float *rand = (float*)malloc(nAll*sizeof(float));
+			//cudaMemcpy(rand, d_rand, nAll*sizeof(float), cudaMemcpyDeviceToHost);
+			//printf("RAND:\n");
+			//for (int m = 0; m < samples_/separ; m++){
+			//for (int i = 0; i < N; i++){
+			//for (int d = 0; d < size; d++)
+			//printf("%i: %f ", d+i*size+(N*size)*m, rand[d+i*size+(N*size)*m]);
+			//printf("\n");
+			//}
+			//printf("\n"); 
+			//}
+
+
+			//Compute asset
+			mod_->assetGPU(dimGrid, dimBlock, samples_, N, nAll, T, d_path, d_rand);
+			//Compute payoff
+			opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, samples_, d_path);
+
+			sum_prix_gpu += prix_gpu;
+			sum_ic_gpu += ic_gpu;
+		}
+		prix_gpu = exp(-r*T)/(double)samples_*sum_prix_gpu;
+		ic_gpu = exp(-2*r*T)*sum_ic_gpu/(double)samples_ - prix_gpu * prix_gpu;
+		ic_gpu = 1.96 *sqrt(ic_gpu/(double)samples_);
+
+		cudaFree(d_state);
+		cudaFree(d_rand);
 		cudaFree(d_path);
 	}
 	tend = clock();
@@ -145,7 +200,6 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 	prix = exp(-r*T)*(1/(double)samples_)*prix;
 	tend = clock();
 	time_cpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
-
 	//Calcul de la variance de l'estimateur pour avoir l'intervalle de confiance
 	ic = exp(-2 * r * T) * ic/(double)samples_ - prix * prix;
 	ic = 1.96 * sqrt(ic/(double)samples_);

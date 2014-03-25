@@ -3,11 +3,11 @@
 #include <pnl/pnl_vector.h>
 #include <pnl/pnl_random.h>
 #include "parser.h"
+#include "device_launch_parameters.h"
 
 /*!
  *  \file	bs.h
  *  \brief	Header de la classe BS
- *  \author Equipe 11
  */
 
 /*!
@@ -26,12 +26,10 @@ class BS {
 	PnlVect *Gi_; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
 	PnlVect *Ld_; /*!< Ligne d de la matrice de Cholesky Cho_*/
 
-	float *sigma_gpu; /*!< vecteur de volatilites */
-	float *spot_gpu; /*!< valeurs initiales du sous-jacent */
-	float *trend_gpu; /*!< taux utilise sous la probabilite historique */
-	float *Cho_gpu; /*!< Matrice de Cholesky utilise pour la correlation*/
-	float *Gi_gpu; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
-	float *Ld_gpu; /*!< Ligne d de la matrice de Cholesky Cho_*/
+	float *d_sigma; /*!< vecteur de volatilites */
+	float *d_spot; /*!< valeurs initiales du sous-jacent */
+	float *d_trend; /*!< taux utilise sous la probabilite historique */
+	float *d_cho; /*!< Matrice de Cholesky utilise pour la correlation*/
   public:
 
 	/*!
@@ -231,7 +229,7 @@ class BS {
 	 * \param grid contient les indices de temps utilises pour l'evolution du sous-jacent
 	 */
 	void asset(PnlMat *path, double T,  int N, PnlRng *rng, PnlMat* G, PnlVect* grid) ;
-	float* assetGPU(int &nBlocks, int &nThreads, int samples, int N, float T);
+	void assetGPU(dim3 dimGrid, dim3 dimBlock, int samples, int N, int nAll, float T, float* d_path, float* d_rand);
 
 	/*!
 	 * \brief Calcule une trajectoire du sous-jacent connaissant le passe jusqu'a la date t

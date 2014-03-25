@@ -7,46 +7,11 @@
 #pragma comment(lib, "cuda.lib") 
 #pragma comment(lib, "cudart.lib") 
 
-// INITIALISE LE GENERATEUR DE NOMBRE ALEATOIRE
-//int samples: donne le nombre d'itération de Monte-Carlo
-//int seed: noyau du générateur
-//curandState* state: donne un randState à chaque thread
-__global__ void init_stuff(
-	int samples,
-	int seed,
-	curandState *state)
-{
-	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-	if (tid < samples)
-		curand_init(seed, tid, 0, &state[tid]);
-}
-
-// GENERATION DU NOMBRE ALEATOIRE
-//int samples: donne le nombre d'itération de Monte-Carlo
-//int N: nombre de pas de temps
-//int size: taille de l'option
-//curandState* state: donne un randState à chaque thread
-//float* rand: tableau où est stocké les nombres aléatoires
-__global__ void make_rand(
-	int samples,
-	int N,
-	int size,
-	curandState * state,
-	float *d_rand)
-{
-	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
-	if (tid < samples){
-		for (int i = 0; i < N; i++){
-			for (int d = 0; d < size; d++)
-				d_rand[tid*(N*size)+d+i*size] = curand_normal(&state[tid]);
-		}
-	}
-}
 
 // CALCUL DU CHEMIN DES ACTIFS
 //int N: nombre de pas de temps
 //int size: nombre d'actif
-//int samples: donne le nombre d'itération de Monte-Carlo
+//int nUseThreads: nombre de threads utilisés pour pour le calcul des chemins
 //float spot: spot des actifs
 //float sigma: volatilité des actifs
 //float r: taux sans risque
@@ -57,7 +22,7 @@ __global__ void make_rand(
 __global__ void asset_compute(
 	int N,
 	int size,
-	int samples,
+	int nUseThreads,
 	float* spot,
 	float* sigma,
 	float r,
@@ -72,7 +37,7 @@ __global__ void asset_compute(
 	int indice_d;
 	int size_rand = N*size;
 
-	if (tid < samples){
+	if (tid < nUseThreads){
 		for (int d = 0; d < size; d++){
 			beginPath = d*(N+1)+size*(N+1)*tid;
 			d_path[beginPath] = spot[d];

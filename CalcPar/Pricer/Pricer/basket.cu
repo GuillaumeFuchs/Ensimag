@@ -18,14 +18,18 @@ Basket :: Basket(Parser& pars):Option(pars){
 	Strike_ = pars.getDouble("strike");
 	Coeff_ = pnl_vect_copy(pars.getVect("payoff coefficients"));
 
-	Coeff_gpu = (float*)malloc(size_*sizeof(float));
+	float* Coeff_gpu = (float*)malloc(size_*sizeof(float));
 
 	for (int i = 0; i < size_; i++)
 		Coeff_gpu[i] = GET(Coeff_, i);
+
+	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
+	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 }
 
 Basket :: ~Basket(){
 	pnl_vect_free(&Coeff_);
+	cudaFree(d_coeff);
 }
 
 double Basket :: get_Strike() {
@@ -57,30 +61,35 @@ double Basket :: payoff (const PnlMat *path) {
 }
 
 void Basket::price_mc(
+	dim3 dimGrid,
+	dim3 dimBlock,
 	double &prix,
-	int nBlocks,
-	int nThreads,
+	double &ic,
 	int N,
 	int samples,
 	float* d_path) 
 {
 	//Compute price
 	float* d_per_block_results_price;
-	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
-	float* d_coeff;
-	cudaMalloc((float**)&d_coeff, size_*sizeof(float));
-	cudaMemcpy(d_coeff, Coeff_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMalloc((float**)&d_per_block_results_price, (dimGrid.x)*sizeof(float));
+	float* d_per_block_results_ic;
+	cudaMalloc((float**)&d_per_block_results_ic, (dimGrid.x)*sizeof(float));
 
-	mc_basket<<<nBlocks, nThreads, nThreads*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_path, d_per_block_results_price);
+	int nUseThreads = samples/10;
+	mc_basket<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, nUseThreads, (float)Strike_, d_coeff, d_path, d_per_block_results_price, d_per_block_results_ic);
 	cudaThreadSynchronize();
 
-	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
-	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_price = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_ic = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_ic, d_per_block_results_ic, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
 
-	prix = 0.0;
-	for (int i = 0; i < nBlocks; i++){
+	prix = 0.;
+	ic = 0.;
+	for (int i = 0; i < dimGrid.x; i++){
 		prix += per_block_results_price[i];
-		
+		ic += per_block_results_ic[i];
 	}
 	cudaFree(d_per_block_results_price);
+	cudaFree(d_per_block_results_ic);
 }

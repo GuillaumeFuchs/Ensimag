@@ -8,7 +8,6 @@
 /*!
  * \file asian.cpp
  * \brief Implémentation de la classe fille d'Option: Asian 
- * \author equipe 11
  */
 
 Asian :: Asian() : Option() {
@@ -43,26 +42,35 @@ double Asian :: payoff (const PnlMat *path) {
 }
 
 void Asian::price_mc(
+	dim3 dimGrid,
+	dim3 dimBlock,
 	double &prix,
-	int nBlocks,
-	int nThreads,
+	double &ic,
 	int N,
 	int samples,
 	float* d_path) 
 {
 	//Compute price
 	float* d_per_block_results_price;
-	cudaMalloc((float**)&d_per_block_results_price, nBlocks*sizeof(float));
+	cudaMalloc((float**)&d_per_block_results_price, (dimGrid.x)*sizeof(float));
+	float* d_per_block_results_ic;
+	cudaMalloc((float**)&d_per_block_results_ic, (dimGrid.x)*sizeof(float));
 
-	mc_asian<<<nBlocks, nThreads, nThreads*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_path, d_per_block_results_price);
+	int nUseThreads = samples/10;
+	mc_asian<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, nUseThreads, (float)Strike_, d_path, d_per_block_results_price, d_per_block_results_ic);
 	cudaThreadSynchronize();
 
-	float* per_block_results_price = (float*)malloc(nBlocks*sizeof(float));
-	cudaMemcpy(per_block_results_price, d_per_block_results_price, nBlocks*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_price = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_price, d_per_block_results_price, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
+	float* per_block_results_ic = (float*)malloc((dimGrid.x)*sizeof(float));
+	cudaMemcpy(per_block_results_ic, d_per_block_results_ic, (dimGrid.x)*sizeof(float), cudaMemcpyDeviceToHost);
 
-	prix = 0.0;
-	for (int i = 0; i < nBlocks; i++){
+	prix = 0.;
+	ic = 0.;
+	for (int i = 0; i < dimGrid.x; i++){
 		prix += per_block_results_price[i];
+		ic += per_block_results_ic[i];
 	}
 	cudaFree(d_per_block_results_price);
+	cudaFree(d_per_block_results_ic);
 }

@@ -53,14 +53,20 @@ __global__ void mc_performance(
 	int samples,
 	float* d_coeff,
 	float* d_path,
-	float* per_block_results_price)
+	float* per_block_results_price,
+	float* per_block_results_ic)
 {
-	extern __shared__ float sdata_price[];
+	extern __shared__ float s_data[];
+	float *s_data_price = s_data;
+	float *s_data_ic = &s_data[blockDim.x];
+
 	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (tid < samples){
 		//Calcul du payoff
-		sdata_price[threadIdx.x] = payoff_performance(N, tid, size, d_coeff, d_path);
+		float payoff = payoff_performance(N, tid, size, d_coeff, d_path);
+		s_data_price[threadIdx.x] = payoff;
+		s_data_ic[threadIdx.x] = payoff*payoff;
 
 		//On charge le r�sultat du payoff dans la m�moire partag�
 		//On attend que tous les threads aient calcul�s le payoff
@@ -68,8 +74,10 @@ __global__ void mc_performance(
 
 		//R�duction partielle pour chaque thread
 		for (int offset = blockDim.x/2; offset > 0; offset >>= 1){
-			if (threadIdx.x < offset)
-				sdata_price[threadIdx.x] += sdata_price[threadIdx.x + offset];
+			if (threadIdx.x < offset){
+				s_data_price[threadIdx.x] += s_data_price[threadIdx.x + offset];
+				s_data_ic[threadIdx.x] += s_data_ic[threadIdx.x + offset];
+			}
 
 			//On attend que tous les threads aient effectu�s leur somme partielle
 			__syncthreads();
@@ -77,7 +85,8 @@ __global__ void mc_performance(
 
 		//Le thread 0 charge le r�sultat
 		if (threadIdx.x == 0){
-			per_block_results_price[blockIdx.x] = sdata_price[0];
+			per_block_results_price[blockIdx.x] = s_data_price[0];
+			per_block_results_ic[blockIdx.x] = s_data_ic[0];
 		}
 	}
 }
