@@ -99,8 +99,7 @@ void Barrier_l::price_mc(
 	cudaMalloc((float**)&d_bl, size_*sizeof(float));
 	cudaMemcpy(d_bl, Bl_gpu, size_*sizeof(float), cudaMemcpyHostToDevice);
 
-	int nUseThreads = samples/1;
-	mc_barrier_l<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, nUseThreads, (float)Strike_, d_coeff, d_bl, d_path, d_per_block_results_price, d_per_block_results_ic);
+	mc_barrier_l<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_bl, d_path, d_per_block_results_price, d_per_block_results_ic);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc((dimGrid.x)*sizeof(float));

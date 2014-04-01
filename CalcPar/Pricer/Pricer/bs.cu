@@ -182,23 +182,21 @@ void BS::assetGPU(
 	dim3 dimBlock,
 	int samples,
 	int N,
-	int nAll,
 	float T,
 	float* d_path,
 	float* d_rand)
 {
 		//Compute asset
 		float dt = T/(float)N;
-		int nUseThreads = nAll/(N*size_);
 
-		asset_compute<<<dimGrid, dimBlock>>>(N, size_, nUseThreads, d_spot, d_sigma, (float)r_, dt, d_cho, d_path, d_rand);
+		asset_compute<<<dimGrid, dimBlock>>>(N, size_, samples, d_spot, d_sigma, (float)r_, dt, d_cho, d_path, d_rand);
 		cudaThreadSynchronize();
 
 		//TEST PATH
 		//printf("PATH:\n");
-		//float *path = (float*)malloc(nUseThreads*(N+1)*size_*sizeof(float));
-		//cudaMemcpy(path, d_path, nUseThreads*(N+1)*size_*sizeof(float), cudaMemcpyDeviceToHost);
-		//for (int m = 0; m < nUseThreads; m++){
+		//float *path = (float*)malloc(samples*(N+1)*size_*sizeof(float));
+		//cudaMemcpy(path, d_path, samples*(N+1)*size_*sizeof(float), cudaMemcpyDeviceToHost);
+		//for (int m = 0; m < samples; m++){
 		//for (int d = 0; d < size_; d++){
 		//for (int i = 0; i < N+1; i++)
 		//printf("%d: %f ", i+d*(N+1)+size_*(N+1)*m, path[i+d*(N+1)+size_*(N+1)*m]);

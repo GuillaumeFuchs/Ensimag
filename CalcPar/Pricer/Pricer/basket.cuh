@@ -34,7 +34,7 @@ __device__ float payoff_basket(
 // ITERATION DE MONTE_CARLO
 //int N: nombre de pas de temps
 //int size: taille de l'option
-//int nUseThreads: nb de chemin calculés par option
+//int samples: nb échantillon de MC
 //float K: strike de l'option
 //float* d_coeff: proportion de chaque actif dans l'option
 //float* d_path: ensemble des chemins des iterations de Monte Carlo
@@ -43,7 +43,7 @@ __device__ float payoff_basket(
 __global__ void mc_basket(
 	int N,
 	int size,
-	int nUseThreads,
+	int samples,
 	float K,
 	float* d_coeff,
 	float* d_path,
@@ -56,7 +56,7 @@ __global__ void mc_basket(
 		
 		unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;
 		
-		if (tid < nUseThreads){
+		if (tid < samples){
 			//Calcul du payoff
 			float payoff = payoff_basket(N, tid, size, K, d_coeff, d_path);
 			s_data_price[threadIdx.x] = payoff;

@@ -89,7 +89,7 @@ void MonteCarlo::set_samples(int samples){
 * Price
 *
 */
-void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu){
+void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu, int optimalSamples, int &NSS){
 	int size = opt_->get_size();
 	int N = opt_->get_timesteps();
 	double r = mod_->get_r();
@@ -115,47 +115,68 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 		pnl_vect_set(grid, t, temps*t);
 	}
 
-	clock_t tbegin, tend;
+	clock_t tbegin, tend, tbegin1, tend1;
 	tbegin = clock();
 	{
-		int separ = 1;
-
+		optimalSamples = 7680/(N*size);
+		int nBreaks = ceil((double)samples_/(double)optimalSamples); //nombre de division du samples total
+		if (samples_ != nBreaks * optimalSamples){
+			printf("ATTENTION: nombre d'iterations modifie. %d -> %d\n", samples_, nBreaks*optimalSamples);
+			set_samples(nBreaks*optimalSamples);
+		}
+		
+		//
 		//Property grid & blocks
+		//
 		int nThreads = N_THREADS;
-		int nBlocks_rand = ceil((double)samples_/(double)separ * N * size / (double)nThreads);
-		int nBlocks = ceil((double)samples_/(double)separ / (double)nThreads);
-		int nAll = samples_/separ * N * size;
-
+		int nBlocks_rand = ceil(optimalSamples * N * size / (double)nThreads);
+		int nBlocks = ceil(optimalSamples / (double)nThreads);
+		int nAll = optimalSamples * N * size;
+		NSS = nAll;
 		dim3 dimGrid_rand(nBlocks_rand, 1, 1);
 		dim3 dimGrid(nBlocks, 1, 1);
 		dim3 dimBlock(nThreads, 1, 1);
 
+		//
 		//Rand variables
+		//
 		curandState *d_state;
 		float *d_rand;
 
+		//
 		//Asset variables
+		//
 		float *d_path;
-
-		cudaMalloc(&d_state, nAll*sizeof(curandState));
-		cudaMalloc((float**)&d_rand, nAll*sizeof(float));
-		cudaMalloc((float**)&d_path, samples_/separ *(N+1)*size*sizeof(float));
-
 		double sum_prix_gpu = 0.;
 		double sum_ic_gpu = 0.;
 
-		for (int k = 0; k < separ; k++){
-			//Random generator
+		cudaMalloc(&d_state, nAll*sizeof(curandState));
+		cudaMalloc((float**)&d_rand, nAll*sizeof(float));
+		cudaMalloc((float**)&d_path, optimalSamples *(N+1)*size*sizeof(float));
+		
+		
+			tbegin1 = clock();
 			init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
 			cudaThreadSynchronize();
+			tend1 = clock();
+			//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
+
+		for (int k = 0; k < nBreaks; k++){
+			//
+			//Random generator
+			//
+
+			tbegin1 = clock();
 			make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
 			cudaThreadSynchronize();
+			tend1 = clock();
+			//printf("make_rand: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 			
 			//TEST RAND
 			//float *rand = (float*)malloc(nAll*sizeof(float));
 			//cudaMemcpy(rand, d_rand, nAll*sizeof(float), cudaMemcpyDeviceToHost);
 			//printf("RAND:\n");
-			//for (int m = 0; m < samples_/separ; m++){
+			//for (int m = 0; m < optimalSamples; m++){
 			//for (int i = 0; i < N; i++){
 			//for (int d = 0; d < size; d++)
 			//printf("%i: %f ", d+i*size+(N*size)*m, rand[d+i*size+(N*size)*m]);
@@ -164,11 +185,20 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 			//printf("\n"); 
 			//}
 
-
+			//
 			//Compute asset
-			mod_->assetGPU(dimGrid, dimBlock, samples_, N, nAll, T, d_path, d_rand);
+			//
+			tbegin1= clock();
+			mod_->assetGPU(dimGrid, dimBlock, optimalSamples, N, T, d_path, d_rand);
+			tend1 = clock();
+			//printf("asset: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
+			//
 			//Compute payoff
-			opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, samples_, d_path);
+			//
+			tbegin1= clock();
+			opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, optimalSamples, d_path);
+			tend1 = clock();
+			//printf("price_mc: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
 			sum_prix_gpu += prix_gpu;
 			sum_ic_gpu += ic_gpu;
@@ -184,7 +214,7 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 	tend = clock();
 	time_gpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
 
-	//Ajout du prix spot dans la première colonne de path
+	////Ajout du prix spot dans la première colonne de path
 	pnl_mat_set_col(path, mod_->get_spot(), 0);
 	tbegin = clock();
 	for (int j=0; j<samples_; j++){

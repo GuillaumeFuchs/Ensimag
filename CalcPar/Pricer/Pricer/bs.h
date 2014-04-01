@@ -229,7 +229,7 @@ class BS {
 	 * \param grid contient les indices de temps utilises pour l'evolution du sous-jacent
 	 */
 	void asset(PnlMat *path, double T,  int N, PnlRng *rng, PnlMat* G, PnlVect* grid) ;
-	void assetGPU(dim3 dimGrid, dim3 dimBlock, int samples, int N, int nAll, float T, float* d_path, float* d_rand);
+	void assetGPU(dim3 dimGrid, dim3 dimBlock, int samples, int N, float T, float* d_path, float* d_rand);
 
 	/*!
 	 * \brief Calcule une trajectoire du sous-jacent connaissant le passe jusqu'a la date t

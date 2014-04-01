@@ -75,8 +75,7 @@ void Basket::price_mc(
 	float* d_per_block_results_ic;
 	cudaMalloc((float**)&d_per_block_results_ic, (dimGrid.x)*sizeof(float));
 
-	int nUseThreads = samples/10;
-	mc_basket<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, nUseThreads, (float)Strike_, d_coeff, d_path, d_per_block_results_price, d_per_block_results_ic);
+	mc_basket<<<dimGrid, dimBlock, 2*(dimBlock.x)*sizeof(float)>>>(N, size_, samples, (float)Strike_, d_coeff, d_path, d_per_block_results_price, d_per_block_results_ic);
 	cudaThreadSynchronize();
 
 	float* per_block_results_price = (float*)malloc((dimGrid.x)*sizeof(float));

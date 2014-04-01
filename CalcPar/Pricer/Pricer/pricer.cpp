@@ -26,32 +26,37 @@ void price_compute(char *file, PnlRng* rng)
 
   double prix, ic, time_cpu;
   double prix_gpu, ic_gpu, time_gpu;
+  
+  double t_mean = 0.;
+  int NSS;
+  int optimal=100;
 
   if (!strcmp("basket", type)){
 	Basket opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }else if (!strcmp("asian", type)){
 	Asian opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }else if (!strcmp("barrier_l", type)){
 	Barrier_l opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }else if (!strcmp("barrier_u", type)){
 	Barrier_u opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }else if (!strcmp("barrier", type)){
 	Barrier opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }else{
 	Performance opt(mon_parser);
 	MonteCarlo mc(&bs, &opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu);
+	mc.price(prix, ic, time_cpu, prix_gpu, ic_gpu, time_gpu, optimal, NSS);
   }
+  
   printf("\n");
   printf("%s\n", file);
   printf("\nCPU:\n");
@@ -61,7 +66,7 @@ void price_compute(char *file, PnlRng* rng)
   printf("\nGPU:\n");
   printf("  Prix: %f \n", prix_gpu);
   printf("  Ic: %f \n", ic_gpu);
-  printf("  Time: %f \n", time_gpu);
+  printf("  Time: %f \n", time_gpu, optimal);
   printf("\n");
 
 }
@@ -74,20 +79,20 @@ int main(int argc, char **argv)
   printf("*********************************************\n");
   printf("**               RESULTATS                 **\n"); 
   printf("*********************************************\n");
-
-  //price_compute("exemples/call.dat", rng);
+  
+  price_compute("exemples/call.dat", rng);
   //price_compute("exemples/basket_5d.dat", rng);
   //price_compute("exemples/asian.dat", rng);
   //price_compute("exemples/barrier.dat", rng);
-  price_compute("exemples/barrier_l.dat", rng);
-  //price_compute("exemples/barrier_l2.dat", rng);
-  //price_compute("exemples/barrier_u.dat", rng);
-  //price_compute("exemples/barrier_u2.dat", rng);
-  //price_compute("exemples/basket_1.dat", rng);
-  //price_compute("exemples/basket_2.dat", rng);
-  //price_compute("exemples/perf.dat", rng);
-  //price_compute("exemples/put.dat", rng);
-
+  /*price_compute("exemples/barrier_l.dat", rng);
+  price_compute("exemples/barrier_l2.dat", rng);
+  price_compute("exemples/barrier_u.dat", rng);
+  price_compute("exemples/barrier_u2.dat", rng);
+  price_compute("exemples/basket_1.dat", rng);
+  price_compute("exemples/basket_2.dat", rng);
+  price_compute("exemples/perf.dat", rng);
+  price_compute("exemples/put.dat", rng);
+*/
   pnl_rng_free(&rng);
   return 0;
 }

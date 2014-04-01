@@ -10,5 +10,5 @@ trend 0.06
 option type basket
 payoff coefficients 0.2
 
-timestep number 1
+timestep number 3
 sample number 50000

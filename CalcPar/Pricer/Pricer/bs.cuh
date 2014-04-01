@@ -11,7 +11,7 @@
 // CALCUL DU CHEMIN DES ACTIFS
 //int N: nombre de pas de temps
 //int size: nombre d'actif
-//int nUseThreads: nombre de threads utilisés pour pour le calcul des chemins
+//int samples: nombre de samples
 //float spot: spot des actifs
 //float sigma: volatilité des actifs
 //float r: taux sans risque
@@ -22,7 +22,7 @@
 __global__ void asset_compute(
 	int N,
 	int size,
-	int nUseThreads,
+	int samples,
 	float* spot,
 	float* sigma,
 	float r,
@@ -37,7 +37,7 @@ __global__ void asset_compute(
 	int indice_d;
 	int size_rand = N*size;
 
-	if (tid < nUseThreads){
+	if (tid < samples){
 		for (int d = 0; d < size; d++){
 			beginPath = d*(N+1)+size*(N+1)*tid;
 			d_path[beginPath] = spot[d];
