@@ -118,7 +118,8 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 	clock_t tbegin, tend, tbegin1, tend1;
 	tbegin = clock();
 	{
-		optimalSamples = 7680/(N*size);
+		//optimalSamples = 7680/(N*size);
+		optimalSamples = 5000;
 		int nBreaks = ceil((double)samples_/(double)optimalSamples); //nombre de division du samples total
 		if (samples_ != nBreaks * optimalSamples){
 			printf("ATTENTION: nombre d'iterations modifie. %d -> %d\n", samples_, nBreaks*optimalSamples);
@@ -154,18 +155,17 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 		cudaMalloc((float**)&d_rand, nAll*sizeof(float));
 		cudaMalloc((float**)&d_path, optimalSamples *(N+1)*size*sizeof(float));
 		
-		
-			tbegin1 = clock();
-			init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
-			cudaThreadSynchronize();
-			tend1 = clock();
-			//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
+		init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
+		cudaThreadSynchronize();
 
 		for (int k = 0; k < nBreaks; k++){
 			//
 			//Random generator
 			//
-
+			tbegin1 = clock();
+			
+			tend1 = clock();
+			//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 			tbegin1 = clock();
 			make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
 			cudaThreadSynchronize();
