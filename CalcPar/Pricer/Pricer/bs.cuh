@@ -37,14 +37,20 @@ __global__ void asset_compute(
 	int indice_d;
 	int size_rand = N*size;
 
+	//On contrôle que le thread correspond à un sample
 	if (tid < samples){
+		//Parcours de tous les sous-jacents
 		for (int d = 0; d < size; d++){
+			//Recherche du spot de chaque sous-jacent
+			//Ainsi que de l'indice du sous-jacent pour la matrice de correlation
 			beginPath = d*(N+1)+size*(N+1)*tid;
 			d_path[beginPath] = spot[d];
 			indice_d = d*(d+1)/2;
 
+			//Calcul de l'ensemble des pas de temps du sous-jacent
 			for (int i = 0; i < N; i++){
 				rho = 0.;
+				//Calcul de la corrélation d'un sous-jacent avec les autres sous-jacent de l'option
 				for (int k = 0; k < d+1; k++)
 					rho += d_cho[k+indice_d]*
 					d_rand[tid*size_rand + i*size + k];

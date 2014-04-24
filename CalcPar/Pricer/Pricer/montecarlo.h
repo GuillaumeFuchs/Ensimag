@@ -150,46 +150,21 @@ class MonteCarlo {
 	void set_samples(int samples);
 
 	/*!
-	 * \brief Calcule du prix de l’option a la date 0
+	 * \brief Calcule du prix de l’option a la date 0 en utilisant uniquement le CPU
 	 *
-	 * \param prix (ouptut) contient le prix
-	 * \param ic (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du prix
+	 * \param prix_cpu (ouptut) contient le prix
+	 * \param ic_cpu (ouptut) contient la largeur au centre de l’intervalle de confiance sur le calcul du prix
 	 * \param time_cpu (ouptut) temps d'exécution via le calcul uniquement par CPU
-	 * \param prix_gpu (ouptut) contient le prix calculé via CUDA
-	 * \param ic_gpu (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du prix via CUDA
-	 * \param time_gpu (ouptut) temps d'exécution via le calcul par CUDA
 	 */
-	void price (double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu, int optimalSamples, int &NSS);	
-
+	void priceCPU (double &prix_cpu, double &ic_cpu, double &time_cpu);	
 	/*!
-	 * \brief Calcule le prix de l’option a la date t
+	 * \brief Calcule du prix de l’option a la date 0 en utilisant le CPU et le GPU
 	 *
-	 * \param past (input) contient la trajectoire du sous-jacent jusqu’a l’instant t
-	 * \param t (input) date a laquelle le calcul est fait
-	 * \param prix (ouptut) contient le prix
-	 * \param ic (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du prix
+	 * \param prix_gpu (ouptut) contient le prix
+	 * \param ic_gpu (ouptut) contient la largeur au centre de l’intervalle de confiance sur le calcul du prix
+	 * \param time_gpu (ouptut) temps d'exécution via le calcul uniquement par CPU & GPU
+	 * \param ic_target (input) si différent de 0.0 alors la fonction calcul le prix en ayant un interval de confiance inférieur à celui renseigné par ic_target
 	 */
-	void price (const PnlMat *past, double t, double &prix, double &ic);
-
-	/*!
-	 * \brief Calcul du delta de l’option a la date t
-	 *
-	 * \param past (input) contient la trajectoire du sous-jacent jusqu’a l’instant t
-	 * \param t (input) date a laquelle le calcul est fait
-	 * \param delta (ouptut) contient le vecteur de delta
-	 * \param ic (ouptut) contient la largeur de l’intervalle de confiance sur le calcul du delta
-	 */
-	void delta (const PnlMat *past, double t, PnlVect *delta, PnlVect *ic); 
-
-	/*!
-	 * \brief Calcul de l'erreur de couverture
-	 *
-	 * \param past contient une trajectoire du modele 
-	 * \param pl erreur de courverture du portefeuille
-	 * \param H nombre de date dans la simulation
-	 * \param T maturite du portefeuille
-	 */
-	void couv (PnlMat *past, double &pl, int H, double T);
-
+	void priceGPU (double &prix_gpu, double &ic_gpu, double &time_gpu, const double ic_target);
 };
 #endif

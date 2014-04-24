@@ -89,133 +89,36 @@ void MonteCarlo::set_samples(int samples){
 * Price
 *
 */
-void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_gpu, double &ic_gpu, double &time_gpu, int optimalSamples, int &NSS){
+void MonteCarlo::priceCPU(
+	double &prix_cpu, 
+	double &ic_cpu, 
+	double &time_cpu)
+{
+	//Récupération des paramètres de l'option
 	int size = opt_->get_size();
 	int N = opt_->get_timesteps();
 	double r = mod_->get_r();
 	double T = opt_->get_T();
-	//Initialisation de path comme une matrice de dimension d x (N+1)
-	PnlMat *path = pnl_mat_create(size, N+1);
-	//G: matrice de dimension N*d pour générer une suite iid selon la loi normale centrée réduite
-	PnlMat *G = pnl_mat_create(N, size);
-	//grid: vecteur de taille N pour générer la grille de temps (t_0=0, ..., t_N)
-	PnlVect *grid = pnl_vect_create(N+1);
-	//tirages: vecteur de taille samples_ contenant les valeurs des M payoff
-	PnlVect *tirages = pnl_vect_create(samples_);
-	//temps: incrémentation pour chaque date de constation
-	double temps = T/N;
 
-	//payoff: valeur du payoff de l'option
-	double payoff;
-	prix = 0.;
-	ic = 0.;
+	double dt = T/N; //incrémentation pour chaque date de constation
+	double payoff;	//valeur du payoff de l'option
 
-	//Calcule de chaque date de constatation;
-	for (int t=0; t<N+1; t++){
-		pnl_vect_set(grid, t, temps*t);
-	}
+	PnlMat *path = pnl_mat_create(size, N+1); //matrice de dimension d x (N+1) pour stocker le chemin de l'option
+	PnlMat *G = pnl_mat_create(N, size); //matrice de dimension N*d pour générer une suite iid selon la loi normale centrée réduite
+	PnlVect *grid = pnl_vect_create(N+1); //vecteur de taille N pour générer la grille de temps (t_0=0, ..., t_N)
+	PnlVect *tirages = pnl_vect_create(samples_); //vecteur de taille samples_ contenant les valeurs des M payoff
+	clock_t tbegin, tend; //variables pour calculer le temps d'exécution du pricer
 
-	clock_t tbegin, tend, tbegin1, tend1;
-	tbegin = clock();
-	{
-		//optimalSamples = 7680/(N*size);
-		optimalSamples = 5000;
-		int nBreaks = ceil((double)samples_/(double)optimalSamples); //nombre de division du samples total
-		if (samples_ != nBreaks * optimalSamples){
-			printf("ATTENTION: nombre d'iterations modifie. %d -> %d\n", samples_, nBreaks*optimalSamples);
-			set_samples(nBreaks*optimalSamples);
-		}
-		
-		//
-		//Property grid & blocks
-		//
-		int nThreads = N_THREADS;
-		int nBlocks_rand = ceil(optimalSamples * N * size / (double)nThreads);
-		int nBlocks = ceil(optimalSamples / (double)nThreads);
-		int nAll = optimalSamples * N * size;
-		NSS = nAll;
-		dim3 dimGrid_rand(nBlocks_rand, 1, 1);
-		dim3 dimGrid(nBlocks, 1, 1);
-		dim3 dimBlock(nThreads, 1, 1);
+	prix_cpu = 0.;
+	ic_cpu = 0.;
 
-		//
-		//Rand variables
-		//
-		curandState *d_state;
-		float *d_rand;
+	//Calcul de chaque date de constatation;
+	for (int t=0; t<N+1; t++)
+		pnl_vect_set(grid, t, dt*t);
 
-		//
-		//Asset variables
-		//
-		float *d_path;
-		double sum_prix_gpu = 0.;
-		double sum_ic_gpu = 0.;
-
-		cudaMalloc(&d_state, nAll*sizeof(curandState));
-		cudaMalloc((float**)&d_rand, nAll*sizeof(float));
-		cudaMalloc((float**)&d_path, optimalSamples *(N+1)*size*sizeof(float));
-		
-		init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
-		cudaThreadSynchronize();
-
-		for (int k = 0; k < nBreaks; k++){
-			//
-			//Random generator
-			//
-			tbegin1 = clock();
-			
-			tend1 = clock();
-			//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
-			tbegin1 = clock();
-			make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
-			cudaThreadSynchronize();
-			tend1 = clock();
-			//printf("make_rand: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
-			
-			//TEST RAND
-			//float *rand = (float*)malloc(nAll*sizeof(float));
-			//cudaMemcpy(rand, d_rand, nAll*sizeof(float), cudaMemcpyDeviceToHost);
-			//printf("RAND:\n");
-			//for (int m = 0; m < optimalSamples; m++){
-			//for (int i = 0; i < N; i++){
-			//for (int d = 0; d < size; d++)
-			//printf("%i: %f ", d+i*size+(N*size)*m, rand[d+i*size+(N*size)*m]);
-			//printf("\n");
-			//}
-			//printf("\n"); 
-			//}
-
-			//
-			//Compute asset
-			//
-			tbegin1= clock();
-			mod_->assetGPU(dimGrid, dimBlock, optimalSamples, N, T, d_path, d_rand);
-			tend1 = clock();
-			//printf("asset: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
-			//
-			//Compute payoff
-			//
-			tbegin1= clock();
-			opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, optimalSamples, d_path);
-			tend1 = clock();
-			//printf("price_mc: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
-
-			sum_prix_gpu += prix_gpu;
-			sum_ic_gpu += ic_gpu;
-		}
-		prix_gpu = exp(-r*T)/(double)samples_*sum_prix_gpu;
-		ic_gpu = exp(-2*r*T)*sum_ic_gpu/(double)samples_ - prix_gpu * prix_gpu;
-		ic_gpu = 1.96 *sqrt(ic_gpu/(double)samples_);
-
-		cudaFree(d_state);
-		cudaFree(d_rand);
-		cudaFree(d_path);
-	}
-	tend = clock();
-	time_gpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
-
-	////Ajout du prix spot dans la première colonne de path
+	//Ajout du prix spot dans la première colonne de path
 	pnl_mat_set_col(path, mod_->get_spot(), 0);
+
 	tbegin = clock();
 	for (int j=0; j<samples_; j++){
 		//Génération de la trajectoire du modèle de Black Scholes
@@ -223,16 +126,18 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 
 		//Calcul du payoff et stockage dans le prix et la variance
 		payoff = opt_->payoff(path);
-		prix += payoff;
-		ic += payoff*payoff;
+		prix_cpu += payoff;
+		ic_cpu += payoff*payoff;
 	}
-	//Calcul du prix à l'aide de la formule de MC
-	prix = exp(-r*T)*(1/(double)samples_)*prix;
 	tend = clock();
+
+	//Calcul du prix à l'aide de la formule de MC
+	prix_cpu = exp(-r*T)*(1/(double)samples_)*prix_cpu;
 	time_cpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
+
 	//Calcul de la variance de l'estimateur pour avoir l'intervalle de confiance
-	ic = exp(-2 * r * T) * ic/(double)samples_ - prix * prix;
-	ic = 1.96 * sqrt(ic/(double)samples_);
+	ic_cpu = exp(-2*r*T) * ic_cpu/(double)samples_ - prix_cpu * prix_cpu;
+	ic_cpu = 1.96*sqrt(ic_cpu/(double)samples_);
 
 	pnl_vect_free(&grid);
 	pnl_vect_free(&tirages);
@@ -240,279 +145,127 @@ void MonteCarlo::price(double &prix, double &ic, double &time_cpu, double &prix_
 	pnl_mat_free(&G);
 }
 
-void MonteCarlo::price(const PnlMat *past, double t, double &prix, double &ic){
-	double T = opt_->get_T();
-	//Cas où on price à maturité
-	//Toutes les informations sont déjà déterminés à l'aide de past
-	//donc on a besoin d'aucune simulation
-	//et l'intervalle de confiance est de 0 car on est dans un calcul du prix déterministe
-	if (t == T){
-		prix = opt_->payoff(past);
-		//Calcul de la variance
-		ic = 0;
-		return;
-	}
-
-	int size = opt_->get_size();
-	int N = opt_->get_timesteps();
-	double r = mod_->get_r();
-	//Initialisation de path comme une matrice de dimension d x (N+1)
-	PnlMat *path = pnl_mat_create(size, N+1);
-	//tirages: vecteur de taille samples_ contenant la valeur des payoff de l'option
-	PnlVect *tirages = pnl_vect_create(samples_);
-	//temps: incrémentation pour chaque date de constatation
-	double temps = T/N;
-	//extract: vecteur de taille size servant à extraire de la matrice past les colonnes pour les insérer dans path
-	PnlVect *extract = pnl_vect_create(size);
-
-	//taille: entier servant à déterminer le nombre de d'évolution du sous jacent (N-taille termes à simuler pour chaque actif)
-	//Si t est un pas d'incrémentation du temps alors s_{t_i} et s_t sont confondus donc l'indice i est égal à past->n-1
-	//Sinon i=past->n-2
-	int taille;
-	if (fabs(t-temps*(past->n-1))<0.00001)
-		taille = past->n-1;
-	else
-		taille = past->n-2;
-	//G: matrice de dimension (N-taille)*d pour générer une suite iid selon la loi normale centrée réduite
-	PnlMat *G = pnl_mat_create(N-taille, size);
-	//Grid: vecteur de taille N-taille+1 pour générer la grille de temps (t, t_{i+1}, ..., t_{N})
-	PnlVect *grid = pnl_vect_create(N-taille+1);
-	pnl_vect_set(grid, 0, t);
-
-	//Calcul de chaque date de constatation;
-	for (int i=1; i<N-taille+1; i++){
-		pnl_vect_set(grid, i, temps*(i+taille));
-	}
-
-	//Ajout de la trajectoire du modèle dans path
-	//Ajout des prix constaté jusqu'à la date t dans les taille+1 premières colonnes (cela correspond en fait au nombre de colonne de past)
-	for (int i=0; i<taille+1; i++){
-		//Extraction des colonnes de past dans extract pour les insérer dans path
-		pnl_mat_get_col(extract, past, i);
-		pnl_mat_set_col(path, extract, i);
-	}
-
-	for (int j=0; j<samples_; j++){
-		//Si on travaille à maturité
-		//alors on clone la matrice past dans path
-		//sinon on génère l'évolution du sous-jacent par le modèle de BS
-		if (t==T)
-			pnl_mat_clone(path,past);
-		else  
-			mod_->asset(path, t, N , T, rng, past, taille, G, grid);
-		//Ajout dans tirages
-		pnl_vect_set(tirages, j, opt_->payoff(path));
-	}
-	//Calcul du prix
-	prix = exp(-r*(T-t))*(1/(double)samples_)*pnl_vect_sum(tirages);
-	//Calcul de la variance
-	ic = (3.92/sqrt((double)samples_)) * sqrt(exp(-2*r*(T-t))*((1/(double)samples_)*SQR(pnl_vect_norm_two(tirages))-SQR((1/(double)samples_)*pnl_vect_sum(tirages))));
-
-	pnl_mat_free(&path);
-	pnl_mat_free(&G);
-	pnl_vect_free(&tirages);
-	pnl_vect_free(&extract);
-	pnl_vect_free(&grid);
-}
-
-
-void MonteCarlo::delta (const PnlMat *past, double t, PnlVect *delta, PnlVect *ic){
-	int size = opt_->get_size();
-	int N = opt_->get_timesteps();
-	double r = mod_->get_r();
-	double T = opt_->get_T();
-	double temps1 = 0;
-	double temps2 = 0;
-	double sum, sum2;
-	double facteur;
-	double result, resultic;
-	//Temps: incrémentation pour chaque date de constatation
-	double temps = T/N;
-	//Extract: vecteur de taille size servant à extraire de la matrice past les colonnes pour les insérer dans path
-	PnlVect *extract = pnl_vect_create(size);
-	//On initialise path, _shift_path_plus et _shift_path_moins comme des matrices de dimension d x (N+1)
-	PnlMat *path = pnl_mat_create(size, N+1);  
-	PnlMat *_shift_path_plus = pnl_mat_create(size, N+1);
-	PnlMat *_shift_path_moins = pnl_mat_create(size, N+1);
-	PnlVect *tirages = pnl_vect_create(samples_);
-	PnlVect *tirages2 =  pnl_vect_create(samples_);
-
-	//Taille: entier servant à déterminer le nombre de d'évolution du sous jacent (N-taille termes à simuler pour chaque actif)
-	//Si t est un pas d'incrémentation du temps alors s_{t_i} et s_t sont confondus donc l'indice i est égal à past->n-1
-	//Sinon i=past->n-2
-	int taille;
-	if (fabs(t-temps*(past->n-1))<0.00001)
-		taille = past->n-1;
-	else
-		taille = past->n-2;
-
-	//G: matrice de dimension (N-taille)*d pour générer une suite iid selon la loi normale centrée réduite
-	PnlMat *G = pnl_mat_create(N-taille, size);
-	//Grid: vecteur de taille N-taille+1 pour générer la grille de temps (t, t_{i+1}, ..., t_{N})
-	PnlVect *grid = pnl_vect_create(N-taille+1);
-	pnl_vect_set(grid, 0, t);
-	for (int i=1; i<N-taille+1; i++){
-		//On calcule chaque date de constatation;
-		pnl_vect_set(grid, i, temps*(i+taille));
-	}
-
-	//On met la trajectoire du modèle dans path
-	//On met les prix constaté jusqu'à la date t dans les taille+2 premières colonnes (cela correspond en fait au nombre de colonne de past)
-	for (int i=0; i<taille+1; i++){
-		//Extraction des colonnes de past dans extract pour les insérer dans path
-		pnl_mat_get_col(extract, past, i);
-		pnl_mat_set_col(path, extract, i);
-	}
-
-	for (int d=0; d<size; d++){
-		//printf("%d/%d\n",d, size-1);
-		for (int j=0; j<samples_; j++){
-			if (t==T)
-				pnl_mat_clone(path,past);
-			else {
-				mod_->asset(path, t, N, T, rng, past, taille, G, grid);
-			}
-			// On récupère la trajectoire shiftée
-			mod_->shift_asset(_shift_path_plus, path, d, h_, t,N);
-			mod_->shift_asset (_shift_path_moins, path, d, -h_, t,N);
-
-			//On calcul la valeur du payoff et on retiens la différence
-			temps1 = opt_->payoff(_shift_path_plus);
-			temps2 = opt_->payoff(_shift_path_moins);
-			pnl_vect_set(tirages, j, temps1-temps2);
-			// recuperation des (phi(plus)-pi(moins))²
-			pnl_vect_set(tirages2, j, (temps1-temps2)*(temps1-temps2));
-		}
-		// somme des phi
-		sum = pnl_vect_sum(tirages);
-		// somme des phi²
-		sum2 = pnl_vect_sum(tirages2);
-
-		// calcul de delta
-		facteur =  1/(2*(double)h_*(double)samples_*(double)pnl_mat_get(past, d, past->n-1));
-		result =  exp(-r*(T-t))* facteur * sum;
-		pnl_vect_set(delta, d, result);
-
-		// calcul de l'intervalle de confiance
-		sum = (sum*facteur)*(sum*facteur);
-		resultic = exp(-r*(T-t))/2 * (facteur*sum2 - sum);
-		resultic = 3.92*sqrt(resultic * 1/ (double)samples_);
-		pnl_vect_set(ic, d, resultic);
-	}
-
-	pnl_mat_free(&G);
-	pnl_mat_free(&path);
-	pnl_mat_free(&_shift_path_plus);
-	pnl_mat_free(&_shift_path_moins);
-	pnl_vect_free(&tirages);
-	pnl_vect_free(&tirages2);
-	pnl_vect_free(&extract);
-	pnl_vect_free(&grid);
-}
-
-void MonteCarlo::couv(PnlMat *past, double &pl, int H, double T)
+void MonteCarlo::priceGPU(
+	double &prix_gpu, 
+	double &ic_gpu, 
+	double &time_gpu, 
+	const double ic_target)
 {
-	////Simulation du modèle sous la probabilité historique
-	//mod_->simul_market(past, H, T, rng);
+	//
+	//Récupération des paramètres de l'option
+	//
+	int size = opt_->get_size();
+	int N = opt_->get_timesteps();
+	double r = mod_->get_r();
+	double T = opt_->get_T();
 
-	//double r = mod_->get_r();
-	//int size = opt_->get_size();
-	//int N = opt_->get_timesteps();
-	////temps_tau: pas de discrétisation du temps avec H comme nombre de dates
-	//double temps_tau = T/H;
-	////mult: coefficient multiplicateur de H et N
-	//int mult = (int)(H/N);
-	////compteur: permet de savoir à quel length correspond les colonnes de past avec H dates et les colonnes dont on a besoin avec N dates
-	//int compteur = 0;
-	//int length =0;
+	clock_t tbegin, tend, tbegin1, tend1; //variables pour le calcul du temps d'exécution du pricer
+	int samples = 0; //compte le nombre de samples total calculé
+	double limit = (ic_target/1.96)*(ic_target/1.96)*exp(2*r*T); //limit à dépasser pour obtenir l'interval de confiance demandé
+	int optimalSamples = 7680/(N*size); //nombre de samples pour chaque tour de boucle
+	int nBreaks = ceil((double)samples_/(double)optimalSamples); //nombre de division du samples total
 
-	////prix: prix du sous-jacent à l'instant 0
-	//double prix;
-	//double ic;
-	//price(prix, ic);
+	//si le nombre de samples exécuté est différent du nombre de samples demandé par l'utilisateur alors on le signale et on change le nombre demandé
+	if (!(fabs(ic_target) > 0.00001) && (samples_ != nBreaks * optimalSamples)){
+		printf("ATTENTION: nombre d'iterations modifie. %d -> %d\n", samples_, nBreaks*optimalSamples);
+		set_samples(nBreaks*optimalSamples);
+	}
 
-	////delta1: vecteur contenant le delta à un instant donné
-	//PnlVect* delta1 = pnl_vect_create(size);
-	//PnlVect* ic_vect = pnl_vect_create(size);
+	//
+	//Propriétés de la grille et des blocs
+	//
+	int nThreads = N_THREADS;
+	int nBlocks_rand = ceil(optimalSamples * N * size / (double)nThreads);
+	int nBlocks = ceil(optimalSamples / (double)nThreads);
+	int nAll = optimalSamples * N * size;
+	dim3 dimGrid_rand(nBlocks_rand, 1, 1);
+	dim3 dimGrid(nBlocks, 1, 1);
+	dim3 dimBlock(nThreads, 1, 1);
 
-	////past_sub: matrice contenant la matrice past jusqu'à un instant donné
-	//PnlMat* past_sub = pnl_mat_create(size,1);
-	//pnl_mat_extract_subblock(past_sub, past, 0, size, 0, 1);
+	//
+	//Variables pour la génération aléatoire
+	//
+	curandState *d_state;
+	float *d_rand;
 
-	////extract: vecteur utilisé pour extraire des colonne de past et les insérer dans past_sub
-	//PnlVect* extract = pnl_vect_create(size);
+	//
+	//Variables de l'option
+	//
+	float *d_path;
+	double sum_prix_gpu = 0.;
+	double sum_ic_gpu = 0.;
 
-	////S: vecteur contenant le prix dusous-jacent à un instant donné
-	//PnlVect* S = pnl_vect_create(size);
-	////result: vecteur contenant le résultat de la soustraction entre delta1 et delta2
-	//PnlVect* result;
+	//Allocations mémoires
+	cudaMalloc(&d_state, nAll*sizeof(curandState));
+	cudaMalloc((float**)&d_rand, nAll*sizeof(float));
+	cudaMalloc((float**)&d_path, optimalSamples *(N+1)*size*sizeof(float));
 
-	////Calcul à l'instant 0 de l'évolution de l'évolution de la part investie
-	//delta(past_sub, 0, delta1, ic_vect);
-	//pnl_mat_get_col(S, past, 0);
+	tbegin = clock();
+	tbegin1 = clock();
+	//Initialisation des générateurs de nombre aléatoire
+	init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
+	cudaThreadSynchronize();
+	tend1 = clock();
+	//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
-	//PnlVect* V = pnl_vect_create(H);
-	//pnl_vect_set(V, 0, prix - pnl_vect_scalar_prod(delta1, S));
-	//compteur=mult;
+	for (int k = 0; k < nBreaks; k++){
+		tbegin1 = clock();
+		//Génération des nombre aléatoires
+		make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
+		cudaThreadSynchronize();
+		tend1 = clock();
+		//printf("make_rand: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
-	////delta2: vecteur contenant le delta à une date de constation précédente de delta1
-	//PnlVect* hist;
-	//for (int i=1; i<H+1; i++)
-	//{
-	//	//On met dans delta2 la valeur du delta à l'instant i-1
-	//	PnlVect* delta2 = pnl_vect_copy(delta1);
+		//TEST RAND
+		//float *rand = (float*)malloc(nAll*sizeof(float));
+		//cudaMemcpy(rand, d_rand, nAll*sizeof(float), cudaMemcpyDeviceToHost);
+		//printf("RAND:\n");
+		//for (int m = 0; m < optimalSamples; m++){
+		//for (int i = 0; i < N; i++){
+		//for (int d = 0; d < size; d++)
+		//printf("%i: %f ", d+i*size+(N*size)*m, rand[d+i*size+(N*size)*m]);
+		//printf("\n");
+		//}
+		//printf("\n"); 
+		//}
 
-	//	//On cherche l'indice k tel que tau{i} < t_{k} < tau_{i+1}
-	//	//On met dans past_sub les colonne correspondant à
-	//	//past[,j*mult] tel que j = 0..i
-	//	//past_sub est une matrice de dimension size * (i+1)
-	//	if (compteur == mult){
-	//		length++;
-	//		pnl_mat_resize(past_sub, size, length+1);
-	//		compteur=0;
-	//	}
-	//	compteur++;
-	//	for (int j=0; j<length; j++){
-	//		//On extrait la colonne d'length j*mult de past 
-	//		//et on l'insère dans la colonne d'length j de past
-	//		pnl_mat_get_col(extract, past, j*mult);
-	//		pnl_mat_set_col(past_sub, extract, j);
-	//	}
-	//	pnl_mat_get_col(extract, past, i);
-	//	pnl_mat_set_col(past_sub, extract, length);
+		tbegin1= clock();
+		//Calcul du chemin des sous-jacents
+		mod_->assetGPU(dimGrid, dimBlock, optimalSamples, N, T, d_path, d_rand);
+		tend1 = clock();
+		//printf("asset: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
-	//	if (i == H){
-	//		hist = pnl_vect_copy(delta2);
-	//		price(past_sub, temps_tau*i, prix, ic);
-	//	}else{
+		tbegin1= clock();
+		//Calcul du payoff et de l'ic
+		opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, optimalSamples, d_path);
+		tend1 = clock();
+		//printf("price_mc: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
+		//Stockage du payoff et de l'ic
+		sum_prix_gpu += prix_gpu;
+		sum_ic_gpu += ic_gpu;
+		samples += optimalSamples;
 
-	//		//Calcul du delta à l'instant i
-	//		delta(past_sub, temps_tau*i, delta1, ic_vect);
-	//		price(past_sub, temps_tau*i, prix, ic);
+		//Si un intervalle de confiance minimal est demandé alors on calcul l'intervalle de confiance actuelle et si celui si est en dessous de la limite alors on stop l'itération
+		if (fabs(ic_target) > 0.00001){
+			if ( (sum_ic_gpu/(double)samples - (sum_prix_gpu/(double)samples)*(sum_prix_gpu/(double)samples))/(double)samples < limit){
+				break;
+			}else{
+				nBreaks++;
+			}
+		}
+	}
+	tend = clock();
 
-	//		//On met delta1 dans result pour pouvoir faire la soustraction de delta1 avec delta2 dans result car on aura besoin de delta1 dans la boucle suivant
-	//		result = pnl_vect_copy(delta1);
-	//		pnl_vect_minus_vect(result, delta2);
+	//Calcul du prix et de l'intervalle de confiance de l'option
+	prix_gpu = exp(-r*T)/(double)samples * sum_prix_gpu;
+	ic_gpu = exp(-2*r*T)*sum_ic_gpu/(double)samples - prix_gpu * prix_gpu;
+	ic_gpu = 1.96 *sqrt(ic_gpu/(double)samples);
 
-	//		pnl_mat_get_col(S, past, i);
-	//		pnl_vect_set(V, i, pnl_vect_get(V,i-1) * exp(r*T/H) - pnl_vect_scalar_prod(result , S)); 
-	//		pnl_vect_free(&result);
-	//	}
-	//	pnl_vect_free(&delta2);
-	//}
-	////Calcul à l'instant H du delta et du prix des actifs
-	//pnl_mat_get_col(S, past, H);
+	set_samples(samples);
 
-	//prix = opt_->payoff(past_sub);
-
-	////Calcul de l'erreur de couverture
-	//pl = pnl_vect_get(V, H-1) * exp(r*T/H) + pnl_vect_scalar_prod(hist, S) - prix;
-
-	//pnl_vect_free(&V);
-	//pnl_vect_free(&S);
-	//pnl_vect_free(&hist);
-	//pnl_vect_free(&extract);
-	//pnl_mat_free(&past_sub);
-	//pnl_vect_free(&delta1);
-	//pnl_vect_free(&ic_vect);
+	//Libération mémoire
+	cudaFree(d_state);
+	cudaFree(d_rand);
+	cudaFree(d_path);
+	time_gpu = (double)(tend-tbegin)/CLOCKS_PER_SEC;
 }

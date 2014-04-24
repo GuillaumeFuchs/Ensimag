@@ -21,15 +21,14 @@ class BS {
 	double rho_; /*!< parametre de correlation */
 	PnlVect *sigma_; /*!< vecteur de volatilites */
 	PnlVect *spot_; /*!< valeurs initiales du sous-jacent */
-	PnlVect *trend_; /*!< taux utilise sous la probabilite historique */
 	PnlMat *Cho_; /*!< Matrice de Cholesky utilise pour la correlation*/
 	PnlVect *Gi_; /*!< Vecteur gaussien centré du modele de BS multidimensionnel*/
 	PnlVect *Ld_; /*!< Ligne d de la matrice de Cholesky Cho_*/
 
 	float *d_sigma; /*!< vecteur de volatilites */
 	float *d_spot; /*!< valeurs initiales du sous-jacent */
-	float *d_trend; /*!< taux utilise sous la probabilite historique */
 	float *d_cho; /*!< Matrice de Cholesky utilise pour la correlation*/
+
   public:
 
 	/*!
@@ -99,15 +98,6 @@ class BS {
 	 * \return la valeurs initiales du sous-jacent
 	 */
 	PnlVect *get_spot();
-
-	/*!
-	 * \brief Accesseur de Trend_
-	 *
-	 *  Acceder au vecteur de taux sous la probabilite historique
-	 *
-	 * \return le vecteur de taux sous la probabilite historique
-	 */
-	PnlVect *get_trend();
 
 	/*!
 	 * \brief Accesseur de Cho_
@@ -182,15 +172,6 @@ class BS {
 	void set_spot(PnlVect *spot);
 
 	/*!
-	 * \brief Mutateur de Trend_
-	 *
-	 *  Modifier au vecteur de taux sous la probabilite historique
-	 *
-	 * \param le nouveau vecteur de taux sous la probabilite historique
-	 */
-	void set_trend(PnlVect *trend);
-
-	/*!
 	 * \brief Mutateur de Cho_
 	 *
 	 *  Modifier la matrice de cholesky associee a la correlation du sous-jacent
@@ -230,45 +211,5 @@ class BS {
 	 */
 	void asset(PnlMat *path, double T,  int N, PnlRng *rng, PnlMat* G, PnlVect* grid) ;
 	void assetGPU(dim3 dimGrid, dim3 dimBlock, int samples, int N, float T, float* d_path, float* d_rand);
-
-	/*!
-	 * \brief Calcule une trajectoire du sous-jacent connaissant le passe jusqu'a la date t
-	 *
-	 * \param path contient une trajectoire du sous-jacent donnee jusqu'a l'instant par la matrice past
-	 * \param t date jusqu'a laquelle on connait la trajectoire t n'est pas forcement une date de discretisation
-	 * \param N nombre de pas de constatation
-	 * \param T date jusqu'a laquelle on simule la trajectoire (maturite)
-	 * \param rng pointeur sur le generateur de nombre aleatoire
-	 * \param past trajectoire realisee jusqu'a la date t
-	 * \param taille contient le nombre d'evolution du sous-jacent jusqu'a la date t
-	 * \param G contient N-taille vecteurs gaussiens centrés de matrice de covariance identite
-	 * \param grid contient les indices de temps utilises pour l'evolution du sous-jacent
-	 */
-	void asset(PnlMat *path, double t, int N, double T, PnlRng *rng, const PnlMat *past, int taille, PnlMat* G, PnlVect* grid);
-
-	/*!
-	 * \brief Shift d’une trajectoire du sous-jacent
-	 *
-	 * \param path (input) contient en input la trajectoire du sous-jacent
-	 * \param shift_path (output) contient la trajectoire path dont la composante d a ete shiftee par (1+h) a partir de la date t.
-	 * \param t (input) date a partir de laquelle on shift
-	 * \param h (input) pas de differences finies
-	 * \param d (input) indice du sous-jacent à shifter
-	 * \param timestep (input) pas de constatation du sous-jacent
-	 */
-	void shift_asset (PnlMat *_shift_path, const PnlMat *path,
-		int d, double h, double t, double timestep);
-
-	/*!
-	 *
-	 * \brief Simulation du marche
-	 *
-	 * \param past (output) trajectoire du sous-jacent sous la probabilite historique
-	 * \param H (input) nombre de date
-	 * \param T (input) date jusqu'a laquelle on simule la trajectoire (maturite)
-	 * \param PL (output) erreur de couverture
-	 */
-	void simul_market (PnlMat* past, int H, double T, PnlRng *rng); 
-
 };
 #endif
