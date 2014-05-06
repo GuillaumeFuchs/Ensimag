@@ -110,6 +110,6 @@ class Option {
 	 *  \return phi(trajectoire)
 	 */
 	virtual double payoff (const PnlMat * path) = 0;
-	virtual void price_mc(dim3 dimGrid, dim3 dimBlock, double &prix, double &ic, int N, int samples, float* d_path) = 0;
+	virtual void priceMC(dim3 dimGrid, dim3 dimBlock, double &prix, double &ic, int N, int samples, float* d_path) = 0;
 };
 #endif 

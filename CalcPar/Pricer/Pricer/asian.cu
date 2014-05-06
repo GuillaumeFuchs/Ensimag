@@ -41,7 +41,7 @@ double Asian :: payoff (const PnlMat *path) {
   return MAX(sum, 0);
 }
 
-void Asian::price_mc(
+void Asian::priceMC(
 	dim3 dimGrid,
 	dim3 dimBlock,
 	double &prix,

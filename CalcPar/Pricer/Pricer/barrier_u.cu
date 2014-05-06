@@ -79,7 +79,7 @@ double Barrier_u :: payoff (const PnlMat *path) {
   return MAX(sum, 0);
 }
 
-void Barrier_u::price_mc(
+void Barrier_u::priceMC(
 	dim3 dimGrid,
 	dim3 dimBlock,
 	double &prix,

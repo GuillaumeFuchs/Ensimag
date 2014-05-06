@@ -60,7 +60,7 @@ double Basket :: payoff (const PnlMat *path) {
 	return MAX(sum, 0);
 }
 
-void Basket::price_mc(
+void Basket::priceMC(
 	dim3 dimGrid,
 	dim3 dimBlock,
 	double &prix,

@@ -57,7 +57,7 @@ double Performance :: payoff (const PnlMat *path) {
   return 1+MIN(MAX(sum,0), 0.1);
 }
 
-void Performance::price_mc(
+void Performance::priceMC(
 	dim3 dimGrid,
 	dim3 dimBlock,
 	double &prix, 

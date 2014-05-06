@@ -19,12 +19,11 @@
 * \brief Fichier de test pour le price d'option à t=0
 */
 
-void price_compute(char *file, PnlRng* rng)
+void price_compute(char *file, PnlRng* rng, double ic_target, int samples)
 {
 	int m = 0;
 	double prix_cpu, ic_cpu, time_cpu;
 	double prix_gpu, ic_gpu, time_gpu;
-	double ic_target = 0.01;
 
 	Parser mon_parser = Parser(file);
 	BS *bs = new BS(mon_parser);
@@ -46,24 +45,35 @@ void price_compute(char *file, PnlRng* rng)
 		
 	}
 	MonteCarlo mc(bs, opt, rng, 0.1,mon_parser.getInt("sample number") );
-	mc.priceCPU(prix_cpu, ic_cpu, time_cpu);
-	mc.priceGPU(prix_gpu, ic_gpu, time_gpu, 0.01);
+	mc.set_samples(samples);
+
+	double mean1 = 0.;
+	double mean2 = 0.;
+	for (int i = 0; i < 10; i++){
+		mc.priceGPU(prix_gpu, ic_gpu, time_gpu, ic_target);
+		mc.priceCPU(prix_gpu, ic_cpu, time_cpu);
+		mean1 += time_gpu;
+		mean2 += time_cpu;
+	}
+
+	printf("%f %f\n", mean2/10., mean1/10.);
+	/*
 	if (fabs(ic_target)>0.00001)
 		m = mc.get_samples();
-
 	printf("\n");
 	printf("%s\n", file);
 	printf("\nCPU:\n");
-	printf("  Prix: %f \n", prix_cpu);
-	printf("  Ic: %f \n", ic_cpu);
+	//printf("  Prix: %f \n", prix_cpu);
+	//printf("  Ic: %f \n", ic_cpu);
 	printf("  Time: %f \n", time_cpu);
 	printf("\nGPU:\n");
-	printf("  Prix: %f \n", prix_gpu);
-	printf("  Ic: %f \n", ic_gpu);
+	//printf("  Prix: %f \n", prix_gpu);
+	//printf("  Ic: %f \n", ic_gpu);
 	printf("  Time: %f \n", time_gpu);
 	if (fabs(ic_target)>0.00001)
 		printf("  Iteration: %d \n", m);
-	printf("\n");
+	printf("  Iteration: %d\n", mc.get_samples());
+	printf("\n");*/
 }
 
 int main(int argc, char **argv)
@@ -74,21 +84,20 @@ int main(int argc, char **argv)
 	printf("*********************************************\n");
 	printf("**               RESULTATS                 **\n"); 
 	printf("*********************************************\n");
+	
+	price_compute("exemples/barrier.dat", rng, 0.0, 10000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 30000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 50000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 75000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 100000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 150000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 200000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 300000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 500000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 700000);
+	price_compute("exemples/barrier.dat", rng, 0.0, 1000000);
 
 	/*
-	price_compute("exemples/call.dat", rng);
-	price_compute("exemples/basket_5d.dat", rng);
-	price_compute("exemples/asian.dat", rng);
-	price_compute("exemples/barrier.dat", rng);
-	price_compute("exemples/barrier_l.dat", rng);
-	price_compute("exemples/barrier_l2.dat", rng);
-	price_compute("exemples/barrier_u.dat", rng);
-	price_compute("exemples/barrier_u2.dat", rng);
-	price_compute("exemples/basket_1.dat", rng);
-	price_compute("exemples/basket_2.dat", rng);
-	price_compute("exemples/perf.dat", rng);
-	price_compute("exemples/put.dat", rng);*/
-
 	assert(argc > 1);
 
 	int m = 0;
@@ -136,6 +145,7 @@ int main(int argc, char **argv)
 	if (argc == 3)
 		printf("  Iteration: %d \n", m);
 	printf("\n");
+	*/
 
 	pnl_rng_free(&rng);
 	return 0;

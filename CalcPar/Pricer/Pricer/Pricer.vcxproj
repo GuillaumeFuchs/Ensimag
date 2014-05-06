@@ -35,6 +35,8 @@
     <CudaCompile Include="performance.cu">
       <FileType>CppCode</FileType>
     </CudaCompile>
+    <ClCompile Include="pricerCPU.cpp" />
+    <ClCompile Include="pricerGPU.cpp" />
     <ClCompile Include="typeval.cpp" />
     <CudaCompile Include="pricer.cpp">
       <FileType>Document</FileType>

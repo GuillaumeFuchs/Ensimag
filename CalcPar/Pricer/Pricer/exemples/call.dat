@@ -11,4 +11,4 @@ option type basket
 payoff coefficients 1
 
 timestep number 1
-sample number 500000
+sample number 50000

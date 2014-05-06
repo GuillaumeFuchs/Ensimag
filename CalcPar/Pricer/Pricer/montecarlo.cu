@@ -159,10 +159,10 @@ void MonteCarlo::priceGPU(
 	double r = mod_->get_r();
 	double T = opt_->get_T();
 
-	clock_t tbegin, tend, tbegin1, tend1; //variables pour le calcul du temps d'exécution du pricer
+	clock_t tbegin, tend; //variables pour le calcul du temps d'exécution du pricer
 	int samples = 0; //compte le nombre de samples total calculé
 	double limit = (ic_target/1.96)*(ic_target/1.96)*exp(2*r*T); //limit à dépasser pour obtenir l'interval de confiance demandé
-	int optimalSamples = 7680/(N*size); //nombre de samples pour chaque tour de boucle
+	int optimalSamples = 10240/(N*size); //nombre de samples pour chaque tour de boucle
 	int nBreaks = ceil((double)samples_/(double)optimalSamples); //nombre de division du samples total
 
 	//si le nombre de samples exécuté est différent du nombre de samples demandé par l'utilisateur alors on le signale et on change le nombre demandé
@@ -201,45 +201,20 @@ void MonteCarlo::priceGPU(
 	cudaMalloc((float**)&d_path, optimalSamples *(N+1)*size*sizeof(float));
 
 	tbegin = clock();
-	tbegin1 = clock();
 	//Initialisation des générateurs de nombre aléatoire
 	init_stuff<<<dimGrid_rand, dimBlock>>>(nAll, time(NULL), d_state);
 	cudaThreadSynchronize();
-	tend1 = clock();
-	//printf("init_stuff: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
 	for (int k = 0; k < nBreaks; k++){
-		tbegin1 = clock();
 		//Génération des nombre aléatoires
 		make_rand<<<dimGrid_rand, dimBlock>>>(nAll, d_state, d_rand);
 		cudaThreadSynchronize();
-		tend1 = clock();
-		//printf("make_rand: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
-
-		//TEST RAND
-		//float *rand = (float*)malloc(nAll*sizeof(float));
-		//cudaMemcpy(rand, d_rand, nAll*sizeof(float), cudaMemcpyDeviceToHost);
-		//printf("RAND:\n");
-		//for (int m = 0; m < optimalSamples; m++){
-		//for (int i = 0; i < N; i++){
-		//for (int d = 0; d < size; d++)
-		//printf("%i: %f ", d+i*size+(N*size)*m, rand[d+i*size+(N*size)*m]);
-		//printf("\n");
-		//}
-		//printf("\n"); 
-		//}
-
-		tbegin1= clock();
 		//Calcul du chemin des sous-jacents
 		mod_->assetGPU(dimGrid, dimBlock, optimalSamples, N, T, d_path, d_rand);
-		tend1 = clock();
-		//printf("asset: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
 
-		tbegin1= clock();
 		//Calcul du payoff et de l'ic
-		opt_->price_mc(dimGrid, dimBlock, prix_gpu, ic_gpu, N, optimalSamples, d_path);
-		tend1 = clock();
-		//printf("price_mc: %f\n", (double)(tend1-tbegin1)/CLOCKS_PER_SEC);
+		opt_->priceMC(dimGrid, dimBlock, prix_gpu, ic_gpu, N, optimalSamples, d_path);
+
 		//Stockage du payoff et de l'ic
 		sum_prix_gpu += prix_gpu;
 		sum_ic_gpu += ic_gpu;
